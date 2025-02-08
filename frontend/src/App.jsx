@@ -1,14 +1,12 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
+import VetsList from "./components/VetsList";
 
 function App() {
-  return (
-    <div style={{ textAlign: 'center', padding: '50px', fontSize: '24px' }}>
-      <h1>Bienvenido a Group and Play 🎉</h1>
-      <p>La mejor plataforma para conectar grupos de juego y eventos</p>
-    </div>
-  );
+    return (
+        <div>
+            <h1>Welcome to Group and Play VETS:</h1>
+            <VetsList />
+        </div>
+    );
 }
 
 export default App;
-

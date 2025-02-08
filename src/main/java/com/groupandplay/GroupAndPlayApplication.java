@@ -18,7 +18,6 @@ package com.groupandplay;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ImportRuntimeHints;
 
 /**
  * GroupAndPlay Spring Boot Application.
@@ -27,7 +26,6 @@ import org.springframework.context.annotation.ImportRuntimeHints;
  *
  */
 @SpringBootApplication
-@ImportRuntimeHints(GroupAndPlayRuntimeHints.class)
 public class GroupAndPlayApplication {
 
 	public static void main(String[] args) {
