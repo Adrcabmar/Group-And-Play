@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2012-2019 the original author or authors.
  *
@@ -15,27 +16,18 @@
  */
 package com.groupandplay.vet;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.util.SerializationUtils;
+import com.groupandplay.model.NamedEntity;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
- * @author Dave Syer
+ * Models a {@link Vet Vet's} specialty (for example, dentistry).
+ *
+ * @author Juergen Hoeller
  */
-class VetTests {
-
-	@Test
-	void testSerialization() {
-		Vet vet = new Vet();
-		vet.setFirstName("Zaphod");
-		vet.setLastName("Beeblebrox");
-		vet.setId(123);
-		@SuppressWarnings("deprecation")
-		Vet other = (Vet) SerializationUtils.deserialize(SerializationUtils.serialize(vet));
-		assertThat(other.getFirstName()).isEqualTo(vet.getFirstName());
-		assertThat(other.getLastName()).isEqualTo(vet.getLastName());
-		assertThat(other.getId()).isEqualTo(vet.getId());
-	}
+@Entity
+@Table(name = "specialties")
+public class Specialty extends NamedEntity {
 
 }

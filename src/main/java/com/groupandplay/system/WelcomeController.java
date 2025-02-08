@@ -16,26 +16,15 @@
 
 package com.groupandplay.system;
 
-import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+@Controller
+class WelcomeController {
 
-/**
- * Test class for {@link CrashController}
- *
- * @author Colin But
- * @author Alex Lutz
- */
-// Waiting https://github.com/spring-projects/spring-boot/issues/5574 ..good
-// luck ((plain(st) UNIT test)! :)
-class CrashControllerTests {
-
-	final CrashController testee = new CrashController();
-
-	@Test
-	void testTriggerException() {
-		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> testee.triggerException())
-			.withMessageContaining("Expected: controller used to showcase what happens when an exception is thrown");
+	@GetMapping("/")
+	public String welcome() {
+		return "welcome";
 	}
 
 }

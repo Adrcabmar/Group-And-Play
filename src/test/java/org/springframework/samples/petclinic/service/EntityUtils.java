@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.service;
+package com.groupandplay.service;
 
 import org.springframework.orm.ObjectRetrievalFailureException;
-import org.springframework.samples.petclinic.model.BaseEntity;
+import com.groupandplay.model.BaseEntity;
 
 import java.util.Collection;
 
@@ -27,7 +27,7 @@ import java.util.Collection;
  *
  * @author Juergen Hoeller
  * @author Sam Brannen
- * @see org.springframework.samples.petclinic.model.BaseEntity
+ * @see com.groupandplay.model.BaseEntity
  * @since 29.10.2003
  */
 public abstract class EntityUtils {

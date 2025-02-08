@@ -15,27 +15,29 @@
  */
 package com.groupandplay.vet;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.util.SerializationUtils;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Dave Syer
+ * Simple domain object representing a list of veterinarians. Mostly here to be used for
+ * the 'vets' {@link org.springframework.web.servlet.view.xml.MarshallingView}.
+ *
+ * @author Arjen Poutsma
  */
-class VetTests {
+@XmlRootElement
+public class Vets {
 
-	@Test
-	void testSerialization() {
-		Vet vet = new Vet();
-		vet.setFirstName("Zaphod");
-		vet.setLastName("Beeblebrox");
-		vet.setId(123);
-		@SuppressWarnings("deprecation")
-		Vet other = (Vet) SerializationUtils.deserialize(SerializationUtils.serialize(vet));
-		assertThat(other.getFirstName()).isEqualTo(vet.getFirstName());
-		assertThat(other.getLastName()).isEqualTo(vet.getLastName());
-		assertThat(other.getId()).isEqualTo(vet.getId());
+	private List<Vet> vets;
+
+	@XmlElement
+	public List<Vet> getVetList() {
+		if (vets == null) {
+			vets = new ArrayList<>();
+		}
+		return vets;
 	}
 
 }

@@ -1,51 +1,48 @@
+# Maven
 HELP.md
 pom.xml.bak
 target/
+.mvn/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### STS ###
-.attach_pid*
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
 
-### IntelliJ IDEA ###
-.idea
+# Eclipse / STS (Spring Tool Suite)
+*.classpath
+*.factorypath
+*.project
+*.settings/
+*.sts4-cache
+
+# IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
+# VS Code
 .vscode/
 
-### SDK Man ###
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# SDK Man
 .sdkmanrc
 
-### CSS ###
+# Logs
+logs/
+*.log
+
+# Archivos de configuración local
+.env
+*.local
+
+# CSS y archivos estáticos (actualizado)
 _site/
 *.css
-!petclinic.css

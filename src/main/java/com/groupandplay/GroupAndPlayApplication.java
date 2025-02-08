@@ -17,31 +17,21 @@
 package com.groupandplay;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.testcontainers.containers.MySQLContainer;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ImportRuntimeHints;
 
 /**
- * Group And Play Spring Boot Application.
+ * GroupAndPlay Spring Boot Application.
  *
  * @author Dave Syer
  *
  */
-@Configuration
-public class MysqlTestApplication {
-
-	@ServiceConnection
-	@Profile("mysql")
-	@Bean
-	static MySQLContainer<?> container() {
-		return new MySQLContainer<>("mysql:9.1");
-	}
+@SpringBootApplication
+@ImportRuntimeHints(GroupAndPlayRuntimeHints.class)
+public class GroupAndPlayApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GroupAndPlayApplication.class, "--spring.profiles.active=mysql",
-				"--spring.docker.compose.enabled=false");
+		SpringApplication.run(GroupAndPlayApplication.class, args);
 	}
 
 }

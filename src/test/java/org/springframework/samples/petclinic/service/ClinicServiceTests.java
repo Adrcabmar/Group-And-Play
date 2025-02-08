@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.service;
+package com.groupandplay.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,13 +29,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
-import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.owner.PetType;
-import org.springframework.samples.petclinic.owner.Visit;
-import org.springframework.samples.petclinic.vet.Vet;
-import org.springframework.samples.petclinic.vet.VetRepository;
+import com.groupandplay.owner.Owner;
+import com.groupandplay.owner.OwnerRepository;
+import com.groupandplay.owner.Pet;
+import com.groupandplay.owner.PetType;
+import com.groupandplay.owner.Visit;
+import com.groupandplay.vet.Vet;
+import com.groupandplay.vet.VetRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

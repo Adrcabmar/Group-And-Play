@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.groupandplay.system;
 
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Test class for {@link CrashController}
+ * Controller used to showcase what happens when an exception is thrown
  *
- * @author Colin But
- * @author Alex Lutz
+ * @author Michael Isvy
+ * <p/>
+ * Also see how a view that resolves to "error" has been added ("error.html").
  */
-// Waiting https://github.com/spring-projects/spring-boot/issues/5574 ..good
-// luck ((plain(st) UNIT test)! :)
-class CrashControllerTests {
+@Controller
+class CrashController {
 
-	final CrashController testee = new CrashController();
-
-	@Test
-	void testTriggerException() {
-		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> testee.triggerException())
-			.withMessageContaining("Expected: controller used to showcase what happens when an exception is thrown");
+	@GetMapping("/oups")
+	public String triggerException() {
+		throw new RuntimeException(
+				"Expected: controller used to showcase what " + "happens when an exception is thrown");
 	}
 
 }

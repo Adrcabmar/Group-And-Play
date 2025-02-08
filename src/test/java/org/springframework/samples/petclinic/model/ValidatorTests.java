@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.model;
+package com.groupandplay.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

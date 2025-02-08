@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.samples.petclinic.owner;
+package com.groupandplay.owner;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
