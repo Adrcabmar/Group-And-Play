@@ -26,7 +26,7 @@ public class AuthController {
         Optional<User> user = userService.getUserByUsername(request.getUsername());
 
         if (user.isPresent() && passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
-            return ResponseEntity.ok().body(Map.of("message", "Login exitoso", "redirect", "/home"));
+            return ResponseEntity.ok(user.get());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
         }
