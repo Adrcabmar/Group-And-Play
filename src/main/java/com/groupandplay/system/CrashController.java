@@ -16,6 +16,7 @@
 package com.groupandplay.system;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * <p/>
  * Also see how a view that resolves to "error" has been added ("error.html").
  */
+@CrossOrigin(origins = "http://localhost:5173")
 @Controller
 class CrashController {
 
