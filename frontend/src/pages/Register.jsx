@@ -43,19 +43,21 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h2>Registro</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="firstName" placeholder="Nombre" value={form.firstName} onChange={handleChange} required />
-        <input type="text" name="lastName" placeholder="Apellido" value={form.lastName} onChange={handleChange} required />
-        <input type="text" name="username" placeholder="Usuario" value={form.username} onChange={handleChange} required />
-        <input type="email" name="email" placeholder="Correo electrónico" value={form.email} onChange={handleChange} required />
-        <input type="tel" name="telephone" placeholder="Teléfono" value={form.telephone} onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Contraseña" value={form.password} onChange={handleChange} required />
-        <button type="submit">Registrarse</button>
-      </form>
-      <p>¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link></p>
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Registro</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <input type="text" name="firstName" placeholder="Nombre" value={form.firstName} onChange={handleChange} required />
+          <input type="text" name="lastName" placeholder="Apellido" value={form.lastName} onChange={handleChange} required />
+          <input type="text" name="username" placeholder="Usuario" value={form.username} onChange={handleChange} required />
+          <input type="email" name="email" placeholder="Correo electrónico" value={form.email} onChange={handleChange} required />
+          <input type="tel" name="telephone" placeholder="Teléfono" value={form.telephone} onChange={handleChange} required />
+          <input type="password" name="password" placeholder="Contraseña" value={form.password} onChange={handleChange} required />
+          <button type="submit">Registrarse</button>
+        </form>
+        <p>¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link></p>
+      </div>
     </div>
   );
 };

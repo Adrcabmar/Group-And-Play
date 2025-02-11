@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
-import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
