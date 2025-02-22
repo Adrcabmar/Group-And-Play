@@ -40,7 +40,7 @@ public class Person extends BaseEntity {
 	@Digits(integer = 9, fraction = 0)
     private Integer telephone;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     @NotBlank
     private String password;
 
