@@ -25,7 +25,7 @@ function App() {
   return (
     <div className="app-container"> 
       <Router>
-        {user && <MyNavbar handleLogout={handleLogout}/>}
+        {user && <MyNavbar user={user} handleLogout={handleLogout}/>}
         <div className="content">
           <Routes>
             <Route path="/groups" />

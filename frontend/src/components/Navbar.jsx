@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React from 'react';
@@ -6,11 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import logo from "../static/resources/images/Logo.png"; 
 import userIcon from "../static/resources/images/user.png"; 
 
-const MyNavbar = ({ handleLogout }) => {
+const MyNavbar = ({ user, handleLogout }) => {
   const navigate = useNavigate();
 
   const goToUserProfile = () => {
-    navigate("/user"); // Redirige a la página del usuario
+    navigate("/user"); 
   };
 
   return (
@@ -29,19 +30,20 @@ const MyNavbar = ({ handleLogout }) => {
 
       <Nav className="nav-right">
         <NavItem className="user-info">
-          <Button 
-            style={{ backgroundColor: "#B3E5FC", color: "black", border: "none" }}  
-            onClick={handleLogout}
-          >
-            Cerrar sesión
-          </Button>
+          <span className="user-name">{(user?.username).toUpperCase()}</span>
           <img 
             src={userIcon} 
             alt="Usuario" 
             className="user-avatar" 
             onClick={goToUserProfile} 
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", marginLeft: "10px" }} 
           />
+          <Button 
+            style={{ backgroundColor: "#B3E5FC", color: "black", border: "none", marginLeft: "10px" }}  
+            onClick={handleLogout}
+          >
+            Cerrar sesión
+          </Button>
         </NavItem>
       </Nav>
     </Navbar>
