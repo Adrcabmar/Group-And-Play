@@ -15,6 +15,6 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     List<Group> findByGame(Game game);
 
-    List<Group> findByStatus(String status);
+    List<Group> findByStatus(Status status);
 
 }

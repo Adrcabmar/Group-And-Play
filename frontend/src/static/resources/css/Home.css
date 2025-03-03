@@ -1,0 +1,34 @@
+.home-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; /* 17% - 66% - 17% */
+    height: calc(100vh - 90px); /* Ajuste para evitar el navbar */
+    width: 100%;
+}
+
+/* 📌 Secciones */
+.home-left, 
+.home-main, 
+.home-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 100%; /* Asegura que ocupen toda la altura */
+}
+
+.home-left {
+    background-color: rgba(255, 0, 0, 0.2);
+    border: 2px solid red;
+}
+
+.home-main {
+    background-color: rgba(0, 255, 0, 0.2);
+    border: 2px solid green;
+    flex-direction: column;
+}
+
+.home-right {
+    background-color: rgba(0, 0, 255, 0.2);
+    border: 2px solid blue;
+    justify-content: flex-start;
+}
