@@ -1,15 +1,24 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useState } from 'react';
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink, Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import logo from "../static/resources/images/Logo.png"; 
 import userIcon from "../static/resources/images/user.png"; 
 
-const MyNavbar = ({ user, handleLogout }) => {
+const MyNavbar = () => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
+  const currentUser = JSON.parse(localStorage.getItem("user")); // Obtener el usuario del localStorage
+  
+  if (!currentUser) {
+    return null; 
+  }
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
   const goToUserProfile = () => {
     navigate("/user"); 
   };
@@ -30,7 +39,7 @@ const MyNavbar = ({ user, handleLogout }) => {
 
       <Nav className="nav-right">
         <NavItem className="user-info">
-          <span className="user-name">{(user?.username).toUpperCase()}</span>
+          <span className="user-name">{(currentUser?.username)}</span>
           <img 
             src={userIcon} 
             alt="Usuario" 
@@ -40,7 +49,11 @@ const MyNavbar = ({ user, handleLogout }) => {
           />
           <Button 
             style={{ backgroundColor: "#B3E5FC", color: "black", border: "none", marginLeft: "10px" }}  
-            onClick={handleLogout}
+            onClick={() => {
+              localStorage.removeItem("jwt");
+              localStorage.removeItem("user");
+              window.location.href = "/";
+            }}
           >
             Cerrar sesión
           </Button>

@@ -6,32 +6,25 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import MyNavbar from "./components/Navbar";
 import "./App.css"; 
+import { useCurrentUser } from "./hooks/useCurrentUser";
+
 
 function App() {
-  const [user, setUser] = useState(null);
+  const {currentUser, loading, setCurrentUser} = useCurrentUser(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-  };
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  if (loading) {
+    return <div>Loading...</div>; // Muestra algo mientras se carga el usuario
+  }
 
   return (
     <div className="app-container"> 
       <Router>
-        {user && <MyNavbar user={user} handleLogout={handleLogout}/>}
+        <div className="navbar"><MyNavbar /></div>
         <div className="content">
           <Routes>
-            <Route path="/groups" />
             <Route path="/user"  />
-            <Route path="/" element={user ? <Home user={user} /> : <Navigate to="/login" />} />
-            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/" element={currentUser ? <Home user={currentUser} /> : <Navigate to="/login" />} />
+            <Route path="/login" element={<Login setUser={setCurrentUser} />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </div>

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,17 +9,7 @@ import "../static/resources/css/Home.css"
 // eslint-disable-next-line react/prop-types
 function Home({ user }) {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(user);
 
-  useEffect(() => {
-    if (!user) {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setCurrentUser(JSON.parse(storedUser));
-      }
-    }
-  }, [user]);
-  
   const handleCreateGroup = () => {
     navigate("/create-group"); 
   };
@@ -31,7 +22,7 @@ function Home({ user }) {
 
       <main className="home-main">
         <h2 className="welcome-text">
-          Hola usuario: {currentUser?.username || "Desconocido"}
+          Hola usuario: {user?.username || "Desconocido"}
         </h2>
       </main>
 
