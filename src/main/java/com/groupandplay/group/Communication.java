@@ -1,5 +1,5 @@
 package com.groupandplay.group;
 
-public enum Comunication {
+public enum Communication {
     VOICE_CHAT, NO_COMMUNICATION, DISCORD;
 }

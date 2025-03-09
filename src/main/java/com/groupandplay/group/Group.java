@@ -9,6 +9,7 @@ import com.groupandplay.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -30,7 +31,7 @@ public class Group extends BaseEntity {
     private LocalDateTime creation;
 
     @Column(name = "comunication", nullable = false)
-    private Comunication comunication;
+    private Communication communication;
 
     @Column(name = "description", nullable = true)
     @Size(min = 1, max = 256)
@@ -40,7 +41,7 @@ public class Group extends BaseEntity {
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    @ManyToMany(mappedBy = "groups")
+    @ManyToMany(mappedBy = "groups", fetch = FetchType.EAGER)
     private Set<User> users;
 
     @ManyToOne

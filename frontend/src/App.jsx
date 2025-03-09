@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import MyNavbar from "./components/Navbar";
 import "./App.css"; 
 import { useCurrentUser } from "./hooks/useCurrentUser";
+import CrearGrupo from "./pages/CrearGrupo";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/" element={currentUser ? <Home user={currentUser} /> : <Navigate to="/login" />} />
             <Route path="/login" element={<Login setUser={setCurrentUser} />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/create-group" element={<CrearGrupo />} />
           </Routes>
         </div>
       </Router>

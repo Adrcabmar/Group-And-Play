@@ -1,6 +1,9 @@
 package com.groupandplay.group;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,28 +26,30 @@ public class GroupService {
     private GameRepository gameRepository;
 
     
-     public Group createGroup(Integer creatorId, Integer gameId, Comunication communication, String description) {
-
-        Optional<User> optionalUser = userRepository.findById(creatorId);
-        if (optionalUser.isEmpty()) {
-            throw new RuntimeException("El usuario con ID " + creatorId + " no existe.");
-        }
-        User creator = optionalUser.get();
-
-        Optional<Game> optionalGame = gameRepository.findById(gameId);
-        if (optionalGame.isEmpty()) {
-            throw new RuntimeException("El juego con ID " + gameId + " no existe.");
-        }
-
-        Game game = optionalGame.get();
+    public Group createGroup(User creator, Game game, Communication communication, String description) {
         Group group = new Group();
-        
         group.setCreator(creator);
         group.setGame(game);
         group.setStatus(Status.OPEN);
-        group.setComunication(communication);
+        group.setCommunication(communication);
         group.setDescription(description);
-
-        return groupRepository.save(group);
+        group.setCreation(LocalDateTime.now());
+    
+        if (group.getUsers() == null) {
+            group.setUsers(new HashSet<>());
+        }
+        
+        group.getUsers().add(creator);
+    
+        if (creator.getGroups() == null) {
+            creator.setGroups(new HashSet<>());
+        }
+        creator.getGroups().add(group);
+    
+        group = groupRepository.save(group);
+        
+        userRepository.save(creator);
+    
+        return group;
     }
 }

@@ -33,7 +33,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()) // Desactiva CSRF para facilitar pruebas
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/users/auth/register","/api/users/auth/login", "/api/groups/**", "/api/users/auth/current-user").permitAll() // Permite el acceso a estas rutas
+                .requestMatchers("/api/auth/**", 
+                "/api/users/auth/register",
+                "/api/users/auth/login", 
+                "/api/groups/**", 
+                "/api/users/auth/current-user",
+                "/api/group/**").permitAll() // Permite el acceso a estas rutas
                 .anyRequest().authenticated()
             )
             .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
