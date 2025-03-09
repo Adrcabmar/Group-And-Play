@@ -1,54 +1,47 @@
-/*
- * Copyright 2012-2019 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.groupandplay.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * Simple JavaBean domain object representing an person.
- *
- * @author Ken Krebs
- */
+@Getter
+@Setter
 @MappedSuperclass
 public class Person extends BaseEntity {
 
-	@Column(name = "first_name")
-	@NotBlank
-	private String firstName;
+    @Column(name = "first_name", nullable = false)
+    @NotBlank 
+	@Size(min = 1, max = 16)
+    private String firstName;
 
-	@Column(name = "last_name")
-	@NotBlank
-	private String lastName;
+    @Column(name = "last_name", nullable = false)
+    @NotBlank 
+	@Size(min = 1, max = 16)
+    private String lastName;
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+    @Column(name = "username", nullable = false, unique = true)
+    @NotBlank
+	@Size(min = 1, max = 16)
+    private String username;
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+	@Column(name = "email", nullable = false, unique = true)
+    @NotBlank
+	@Email
+    private String email;
 
-	public String getLastName() {
-		return this.lastName;
-	}
+	@Column(name = "telephone", nullable = false)
+    @NotNull 
+	@Digits(integer = 9, fraction = 0)
+    private Integer telephone;
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    @Column(name = "password", nullable = false)
+    @NotBlank
+    private String password;
 
 }
