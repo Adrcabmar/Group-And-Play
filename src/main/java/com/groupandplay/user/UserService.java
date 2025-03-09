@@ -3,6 +3,7 @@ package com.groupandplay.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,14 +16,17 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Transactional
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Transactional
     public Optional<User> getUserById(Integer id) {
         return userRepository.findById(id);
     }
 
+    @Transactional
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -35,6 +39,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    @Transactional
     public User registerUser(User user) {
         if (user.getId() != null) {
             throw new RuntimeException("No se puede registrar un usuario con ID preexistente");
@@ -54,6 +59,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User updateUser(Integer id, User userDetails) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -67,6 +73,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../static/resources/css/Login.css"; 
+import { getCurrentUser } from "../utils/api";
+
 
 function Login({ setUser }) {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -17,8 +19,12 @@ function Login({ setUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", form);
-      setUser(response.data);
+      const response = await axios.post("http://localhost:8080/api/users/auth/login", form);
+      const token = response.data.token;
+      const data = await getCurrentUser({token});
+      window.localStorage.setItem("user", JSON.stringify(data.user));
+      window.localStorage.setItem("jwt", response.data.token);
+      setUser(data.user);
       navigate("/");
     } catch (err) {
       setError("Credenciales incorrectas");
@@ -35,7 +41,7 @@ function Login({ setUser }) {
           <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
           <button type="submit">Login</button>
         </form>
-        <p>No tienes cuenta? <a href="/register">Regístrate</a></p>
+        <p>¿No tienes una cuenta? <a href="/register">Regístrate</a></p>
       </div>
     </div>
   );

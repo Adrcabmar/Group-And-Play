@@ -1,43 +1,39 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Helmet from "react-helmet";
+import "../static/resources/css/Home.css"
 
 // eslint-disable-next-line react/prop-types
 function Home({ user }) {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(user);
 
-  useEffect(() => {
-    if (!user) {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setCurrentUser(JSON.parse(storedUser));
-      }
-    }
-  }, [user]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user"); 
-    navigate("/login");
+  const handleCreateGroup = () => {
+    navigate("/create-group"); 
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100"> 
-      <div className="text-center">
-        <Helmet>
-          <title>Bienvenido {currentUser?.username || "Desconocido"}</title>
-          <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
-          />
-        </Helmet>
+    <div className="home-container">
+      <aside className="home-left">
+        <p>IZQUIERDA</p>
+      </aside>
 
-        <h2 className="mb-3">Hola usuario: {currentUser?.username || "Desconocido"}</h2>
-      </div>
+      <main className="home-main">
+        <h2 className="welcome-text">
+          Hola usuario: {user?.username || "Desconocido"}
+        </h2>
+      </main>
+
+      <aside className="home-right">
+        <button className="create-group-btn" onClick={handleCreateGroup}>
+          Crear Grupo
+        </button>
+      </aside>
     </div>
   );
 }
+
 
 export default Home;
