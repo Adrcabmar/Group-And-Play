@@ -4,46 +4,67 @@ import React, { useState } from 'react';
 import axios from "axios";
 
 function CrearGrupo() {
-    const navigate = useNavigate();
-    const currentUser = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("jwt"); 
+  const apiUrl = import.meta.env.VITE_API_URL
 
-    const [form, setForm] = useState({
-        communication: "VOICE_CHAT",
-        description: "",
-        gameName: "",
-        creatorId: currentUser.id,
-    });
+  const [form, setForm] = useState({
+      communication: "VOICE_CHAT",
+      description: "",
+      gameName: "",
+      creatorId: currentUser?.id,
+  });
 
-    const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-      };
-    
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log("Formulario enviado:", form); 
-    
-        try {
-          const response = await axios.post("http://localhost:8080/api/group/create", {
-            communication: form.communication,
-            description: form.description,
-            gameName: form.gameName,
-            creatorId: currentUser.id,
-          });
-    
-          if (response.data.error) {
-            setError("Error: " + response.data.error);
-            return;
-          }
-    
-          console.log("Grupo creado:", response.data);
-          navigate("/"); 
-        } catch (error) {
-          console.error("Error en el registro:", error.response?.data || error.message);
-          setError("Error al crear grupo. Inténtalo de nuevo.");
-        }
+  const handleChange = (e) => {
+      setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      console.log("Enviando datos del formulario:", form); 
+
+      if (!token) {
+          setError("⚠ No hay token. Inicia sesión nuevamente.");
+          return;
       }
+
+      const groupData = {
+          communication: form.communication,
+          description: form.description,
+          gameName: form.gameName,
+          creatorId: currentUser?.id, 
+      };
+
+      try {
+          const response = await fetch(`${apiUrl}/api/groups/create`, {
+              method: "POST",
+              headers: {
+                  "Authorization": `Bearer ${token}`,
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify(groupData),
+          });
+
+          console.log("🔹 Respuesta del servidor:", response.status);
+
+          const responseData = await response.json();
+          
+          if (!response.ok) {
+              setError("Error: " + (responseData.error || "No se pudo crear el grupo"));
+              return;
+          }
+
+          console.log("✅ Grupo creado exitosamente:", responseData);
+          navigate("/");
+
+      } catch (error) {
+          console.error("⚠ Error en el registro:", error);
+          setError("Error al crear grupo. Inténtalo de nuevo.");
+      }
+  };
 
   return (
     <div className="login-container">

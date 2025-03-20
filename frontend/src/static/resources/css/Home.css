@@ -17,18 +17,48 @@
 }
 
 .home-left {
-    background-color: rgba(255, 0, 0, 0.2);
-    border: 2px solid red;
+
 }
 
 .home-main {
-    background-color: rgba(0, 255, 0, 0.2);
-    border: 2px solid green;
+    background-color: rgba(42, 140, 185, 0.2);
+    border: 2px solid rgba(36, 114, 150, 0.377);
     flex-direction: column;
+    border-radius: 3%;
+    padding: 20px;
+    text-align: center;
 }
 
 .home-right {
-    background-color: rgba(0, 0, 255, 0.2);
-    border: 2px solid blue;
-    justify-content: flex-start;
+
 }
+.group-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .group-item {
+    background: #f4f4f4;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+  }
+  
+  .pagination {
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    margin: 5px;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
