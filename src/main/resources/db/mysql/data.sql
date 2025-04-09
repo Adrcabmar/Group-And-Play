@@ -3,7 +3,8 @@ INSERT IGNORE INTO users (id, username, role, email, first_name, last_name, tele
 (2, 'bob456', 'USER','bob@example.com', 'Bob', 'Smith', '987654321', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
 (3, 'charlie789', 'USER','charlie@example.com', 'Charlie', 'Brown', '567123890', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
 (4, 'diana001', 'USER','diana@example.com', 'Diana', 'Prince', '654321987', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
-(5, 'edward_dev', 'USER','edward@example.com', 'Edward', 'Snowden', '321789654', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC');
+(5, 'edward_dev', 'USER','edward@example.com', 'Edward', 'Snowden', '321789654', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
+(6, 'admin', 'ADMIN','admin@example.com', 'Admin', 'Admin', '322789654', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC');
 
 INSERT IGNORE INTO games (id, name, max_players) VALUES 
 (1, 'League of Legends', 5),
@@ -19,5 +20,5 @@ INSERT IGNORE INTO groups (id, status, creation_date, comunication, description,
 
 INSERT IGNORE INTO users_groups (user_id, group_id) VALUES 
 (1, 1), (2, 1),
-(3, 2), (4, 2), 
-(5, 3), (1, 3); 
+(2, 2), (3, 2), (4, 2), 
+(3, 3), (5, 3), (1, 3); 

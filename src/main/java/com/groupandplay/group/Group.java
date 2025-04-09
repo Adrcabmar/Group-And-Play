@@ -9,6 +9,8 @@ import com.groupandplay.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
@@ -24,12 +26,14 @@ import lombok.Setter;
 @Setter
 public class Group extends BaseEntity {
 
+    @Enumerated(EnumType.STRING) 
     @Column(name = "status", nullable = false)
     private Status status;
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creation;
 
+    @Enumerated(EnumType.STRING) 
     @Column(name = "comunication", nullable = false)
     private Communication communication;
 
