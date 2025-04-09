@@ -10,7 +10,7 @@ function Home({ user }) {
   const [groups, setGroups] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 5; // Número de grupos por página
+  const pageSize = 5;
 
   const token = localStorage.getItem("jwt");
 
@@ -22,31 +22,56 @@ function Home({ user }) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     if (!token) {
-        console.error("⚠ No hay token almacenado en localStorage");
-        return;
+      console.error("⚠ No hay token almacenado en localStorage");
+      return;
     }
 
     try {
-        const response = await fetch(`${apiUrl}/api/groups/open?page=${pageNumber}&size=${pageSize}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status}`);
+      const response = await fetch(`${apiUrl}/api/groups/open?page=${pageNumber}&size=${pageSize}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
         }
+      });
 
-        const data = await response.json();
-        setGroups(data.content);
-        setTotalPages(data.totalPages);
-        console.log(data)
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setGroups(data.content);
+      setTotalPages(data.totalPages);
     } catch (error) {
-        console.error("⚠ Error al obtener los grupos:", error);
+      console.error("⚠ Error al obtener los grupos:", error);
     }
-};
+  };
+
+  const handleJoinGroup = async (groupId) => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    try {
+      const response = await fetch(`${apiUrl}/api/groups/join`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(groupId),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al unirse al grupo: ${response.status}`);
+      }
+
+      const data = await response.json();
+      alert(`✅ Te has unido al grupo de: ${data.creatorUsername}`);
+      fetchGroups(page);
+    } catch (error) {
+      console.error("⚠ Error al unirse al grupo:", error);
+      alert("❌ No se pudo unir al grupo. Inténtalo más tarde.");
+    }
+  };
 
   return (
     <div className="home-container">
@@ -56,12 +81,21 @@ function Home({ user }) {
 
       <main className="home-main">
         <h2 className="section-title">Grupos Disponibles</h2>
+
         {groups.length > 0 ? (
           <ul className="group-list">
             {groups.map((group) => (
-              <li key={group.id} className="group-item">
-                <h3>{group.name}</h3>
-                <p>{group.description}</p>
+              <li key={group.id} className="group-item d-flex justify-content-between align-items-center">
+                <div style={{ textAlign: "left" }}>
+                  <h3>{group.name}</h3>
+                  <p>{group.description}</p>
+                </div>
+                <button
+                  className="btn btn-success"
+                  onClick={() => handleJoinGroup(group.id)}
+                >
+                  Unirse
+                </button>
               </li>
             ))}
           </ul>
@@ -81,7 +115,7 @@ function Home({ user }) {
       </main>
 
       <aside className="home-right">
-        <button className="create-group-btn" onClick={() => navigate("/create-group")}>
+        <button className="create-group-btn btn btn-primary" onClick={() => navigate("/create-group")}>
           Crear Grupo
         </button>
       </aside>

@@ -26,7 +26,8 @@ public class GroupDTO {
     private String communication;
     private String description;
     private String gameName;
-    private Integer creatorId;
+    private Integer maxPlayers;
+    private String creatorUsername;
     private List<String> users;
 
     public GroupDTO(Group group) {
@@ -36,7 +37,8 @@ public class GroupDTO {
         this.communication = group.getCommunication().toString();
         this.description = group.getDescription();
         this.gameName = group.getGame().getName();
-        this.creatorId = group.getCreator().getId();
+        this.creatorUsername = group.getCreator().getUsername();
+        this.maxPlayers = group.getGame().getMaxPlayers();
         this.users = group.getUsers().stream()
                           .map(user -> user.getUsername())
                           .collect(Collectors.toList());

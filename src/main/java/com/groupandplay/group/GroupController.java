@@ -10,12 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.Authentication;
-
+import org.springframework.security.core.GrantedAuthority;
 
 import com.groupandplay.dto.GroupDTO;
 import com.groupandplay.game.Game;
@@ -40,21 +41,39 @@ public class GroupController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createGroup(@Valid @RequestBody GroupDTO groupDTO) {
-        try {
-            User creator = userRepository.findById(groupDTO.getCreatorId())
-            .orElseThrow(() -> new IllegalArgumentException("Usuario creador no encontrado"));
+    private boolean hasRole(String role) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(r -> r.equals(role));
+    }
 
-            Game game = gameRepository.findByName(groupDTO.getGameName())
+    private User getCurrentUserLogged() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername(); 
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createGroup(@Valid @RequestBody GroupDTO groupDTO) throws IllegalArgumentException {
+        User creator = getCurrentUserLogged();
+
+        Game game = gameRepository.findByName(groupDTO.getGameName())
                 .orElseThrow(() -> new IllegalArgumentException("Juego no encontrado"));
 
-            // Crear el grupo con los datos correctos
-            Group newGroup = groupService.createGroup(creator, game, groupDTO.getCommunication().toString(), groupDTO.getDescription());
-            return ResponseEntity.ok( new GroupDTO(newGroup));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Group newGroup = groupService.createGroup(creator, game, groupDTO.getCommunication().toString(),
+                groupDTO.getDescription());
+        return ResponseEntity.ok(new GroupDTO(newGroup));
+    }
+
+    @PutMapping("/join")
+    public ResponseEntity<?> joinGroup(@Valid @RequestBody Integer groupId) throws IllegalArgumentException {
+        Group group = groupService.findById(groupId);
+        User user = getCurrentUserLogged();
+        Group groupUpdated = groupService.joinGroup(user, group);
+        return ResponseEntity.ok(new GroupDTO(groupUpdated));
     }
 
     @GetMapping("/open")
@@ -62,10 +81,7 @@ public class GroupController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername(); // Extraer ID del usuario autenticado
-
+        String username = getCurrentUserLogged().getUsername();
         Pageable pageable = PageRequest.of(page, size);
         Page<Group> openGroups = groupService.getOpenGroups(pageable, username);
 

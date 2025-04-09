@@ -2,17 +2,15 @@ package com.groupandplay.group;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import com.groupandplay.game.Game;
 import com.groupandplay.game.GameRepository;
@@ -31,13 +29,22 @@ public class GroupService {
     @Autowired
     private GameRepository gameRepository;
 
-    public Page<Group> getOpenGroups(Pageable pageable, String username) {
-        Integer userId = userRepository.findByUsername(username).get().getId();
-
-        return groupRepository.findByStatusAndCreatorIdNot(Status.OPEN, userId ,pageable);
+    @Transactional(readOnly = true)
+    public Group findById(Integer groupId) throws IllegalArgumentException {
+        Group group = groupRepository.findById(groupId)                
+            .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
+        return group;
     }
 
+    @Transactional(readOnly = true)
+    public Page<Group> getOpenGroups(Pageable pageable, String username) throws IllegalArgumentException {
+        User user = userRepository.findByUsername(username)
+                     .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
     
+        return groupRepository.findOpenGroupsNotJoinedByUser(Status.OPEN, user, pageable);
+    }
+
+    @Transactional
     public Group createGroup(User creator, Game game, String communication, String description) {
         Group group = new Group();
         group.setCreator(creator);
@@ -64,4 +71,28 @@ public class GroupService {
     
         return group;
     }
+
+    public Group joinGroup(User user, Group group) throws IllegalArgumentException {
+        if (group.getStatus() != Status.OPEN) {
+            throw new IllegalArgumentException("Grupo no disponible");
+        }
+    
+        if (group.getUsers().contains(user)) {
+            throw new IllegalArgumentException("Ya eres parte de este grupo");
+        }
+    
+        group.getUsers().add(user);
+    
+        if (user.getGroups() == null) {
+            user.setGroups(new HashSet<>());
+        }
+        user.getGroups().add(group);
+    
+        group = groupRepository.save(group);
+        
+        userRepository.save(user);
+    
+        return group;
+    }
+
 }

@@ -42,11 +42,16 @@ public class SecurityConfig {
                     "/api/users/auth/login",
                     "/api/users/auth/current-user"
                 ).permitAll()
+
+                // .requestMatchers() //toDO
+                // .hasAuthority("ADMIN")
+
     
-                // Requieren autenticación (rutas protegidas)
-                .requestMatchers(HttpMethod.GET, "/api/groups/open").authenticated()
-                .requestMatchers("/api/groups/**").authenticated()
-    
+                // URIS DE USER
+                .requestMatchers(HttpMethod.GET, 
+                "/api/groups/open",
+                "/api/groups/**")
+                .hasAuthority("USER")
                 // Cualquier otra solicitud requiere autenticación
                 .anyRequest().authenticated()
             )
