@@ -10,13 +10,27 @@ function Home({ user }) {
   const [groups, setGroups] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 5;
+  const pageSize = 3;
+  const formatCommunication = (type) => {
+    switch (type) {
+      case "DISCORD":
+        return "Discord";
+      case "VOICE_CHAT":
+        return "Chat de voz del juego";
+      case "NO_COMMUNICATION":
+        return "Sin comunicación";
+      default:
+        return type;
+    }
+  };
 
   const token = localStorage.getItem("jwt");
 
   useEffect(() => {
     fetchGroups(page);
   }, [page]);
+
+  
 
   const fetchGroups = async (pageNumber) => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -82,32 +96,41 @@ function Home({ user }) {
       <main className="home-main">
         <h2 className="section-title">Grupos Disponibles</h2>
 
-        {groups.length > 0 ? (
-          <ul className="group-list">
-            {groups.map((group) => (
-              <li key={group.id} className="group-item d-flex justify-content-between align-items-center">
-                <div style={{ textAlign: "left" }}>
-                  <h3>{group.name}</h3>
-                  <p>{group.description}</p>
-                </div>
-                <button
-                  className="btn btn-success"
-                  onClick={() => handleJoinGroup(group.id)}
-                >
-                  Unirse
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No hay grupos disponibles.</p>
-        )}
+        <div className="groups-wrapper">
+          {groups.length > 0 ? (
+            <ul className="group-list">
+              {groups.map((group) => (
+                <li key={group.id} className="group-card">
+                  <div className="group-header">
+                    <h3 className="game-title">{group.gameName}</h3>
+                    <span className="players-count">
+                      Jugadores: {group.users.length} / {group.maxPlayers}
+                    </span>
+                  </div>
+                  <p className="group-description">{group.description}</p>
+                  <div className="group-bottom-row">
+                    <span className="group-communication">{formatCommunication(group.communication)}</span>
+                    <button
+                      className="btn btn-success join-button"
+                      onClick={() => handleJoinGroup(group.id)}
+                      disabled={group.users.length >= group.maxPlayers}
+                    >
+                      {group.users.length >= group.maxPlayers ? "Lleno" : "Unirse"}
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No hay grupos disponibles.</p>
+          )}
+        </div>
 
-        <div className="pagination">
+        <div className="pagination" style={{ display: "flex", justifyContent: "center", marginTop: "4%"}}>
           <button disabled={page === 0} onClick={() => setPage(page - 1)}>
             Anterior
           </button>
-          <span>Página {page + 1} de {totalPages}</span>
+          <span style={{marginTop: "1.5%"}}>Página {page + 1} de {totalPages}</span>
           <button disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>
             Siguiente
           </button>
