@@ -95,4 +95,46 @@ public class GroupService {
         return group;
     }
 
+    @Transactional
+    public void deleteMyGroup(User user, Group group) {
+        if (group == null) {
+            throw new IllegalArgumentException("El grupo no puede ser nulo");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("El usuario no puede ser nulo");
+        }
+    
+        if (!group.getCreator().getId().equals(user.getId())) {    
+            throw new IllegalArgumentException("No puedes eliminar un grupo que no has creado");
+        }
+    
+        groupRepository.delete(group);
+        user.getGroups().remove(group);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void leaveGroup(User user, Group group) {
+        if (group == null) {
+            throw new IllegalArgumentException("El grupo no puede ser nulo");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("El usuario no puede ser nulo");
+        }
+    
+        if (!group.getUsers().contains(user)) {
+            throw new IllegalArgumentException("No eres miembro de este grupo");
+        }
+    
+        if (group.getCreator().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("No puedes abandonar un grupo que has creado. Intenta eliminarlo en su lugar.");
+        }
+    
+        group.getUsers().remove(user); 
+        user.getGroups().remove(group);
+    
+        groupRepository.save(group);
+        userRepository.save(user); 
+    }
+
 }

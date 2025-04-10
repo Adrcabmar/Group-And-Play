@@ -33,7 +33,7 @@ const MyNavbar = () => {
 
       <Nav className="nav-center">
         <NavItem>
-          <NavLink  style={{ backgroundColor: "#B3E5FC", color: "black", border: "none", borderRadius: "7px"}}   href="/groups" className="nav-link">
+          <NavLink  style={{ backgroundColor: "#B3E5FC", color: "black", border: "none", borderRadius: "7px"}}   href="/my-groups" className="nav-link">
             Mis grupos
           </NavLink>
         </NavItem>

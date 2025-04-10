@@ -8,7 +8,7 @@ import MyNavbar from "./components/Navbar";
 import "./App.css"; 
 import { useCurrentUser } from "./hooks/useCurrentUser";
 import CrearGrupo from "./pages/CrearGrupo";
-
+import MyGroups from "./pages/MyGroups";
 
 function App() {
   const {currentUser, loading, setCurrentUser} = useCurrentUser(null);
@@ -28,6 +28,7 @@ function App() {
             <Route path="/login" element={<Login setUser={setCurrentUser} />} />
             <Route path="/register" element={<Register />} />
             <Route path="/create-group" element={<CrearGrupo />} />
+            <Route path="/my-groups" element={<MyGroups user={currentUser} />} />
           </Routes>
         </div>
       </Router>
