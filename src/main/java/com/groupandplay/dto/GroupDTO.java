@@ -44,8 +44,8 @@ public class GroupDTO {
                           .collect(Collectors.toList());
     }
 
-    public static List<GroupDTO> fromEntities(List<Group> events) {
-        return events.stream()
+    public static List<GroupDTO> fromEntities(List<Group> groups) {
+        return groups.stream()
                 .map(GroupDTO::new)
                 .toList();
     }

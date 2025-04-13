@@ -1,5 +1,7 @@
 package com.groupandplay.group;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,12 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,6 +60,30 @@ public class GroupController {
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
     }
 
+    @GetMapping("/open")
+    public ResponseEntity<Page<GroupDTO>> getOpenGroups(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        String username = getCurrentUserLogged().getUsername();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Group> openGroups = groupService.getOpenGroups(pageable, username);
+
+        Page<GroupDTO> openGroupsDTO = openGroups.map(GroupDTO::new);
+
+        return ResponseEntity.ok(openGroupsDTO);
+    }
+
+    @GetMapping("/my-groups")
+    public ResponseEntity<List<GroupDTO>> getMyGroups() {
+        String username = getCurrentUserLogged().getUsername();
+        List<Group> openGroups = groupService.findMyGroups(username);
+
+        List<GroupDTO> openGroupsDTO = GroupDTO.fromEntities(openGroups);
+
+        return ResponseEntity.ok(openGroupsDTO);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createGroup(@Valid @RequestBody GroupDTO groupDTO) throws IllegalArgumentException {
         User creator = getCurrentUserLogged();
@@ -76,17 +104,17 @@ public class GroupController {
         return ResponseEntity.ok(new GroupDTO(groupUpdated));
     }
 
-    @GetMapping("/open")
-    public ResponseEntity<Page<GroupDTO>> getOpenGroups(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
-    ) {
-        String username = getCurrentUserLogged().getUsername();
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Group> openGroups = groupService.getOpenGroups(pageable, username);
+    @DeleteMapping("/delete-my-group/{groupId}")
+    public ResponseEntity<?> deleteMyGroup(@PathVariable Integer groupId) throws IllegalArgumentException {
+        User user = getCurrentUserLogged();
+        groupService.deleteMyGroup(user.getId(), groupId);
+        return ResponseEntity.ok("Grupo eliminado correctamente");
+    }
 
-        Page<GroupDTO> openGroupsDTO = openGroups.map(GroupDTO::new);
-
-        return ResponseEntity.ok(openGroupsDTO);
+    @PutMapping("/leave-group/{groupId}")
+    public ResponseEntity<?> leaveGroup(@PathVariable Integer groupId) throws IllegalArgumentException {
+        User user = getCurrentUserLogged(); 
+        groupService.leaveGroup(user.getId(), groupId); 
+        return ResponseEntity.ok("Has abandonado el grupo correctamente");
     }
 }

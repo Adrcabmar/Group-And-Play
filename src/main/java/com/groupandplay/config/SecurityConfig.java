@@ -44,11 +44,12 @@ public class SecurityConfig {
                 ).permitAll()
 
                 // .requestMatchers() //toDO
-                // .hasAuthority("ADMIN")
+                // .hasAuthority("ADMIN")S
 
     
                 // URIS DE USER
                 .requestMatchers(HttpMethod.GET, 
+                "api/groups/my-groups",
                 "/api/groups/open",
                 "/api/groups/**")
                 .hasAuthority("USER")
