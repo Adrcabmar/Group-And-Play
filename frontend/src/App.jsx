@@ -28,7 +28,7 @@ function App() {
             <Route path="/login" element={<Login setUser={setCurrentUser} />} />
             <Route path="/register" element={<Register />} />
             <Route path="/create-group" element={<CrearGrupo />} />
-            <Route path="/my-groups" element={<MyGroups user={currentUser} />} />
+            <Route path="/my-groups" element={<MyGroups/>} />
           </Routes>
         </div>
       </Router>
