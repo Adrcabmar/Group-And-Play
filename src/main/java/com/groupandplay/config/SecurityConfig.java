@@ -48,8 +48,9 @@ public class SecurityConfig {
 
     
                 // URIS DE USER
-                .requestMatchers(HttpMethod.GET, 
-                "api/groups/my-groups",
+                .requestMatchers(
+                "/api/games/all", 
+                "/api/groups/my-groups",
                 "/api/groups/open",
                 "/api/groups/**")
                 .hasAuthority("USER")

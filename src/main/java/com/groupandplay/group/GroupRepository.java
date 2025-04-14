@@ -28,8 +28,18 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Query("SELECT COUNT(g) FROM Group g JOIN g.users u WHERE u.id = :userId AND g.status IN ('OPEN', 'CLOSED')")
     Integer findManyGroupsOpenOrClosed(@Param("userId") Integer userId);
 
-    @Query("SELECT g FROM Group g WHERE g.status = :status AND :user NOT MEMBER OF g.users")
-    Page<Group> findOpenGroupsNotJoinedByUser(@Param("status") Status status, @Param("user") User user, Pageable pageable);
+    @Query("SELECT g FROM Group g " +
+       "WHERE g.status = :status " +
+       "AND (:user NOT MEMBER OF g.users) " +
+       "AND (:game IS NULL OR g.game = :game) " +
+       "AND (:communication IS NULL OR g.communication = :communication)")
+    Page<Group> findFilteredOpenGroups(
+        @Param("status") Status status,
+        @Param("user") User user,
+        @Param("game") Game game,
+        @Param("communication") Communication communication,
+        Pageable pageable
+    );
 
 
 }

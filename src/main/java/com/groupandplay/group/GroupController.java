@@ -63,14 +63,14 @@ public class GroupController {
     @GetMapping("/open")
     public ResponseEntity<Page<GroupDTO>> getOpenGroups(
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
+        @RequestParam(defaultValue = "3") int size,
+        @RequestParam(required = false) String game,
+        @RequestParam(required = false) String communication
     ) {
         String username = getCurrentUserLogged().getUsername();
         Pageable pageable = PageRequest.of(page, size);
-        Page<Group> openGroups = groupService.getOpenGroups(pageable, username);
-
+        Page<Group> openGroups = groupService.getFilteredOpenGroups(pageable, username, game, communication);
         Page<GroupDTO> openGroupsDTO = openGroups.map(GroupDTO::new);
-
         return ResponseEntity.ok(openGroupsDTO);
     }
 
