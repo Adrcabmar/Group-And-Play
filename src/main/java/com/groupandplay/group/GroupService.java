@@ -41,12 +41,31 @@ public class GroupService {
         return group;
     }
 
+    @Transactional(readOnly = true )
+    public List<Group> findMyGroups(String username)  throws IllegalArgumentException {
+        if (username == null) {
+            throw new IllegalArgumentException("El usuario no puede ser nulo");
+        }
+        return groupRepository.findMyGroups(username);
+    }
+
     @Transactional(readOnly = true)
-    public Page<Group> getOpenGroups(Pageable pageable, String username) throws IllegalArgumentException {
+    public Page<Group> getFilteredOpenGroups(Pageable pageable, String username, String gameName, String communicationStr) {
         User user = userRepository.findByUsername(username)
-                     .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-    
-        return groupRepository.findOpenGroupsNotJoinedByUser(Status.OPEN, user, pageable);
+                        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        Game game = null;
+        if (gameName != null && !gameName.isEmpty()) {
+            game = gameRepository.findByName(gameName)
+                                .orElse(null); // puede ser null si no se encuentra
+        }
+
+        Communication communication = null;
+        if (communicationStr != null && !communicationStr.isEmpty()) {
+            communication = Communication.valueOf(communicationStr);
+        }
+
+        return groupRepository.findFilteredOpenGroups(Status.OPEN, user, game, communication, pageable);
     }
 
     @Transactional
@@ -148,14 +167,6 @@ public class GroupService {
         group.getUsers().remove(user);
 
         userRepository.save(user);
-    }
-
-    @Transactional(readOnly = true )
-    public List<Group> findMyGroups(String username)  throws IllegalArgumentException {
-        if (username == null) {
-            throw new IllegalArgumentException("El usuario no puede ser nulo");
-        }
-        return groupRepository.findMyGroups(username);
     }
 
 }

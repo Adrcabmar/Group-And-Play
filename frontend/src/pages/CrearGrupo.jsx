@@ -1,13 +1,17 @@
 /* eslint-disable no-unused-vars */
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import axios from "axios";
+import Select from 'react-select';
+import { useEffect } from 'react';
 
 function CrearGrupo() {
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("jwt"); 
   const apiUrl = import.meta.env.VITE_API_URL
+  const [allGames, setAllGames] = useState([]);
+  const [selectedGame, setSelectedGame] = useState(null);
 
   const [form, setForm] = useState({
       communication: "VOICE_CHAT",
@@ -22,6 +26,28 @@ function CrearGrupo() {
       setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    fetchGames();
+  }, []);
+
+  const fetchGames = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/games/all`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      });
+      const data = await response.json();
+      const options = data.map(game => ({
+        value: game.name,
+        label: game.name
+      }));
+      setAllGames(options);
+    } catch (err) {
+      console.error("⚠ Error al cargar juegos:", err);
+    }
+  };
+
   const handleSubmit = async (e) => {
       e.preventDefault();
       console.log("Enviando datos del formulario:", form); 
@@ -34,7 +60,7 @@ function CrearGrupo() {
       const groupData = {
           communication: form.communication,
           description: form.description,
-          gameName: form.gameName,
+          gameName: selectedGame?.value,
           creatorId: currentUser?.id, 
       };
 
@@ -72,9 +98,22 @@ function CrearGrupo() {
         <h2>Crear grupo</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <form onSubmit={handleSubmit}>
-           <input type="text" name="gameName" placeholder="Juego" value={form.gameName} onChange={handleChange} required />
-           <input type="text" name="description" placeholder="Descrición" value={form.description} onChange={handleChange} required />
-           <select name="communication" value={form.communication} onChange={handleChange} required
+        <Select
+            className="basic-single"
+            classNamePrefix="select"
+            isSearchable
+            name="game"
+            options={allGames}
+            placeholder="Selecciona un juego"
+            value={selectedGame}
+            onChange={(selectedOption) => setSelectedGame(selectedOption)}
+            required
+            styles={{
+                container: (base) => ({ ...base, marginBottom: "10px" }),
+            }}
+        />        
+            <input type="text" name="description" placeholder="Descrición" value={form.description} onChange={handleChange} required />
+            <select name="communication" value={form.communication} onChange={handleChange} required
             style={{
                 padding: "10px",
                 borderRadius: "5px",

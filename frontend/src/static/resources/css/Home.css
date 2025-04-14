@@ -1,6 +1,7 @@
 .home-container {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr; /* 17% - 66% - 17% */
+  grid-template-rows: 1fr auto;
   height: calc(100vh - 90px); /* Altura total sin navbar */
   width: 100%;
 }
@@ -15,58 +16,44 @@
   min-height: 100%;
 }
 
-/* 🎯 Contenedor principal con espacio fijo para 5 grupos */
+/* 🎯 Contenedor principal con espacio fijo para grupos */
 .home-main {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   background-color: rgba(42, 140, 185, 0.2);
   border: 2px solid rgba(36, 114, 150, 0.377);
   border-radius: 3%;
   padding: 20px;
   text-align: center;
-  height: 90%;
 }
 
-.group-card {
-  padding: 16px;
-  margin: 5px 0;
-  height: 10%;
+/* 🎯 Filtros */
+.filters {
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
-.group-bottom-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.group-communication {
-  font-size: 0.95rem;
-  color: #333;
-}
-/* 🔳 Contenedor para repartir 5 grupos exactamente */
+/* 🧩 Contenedor de grupos */
 .groups-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+  height: 100%;
+  flex: 1;
 }
 
-/* 📜 Lista de grupos */
 .group-list {
   list-style: none;
   padding: 0;
   width: 100%;
-  height: 100%;
+  height: 100%; /* 👈 Necesario para repartir el 100% */
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
 }
 
 /* 💡 Diseño de tarjetas de grupo */
 .group-card {
   background: #f4f4f4;
-  padding: 20px;
+  padding: 10px;
   border-radius: 12px;
   border: 3px solid #2a8cb9;
   display: flex;
@@ -74,44 +61,65 @@
   justify-content: space-between;
   text-align: left;
   position: relative;
-  flex: 1; /* Cada tarjeta ocupa el mismo alto */
   margin: 5px 0;
+
+  height: 33%;
+  max-height: 33%;
+  overflow: hidden;
 }
 
-/* Encabezado del grupo */
+/* 🧩 Tarjetas vacías */
+.empty-card {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* 🧷 Cabecera de la tarjeta */
 .group-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Título del juego */
+/* 🧾 Descripción */
+.group-description {
+  margin-top: 10px;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 🕹️ Comunicación */
+.group-communication {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* 🧮 Contador de jugadores */
+.players-count {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* 📌 Título del juego */
 .game-title {
   color: #ec640d;
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-/* Contador de jugadores */
-.players-count {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-/* Descripción */
-.group-description {
-  margin-top: 10px;
-  color: #666;
-}
-
-/* Pie de grupo */
-.group-footer {
+/* 🎯 Fila inferior con botón */
+.group-bottom-row {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 15px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 }
 
-/* Botón Unirse */
+/* ✅ Botón Unirse */
 .join-button {
   background-color: #28a745;
   color: white;
