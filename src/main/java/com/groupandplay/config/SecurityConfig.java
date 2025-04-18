@@ -40,7 +40,8 @@ public class SecurityConfig {
                     "/api/auth/**", 
                     "/api/users/auth/register",
                     "/api/users/auth/login",
-                    "/api/users/auth/current-user"
+                    "/api/users/auth/current-user",
+                    "/resources/**", "/static/**", "/images/**", "/css/**", "/js/**"
                 ).permitAll()
 
                 // .requestMatchers() //toDO
@@ -49,6 +50,7 @@ public class SecurityConfig {
     
                 // URIS DE USER
                 .requestMatchers(
+                    "/api/users/{id}/**",
                 "/api/games/all", 
                 "/api/groups/my-groups",
                 "/api/groups/open",

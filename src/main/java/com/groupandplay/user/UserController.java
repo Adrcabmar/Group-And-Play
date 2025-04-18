@@ -3,8 +3,19 @@ package com.groupandplay.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.groupandplay.dto.EditUserDTO;
+import com.groupandplay.dto.UserDTO;
+import com.groupandplay.dto.UserMapper;
+import com.groupandplay.game.GameRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -22,23 +33,44 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
+
+    private boolean hasRole(String role) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(r -> r.equals(role));
+    }
+
+    private User getCurrentUserLogged() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername(); 
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+    }
+
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(users);
+        List<UserDTO> dtoList = UserDTO.fromEntities(users);
+        return ResponseEntity.ok(dtoList);
     }
-
+    
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
         User user = userService.getUserById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(new UserDTO(user));
     }
-
 
 
     @GetMapping("/username/{username}")
@@ -51,28 +83,49 @@ public class UserController {
     /**
      * Registrar un nuevo usuario.
      */
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
-        logger.info("Intentando registrar usuario: {}", user.getUsername());
+    // @PostMapping("/register")
+    // public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
+    //     logger.info("Intentando registrar usuario: {}", user.getUsername());
 
-        try {
-            User newUser = userService.registerUser(user);
-            return ResponseEntity.ok(newUser);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+    //     try {
+    //         User newUser = userService.registerUser(user);
+    //         return ResponseEntity.ok(newUser);
+    //     } catch (RuntimeException e) {
+    //         return ResponseEntity.badRequest().body(e.getMessage());
+    //     }
+    // }
 
     /**
      * Actualizar un usuario existente.
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Integer id, @Valid @RequestBody User userDetails) {
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<UserDTO> editUser(@PathVariable Integer id, @Valid @RequestBody EditUserDTO dto) throws IllegalArgumentException {
+        if (!hasRole("ROLE_ADMIN") && getCurrentUserLogged().getId() != id) {
+            throw new IllegalArgumentException("No tienes permiso para editar este usuario");
+        }
+
+        User updatedUser = userService.updateUserFromDTO(id, dto);
+        return ResponseEntity.ok(new UserDTO(updatedUser));
+    }
+
+    /**
+     * Subir una foto.
+     */
+    @PostMapping("/{id}/upload-photo")
+    public ResponseEntity<String> uploadProfilePicture(
+        @PathVariable Integer id,
+        @RequestParam("file") MultipartFile file
+    )  throws IllegalArgumentException {
+        if (!hasRole("ROLE_ADMIN") && getCurrentUserLogged().getId() != id) {
+            throw new IllegalArgumentException("No tienes permiso para editar este usuario");
+        }
         try {
-            User updatedUser = userService.updateUser(id, userDetails);
-            return ResponseEntity.ok(updatedUser);
+            String mensaje = userService.uploadProfilePicture(id, file);
+            return ResponseEntity.ok(mensaje);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

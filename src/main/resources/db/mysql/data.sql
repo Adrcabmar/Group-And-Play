@@ -1,10 +1,11 @@
-INSERT IGNORE INTO users (id, username, role, email, first_name, last_name, telephone, password) VALUES 
-(1, 'alice123', 'USER', 'alice@example.com', 'Alice', 'Johnson', '123456789', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
-(2, 'bob456', 'USER','bob@example.com', 'Bob', 'Smith', '987654321', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
-(3, 'charlie789', 'USER','charlie@example.com', 'Charlie', 'Brown', '567123890', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
-(4, 'diana001', 'USER','diana@example.com', 'Diana', 'Prince', '654321987', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
-(5, 'edward_dev', 'USER','edward@example.com', 'Edward', 'Snowden', '321789654', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC'),
-(6, 'admin', 'ADMIN','admin@example.com', 'Admin', 'Admin', '322789654', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC');
+INSERT IGNORE INTO users (id, username, role, email, first_name, last_name, telephone, password, profile_picture_url, fav_game_id) VALUES 
+(1, 'alice123', 'USER', 'alice@example.com', 'Alice', 'Johnson', '123456789', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC', '/resources/images/defecto.png',1),
+(2, 'bob456', 'USER','bob@example.com', 'Bob', 'Smith', '987654321', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC', '/resources/images/defecto.png',1),
+(3, 'charlie789', 'USER','charlie@example.com', 'Charlie', 'Brown', '567123890', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC', '/resources/images/defecto.png',null),
+(4, 'diana001', 'USER','diana@example.com', 'Diana', 'Prince', '654321987', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC', '/resources/images/defecto.png',2),
+(5, 'edward_dev', 'USER','edward@example.com', 'Edward', 'Snowden', '321789654', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC', '/resources/images/defecto.png',3),
+(6, 'admin', 'ADMIN','admin@example.com', 'Admin', 'Admin', '322789654', '$2a$10$N61mfnDDy4RAclKH/H2VTePP3gU87OGFy0heWsC6ulVLpXMoc47LC', '/resources/images/defecto.png', null);
+
 
 INSERT IGNORE INTO games (id, name, max_players) VALUES 
 (1, 'League of Legends', 5),

@@ -4,15 +4,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.groupandplay.dto.EditUserDTO;
+import com.groupandplay.game.Game;
+import com.groupandplay.game.GameRepository;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.io.IOException;
+import java.nio.file.*;
 
+import org.springframework.web.multipart.MultipartFile;
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -60,19 +74,51 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(Integer id, User userDetails) {
+    public User updateUserFromDTO(Integer id, EditUserDTO dto) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    
-        user.setUsername(userDetails.getUsername());
-        user.setEmail(userDetails.getEmail());
-        user.setFirstName(userDetails.getFirstName());
-        user.setLastName(userDetails.getLastName());
-        user.setTelephone(userDetails.getTelephone());
-    
+
+        user.setFirstName(dto.getFirstname());
+        user.setLastName(dto.getLastname());
+        user.setEmail(dto.getEmail());
+        user.setTelephone(dto.getTelephone());
+        user.setProfilePictureUrl(dto.getProfilePictureUrl());
+
+        if (dto.getFavGame() != null && !dto.getFavGame().isBlank()) {
+            gameRepository.findByName(dto.getFavGame()).ifPresent(user::setFavGame);
+        } else {
+            user.setFavGame(null);
+        }
+
         return userRepository.save(user);
     }
 
+    @Transactional
+    public String uploadProfilePicture(Integer id, MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("El archivo está vacío");
+        }
+
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        try {
+            String fileName = "user_" + id + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
+            Path uploadPath = Paths.get("src/main/resources/static/resources/images/");
+            Files.createDirectories(uploadPath);
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            user.setProfilePictureUrl("/resources/images/" + fileName);
+            userRepository.save(user);
+
+            return "Foto subida correctamente";
+        } catch (IOException e) {
+            throw new RuntimeException("Error al guardar la imagen", e);
+        }
+    }
+    
     @Transactional
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);

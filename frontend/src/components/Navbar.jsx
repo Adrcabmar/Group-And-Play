@@ -44,14 +44,18 @@ const MyNavbar = () => {
           <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} className="user-dropdown" direction="down">
             <DropdownToggle tag="span" data-toggle="dropdown" aria-expanded={dropdownOpen} style={{ cursor: "pointer", marginLeft: "10px" }}>
               <span className="user-name">{currentUser?.username}</span>
-              <img src={userIcon} alt="Usuario" className="user-avatar" />
+              <img
+                src={`http://localhost:8080${currentUser?.profilePictureUrl || "/resources/images/defecto.png"}`}
+                alt="Usuario"
+                className="user-avatar"
+              />            
             </DropdownToggle>
             <DropdownMenu style={{ right: "0", left: "auto", transform: "translateX(-10%) translateY(40px)", backgroundColor: "#B3E5FC", border: "yes" }}>
               <DropdownItem 
                 style={{ color: "black", backgroundColor: "transparent" }} 
                 onMouseEnter={(e) => e.target.style.backgroundColor = "#4FC3F7"}
                 onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
-                onClick={() => navigate("/myprofile")}
+                onClick={() => navigate("/my-profile")}
               >
                 Mi perfil
               </DropdownItem>
