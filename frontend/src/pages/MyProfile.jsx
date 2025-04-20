@@ -159,6 +159,58 @@ function MyProfile() {
     }
   };
 
+  const customSelectStyles = {
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      borderColor: "#00f2ff",
+      width: "300px",
+      boxShadow: state.isFocused ? "0 0 10px #00f2ff" : "0 0 5px #00f2ff",
+      color: "#fff",
+      "&:hover": {
+        borderColor: "#00f2ff"
+      }
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: "#00f2ff",
+    }),
+    option: (base, { isFocused, isSelected }) => ({
+      ...base,
+      backgroundColor: isFocused
+        ? "rgba(0, 242, 255, 0.2)"
+        : isSelected
+        ? "rgba(0, 242, 255, 0.3)"
+        : "transparent",
+      color: "#fff",
+      cursor: "pointer"
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: "#111",
+      border: "1px solid #00f2ff",
+      boxShadow: "0 0 10px #00f2ff"
+    }),
+    input: (base) => ({
+      ...base,
+      color: "#fff",
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: "#999",
+    }),
+    clearIndicator: (base) => ({
+      ...base,
+      color: "#00f2ff",
+      "&:hover": { color: "#fff" }
+    }),
+    dropdownIndicator: (base) => ({
+      ...base,
+      color: "#00f2ff",
+      "&:hover": { color: "#fff" }
+    }),
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-box">
@@ -206,8 +258,8 @@ function MyProfile() {
                 Editar
               </button>
               <button
-                className="profile-btn"
-                style={{ marginTop: "10px", backgroundColor: "#FFA000" }}
+                className="profile-btn neon-outline-btn"
+                style={{ marginTop: "10px" }}
                 onClick={() => setShowPasswordModal(true)}
               >
                 Cambiar contraseña
@@ -286,6 +338,7 @@ function MyProfile() {
                   onChange={(selected) => setFormData(prev => ({ ...prev, favGame: selected?.value || "" }))}
                   placeholder="Selecciona un juego..."
                   isClearable
+                  styles={customSelectStyles}
                 />
               </label>
             </>

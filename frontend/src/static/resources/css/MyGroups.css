@@ -1,0 +1,136 @@
+.my-groups-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    min-height: calc(100vh - 500px);
+  }
+  
+  .my-groups-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2rem;
+    width: 100%;
+    max-width: 1000px;
+    padding: 2rem;
+    border-radius: 20px;
+    border: 2px solid #00f2ff;
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 25px #00f2ff;
+  }
+  
+  /* Tarjetas ocupadas y vacías */
+  .group-card,
+  .empty-slot {
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 12px;
+    color: white;
+    position: relative;
+    min-height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Estilo de tarjeta ocupada */
+  .group-card {
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 10px #0ff;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .group-card:hover {
+    transform: scale(1.03);
+  }
+  
+  .group-card h2 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin: 0;
+  }
+  
+  /* Slot vacío con símbolo + */
+  .empty-slot {
+    border: 2px dashed #00f2ff;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .empty-slot:hover {
+    background-color: rgba(0, 255, 255, 0.05);
+    transform: scale(1.03);
+  }
+  
+  .empty-slot span {
+    font-size: 2.5rem;
+    color: #00f2ff;
+    margin: 0;
+  }
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .modal-content {
+    background-color: rgba(0, 0, 0, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 20px #00f2ff, 0 0 30px #0ff;
+    max-width: 400px;
+    width: 90%;
+    color: rgb(0, 0, 0);
+    text-align: center;
+  }
+  
+  .modal-content h2 {
+    color: #00f2ff;
+    text-shadow: 0 0 10px #00f2ff;
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .modal-content p {
+    margin: 0.4rem 0;
+    font-size: 1rem;
+    color: #ccc;
+  }
+  
+  .modal-content strong {
+    color: #00f2ff;
+  }
+  
+  .modal-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .modal-buttons button {
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .modal-buttons button:hover {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 10px #0ff, 0 0 20px #00f2ff;
+  }
+   

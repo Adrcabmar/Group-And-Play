@@ -133,10 +133,10 @@ function Home({ user }) {
       <aside className="home-left">
         <p>IZQUIERDA</p>
       </aside>
-
+  
       <main className="home-main">
         <h2 className="section-title">Grupos Disponibles</h2>
-
+  
         <div className="filters d-flex justify-content-center align-items-center gap-2">
           <Select
             className="basic-single"
@@ -152,7 +152,7 @@ function Home({ user }) {
               container: (base) => ({ ...base, width: 300 }),
             }}
           />
-
+  
           <select
             className="form-select"
             value={searchCommunication}
@@ -164,28 +164,33 @@ function Home({ user }) {
             <option value="VOICE_CHAT">Chat de voz del juego</option>
             <option value="NO_COMMUNICATION">Sin comunicación</option>
           </select>
-          
+  
           <button className="btn btn-secondary" onClick={clearFilters}>
             Limpiar
           </button>
         </div>
-
+  
         <div className="groups-wrapper">
           {groups.length > 0 ? (
             <ul className="group-list">
               {groups.map((group) => (
                 <li key={group.id} className="group-card">
                   <div className="group-header">
-                    <h3 className="game-title">{group.gameName}</h3>
-                    <span className="players-count">
-                      Jugadores: {group.users.length} / {group.maxPlayers}
-                    </span>
+                    <div className="group-header-left">
+                      <h3 className="game-title">{group.gameName}</h3>
+                      <p className="group-description">{group.description}</p>
+                    </div>
+                    <div className="group-header-right">
+                      <span className="players-count">
+                        Jugadores: {group.users.length} / {group.maxPlayers}
+                      </span>
+                    </div>
                   </div>
-                  <p className="group-description">{group.description}</p>
+  
                   <div className="group-bottom-row">
                     <span className="group-communication">{formatCommunication(group.communication)}</span>
                     <button
-                      className="btn btn-success join-button"
+                      className="join-button"
                       onClick={() => handleJoinGroup(group.id)}
                       disabled={group.users.length >= group.maxPlayers}
                     >
@@ -202,28 +207,21 @@ function Home({ user }) {
             <p>No hay grupos disponibles.</p>
           )}
         </div>
+  
+        {/* ✅ Paginación colocada dentro del main */}
+        <div className="pagination">
+          <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+            Anterior
+          </button>
+          <span>
+            Página {page + 1} de {totalPages}
+          </span>
+          <button disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>
+            Siguiente
+          </button>
+        </div>
       </main>
-
-      <div
-        className="pagination"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "20px",
-          gridColumn: "2",
-        }}
-      >
-        <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-          Anterior
-        </button>
-        <span style={{ margin: "0 10px", lineHeight: "32px" }}>
-          Página {page + 1} de {totalPages}
-        </span>
-        <button disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>
-          Siguiente
-        </button>
-      </div>
-
+  
       <aside className="home-right">
         <button className="create-group-btn btn btn-primary" onClick={() => navigate("/create-group")}>
           Crear Grupo
@@ -231,6 +229,7 @@ function Home({ user }) {
       </aside>
     </div>
   );
+  
 }
 
 export default Home;
