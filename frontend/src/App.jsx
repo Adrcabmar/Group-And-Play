@@ -17,6 +17,7 @@ function AppContent() {
 
   return (
     <div className="app-container"> 
+      <div className="neon-static-bg" />
       <Router>
         <div className="navbar"><MyNavbar /></div>
         <div className="content">

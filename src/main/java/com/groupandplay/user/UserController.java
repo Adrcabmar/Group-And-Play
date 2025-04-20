@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.groupandplay.dto.ChangePasswordDTO;
 import com.groupandplay.dto.EditUserDTO;
 import com.groupandplay.dto.UserDTO;
 import com.groupandplay.dto.UserMapper;
@@ -18,7 +19,10 @@ import com.groupandplay.game.GameRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,13 +103,19 @@ public class UserController {
      * Actualizar un usuario existente.
      */
     @PutMapping("/{id}/edit")
-    public ResponseEntity<UserDTO> editUser(@PathVariable Integer id, @Valid @RequestBody EditUserDTO dto) throws IllegalArgumentException {
+    public ResponseEntity<?> updateUser(@PathVariable Integer id, @Valid @RequestBody EditUserDTO dto) {
         if (!hasRole("ROLE_ADMIN") && getCurrentUserLogged().getId() != id) {
             throw new IllegalArgumentException("No tienes permiso para editar este usuario");
         }
 
+        boolean usernameChanged = userService.checkIfUsernameChanged(id, dto.getUsername());
+
         User updatedUser = userService.updateUserFromDTO(id, dto);
-        return ResponseEntity.ok(new UserDTO(updatedUser));
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", new UserDTO(updatedUser));
+        response.put("usernameChanged", usernameChanged);
+
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -126,6 +136,26 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/{id}/change-password")
+    public ResponseEntity<String> changePassword(
+        @PathVariable Integer id,
+        @Valid @RequestBody ChangePasswordDTO dto
+    ) {
+        User currentUser = getCurrentUserLogged(); 
+
+        if (!hasRole("ROLE_ADMIN") && !currentUser.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("No tienes permiso para cambiar esta contraseña");
+        }
+
+        try {
+            userService.changePassword(id, dto, currentUser);
+            return ResponseEntity.ok("Contraseña actualizada correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import logo from "../static/resources/images/Logo.png"; 
-import userIcon from "../static/resources/images/user.png"; 
+import { useUser } from "../components/UserContext";
 
 const MyNavbar = () => {
   const navigate = useNavigate();
@@ -11,8 +11,8 @@ const MyNavbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
 
-  const currentUser = JSON.parse(localStorage.getItem("user"));
-  
+  const { user: currentUser } = useUser(); 
+
   if (!currentUser) {
     return null; 
   }

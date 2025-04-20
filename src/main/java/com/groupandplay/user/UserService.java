@@ -1,18 +1,18 @@
 package com.groupandplay.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.groupandplay.dto.ChangePasswordDTO;
 import com.groupandplay.dto.EditUserDTO;
 import com.groupandplay.game.Game;
 import com.groupandplay.game.GameRepository;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.io.IOException;
@@ -78,6 +78,7 @@ public class UserService {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        user.setUsername(dto.getUsername());
         user.setFirstName(dto.getFirstname());
         user.setLastName(dto.getLastname());
         user.setEmail(dto.getEmail());
@@ -90,8 +91,17 @@ public class UserService {
             user.setFavGame(null);
         }
 
-        return userRepository.save(user);
+        userRepository.save(user); 
+
+        return user;
     }
+
+    public boolean checkIfUsernameChanged(Integer id, String newUsername) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return !user.getUsername().equals(newUsername);
+    }
+
 
     @Transactional
     public String uploadProfilePicture(Integer id, MultipartFile file) {
@@ -103,6 +113,16 @@ public class UserService {
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         try {
+
+            String oldPhoto = user.getProfilePictureUrl();
+            if (oldPhoto != null && !oldPhoto.equals("/resources/images/defecto.png")) {
+                Path oldPath = Paths.get("src/main/resources/static" + oldPhoto);
+                try {
+                    Files.deleteIfExists(oldPath);
+                } catch (IOException ex) {
+                    System.err.println("⚠ No se pudo eliminar la imagen anterior: " + oldPath);
+                }
+            }
             String fileName = "user_" + id + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
             Path uploadPath = Paths.get("src/main/resources/static/resources/images/");
             Files.createDirectories(uploadPath);
@@ -117,6 +137,28 @@ public class UserService {
         } catch (IOException e) {
             throw new RuntimeException("Error al guardar la imagen", e);
         }
+    }
+
+    @Transactional
+    public void changePassword(Integer userId, ChangePasswordDTO dto, User currentUser) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        boolean isAdmin = currentUser.getRole().equals("ADMIN");
+        boolean isOwner = currentUser.getId().equals(userId);
+
+        if (isOwner && !isAdmin) {
+            if (dto.getActualPassword() == null || dto.getActualPassword().isBlank()) {
+                throw new IllegalArgumentException("Debes introducir la contraseña actual");
+            }
+
+            if (!passwordEncoder.matches(dto.getActualPassword(), user.getPassword())) {
+                throw new IllegalArgumentException("La contraseña actual es incorrecta");
+            }
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
     }
     
     @Transactional

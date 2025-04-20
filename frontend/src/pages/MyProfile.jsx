@@ -12,7 +12,8 @@ function MyProfile() {
   const [allGames, setAllGames] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ actualPassword: "", newPassword: "" });
 
   const token = localStorage.getItem("jwt");
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -48,12 +49,19 @@ function MyProfile() {
   };
 
   const handleSave = async () => {
-    const { firstname, lastname, email, telephone, favGame, profilePictureUrl } = formData;
-
+    const { firstname, lastname, email, telephone, favGame, profilePictureUrl, username } = formData;
+  
     const bodyToSend = {
-      firstname, lastname, email, telephone, favGame, profilePictureUrl
+      firstname, lastname, email, telephone, favGame, profilePictureUrl, username
     };
-
+  
+    if (username !== user.username) {
+      const confirmLogout = window.confirm("Has cambiado tu nombre de usuario. Se cerrará la sesión por seguridad.\n¿Deseas continuar?");
+      if (!confirmLogout) {
+        return;
+      }
+    }
+  
     try {
       const response = await fetch(`${apiUrl}/api/users/${user.id}/edit`, {
         method: "PUT",
@@ -63,19 +71,58 @@ function MyProfile() {
         },
         body: JSON.stringify(bodyToSend),
       });
-
+  
       if (!response.ok) {
-        throw new Error("Error al guardar los cambios");
+        const errorMsg = await response.text();
+        throw new Error(errorMsg || "Error al guardar los cambios");
       }
-
-      const updatedUser = await response.json();
-      setUser(updatedUser);
-      setIsEditing(false);
-      setSelectedFile(null);
-      setPreviewUrl(null);
+  
+      const result = await response.json();
+      const updatedUser = result.user;
+  
+      if (result.usernameChanged) {
+        alert("Has cambiado tu nombre de usuario. Por seguridad, se cerrará la sesión.");
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+      } else {
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setIsEditing(false);
+        setSelectedFile(null);
+        setPreviewUrl(null);
+      }
+  
     } catch (error) {
       console.error("❌ Error al actualizar usuario:", error);
-      alert("Ocurrió un error al guardar los cambios.");
+      alert(error.message || "Ocurrió un error al guardar los cambios.");
+    }
+  };
+  
+
+  const handlePasswordChange = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/users/${user.id}/change-password`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(passwordForm),
+      });
+  
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || "Error al cambiar la contraseña");
+      }
+  
+      alert("✅ Contraseña cambiada correctamente");
+      setShowPasswordModal(false);
+      setPasswordForm({ actualPassword: "", newPassword: "" });
+  
+    } catch (error) {
+      console.error("❌", error);
+      alert(error.message);
     }
   };
 
@@ -121,7 +168,7 @@ function MyProfile() {
             alt="Foto de perfil"
             className="profile-pic"
           />
-
+  
           {isEditing && (
             <>
               <input
@@ -138,7 +185,7 @@ function MyProfile() {
               )}
             </>
           )}
-
+  
           {isEditing ? (
             <div className="button-row">
               <button className="profile-btn" onClick={handleSave}>
@@ -154,15 +201,37 @@ function MyProfile() {
               </button>
             </div>
           ) : (
-            <button className="profile-btn" onClick={() => setIsEditing(true)}>
-              Editar
-            </button>
+            <>
+              <button className="profile-btn" onClick={() => setIsEditing(true)}>
+                Editar
+              </button>
+              <button
+                className="profile-btn"
+                style={{ marginTop: "10px", backgroundColor: "#FFA000" }}
+                onClick={() => setShowPasswordModal(true)}
+              >
+                Cambiar contraseña
+              </button>
+            </>
           )}
         </div>
-
+  
         <div className="profile-right">
-          <div className="username-display">{user.username}</div>
-
+          {isEditing ? (
+            <label className="field-label">
+              <strong>Nombre de usuario:</strong>
+              <input
+                type="text"
+                name="username"
+                value={formData.username || ""}
+                onChange={handleChange}
+                className="profile-input"
+              />
+            </label>
+          ) : (
+            <div className="username-display">{user.username}</div>
+          )}
+  
           {isEditing ? (
             <>
               <label className="field-label">
@@ -175,7 +244,7 @@ function MyProfile() {
                   className="profile-input"
                 />
               </label>
-
+  
               <label className="field-label">
                 <strong>Apellidos:</strong>
                 <input
@@ -186,7 +255,7 @@ function MyProfile() {
                   className="profile-input"
                 />
               </label>
-
+  
               <label className="field-label">
                 <strong>Email:</strong>
                 <input
@@ -197,7 +266,7 @@ function MyProfile() {
                   className="profile-input"
                 />
               </label>
-
+  
               <label className="field-label">
                 <strong>Teléfono:</strong>
                 <input
@@ -208,7 +277,7 @@ function MyProfile() {
                   className="profile-input"
                 />
               </label>
-
+  
               <label className="field-label">
                 <strong>Juego favorito:</strong>
                 <Select
@@ -231,6 +300,49 @@ function MyProfile() {
           )}
         </div>
       </div>
+  
+      {showPasswordModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Cambiar contraseña</h2>
+  
+            <label>Contraseña actual:</label>
+            <input
+              type="password"
+              value={passwordForm.actualPassword}
+              onChange={(e) =>
+                setPasswordForm((prev) => ({ ...prev, actualPassword: e.target.value }))
+              }
+              className="profile-input"
+            />
+  
+            <label>Nueva contraseña:</label>
+            <input
+              type="password"
+              value={passwordForm.newPassword}
+              onChange={(e) =>
+                setPasswordForm((prev) => ({ ...prev, newPassword: e.target.value }))
+              }
+              className="profile-input"
+            />
+  
+            <div className="button-row">
+              <button className="profile-btn" onClick={handlePasswordChange}>
+                Guardar
+              </button>
+              <button
+                className="profile-btn cancel-btn"
+                onClick={() => {
+                  setPasswordForm({ actualPassword: "", newPassword: "" });
+                  setShowPasswordModal(false);
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

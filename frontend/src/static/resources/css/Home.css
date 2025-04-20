@@ -2,10 +2,10 @@
   display: grid;
   grid-template-columns: 1fr 2fr 1fr; /* 17% - 66% - 17% */
   grid-template-rows: 1fr auto;
-  height: calc(100vh - 90px); /* Altura total sin navbar */
+  flex: 1;
+  min-height: 0;
   width: 100%;
 }
-
 /* 📌 Secciones */
 .home-left,
 .home-right {
