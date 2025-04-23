@@ -1,49 +1,36 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import { getCurrentUser } from "../utils/api";
+import { useUser } from "../components/UserContext";
 
 export const useCurrentUser = () => {
+  const { user, setUser } = useUser();
+  const [loading, setLoading] = useState(true);
 
-    const [loading, setLoading] = useState(true);  
-    const [currentUser, setCurrentUser] = useState(null);
-    
-    useEffect(() => {
-        setLoading(true);
-        //if (!user) {
-        const fetchCurrentUser = async () => {
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+
+    if (user) {
+      setLoading(false);
+    } else if (token) {
+      const fetchCurrentUser = async () => {
         try {
-            // Obtener el token almacenado en localStorage
-            const token = window.localStorage.getItem("jwt");
-            
-            // Verificar si el token existe antes de hacer la solicitud
-            if (token) {
-                const data = getCurrentUser({token});
-                setCurrentUser(data.user);
-                localStorage.setItem("user", JSON.stringify(data.user));  // Almacenar datos del usuario
-                
-            } else {
-            setCurrentUser(null); // Si no hay token, no hay usuario autenticado
-            }
+          const data = await getCurrentUser({ token });
+          setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
         } catch (error) {
-            console.error("Error fetching current user:", error);
-            setCurrentUser(null);
-            localStorage.removeItem("user");
+          console.error("❌ Error fetching current user:", error);
+          setUser(null);
+          localStorage.removeItem("user");
+        } finally {
+          setLoading(false);
         }
-        finally{
-            setLoading(false);
-        }
-        };
+      };
 
-        const user = JSON.parse(localStorage.getItem("user"));
-        if(user){
-            setCurrentUser(user);
-            setLoading(false);
-        }
-        else{
-            fetchCurrentUser();
-        }
-        //}
-      }, []);
-    
-    return {currentUser, loading, setCurrentUser}
-    
-}
+      fetchCurrentUser();
+    } else {
+      setLoading(false);
+    }
+  }, [user, setUser]);
+
+  return { currentUser: user, loading, setCurrentUser: setUser };
+};

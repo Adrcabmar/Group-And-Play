@@ -1,150 +1,273 @@
-.home-container {
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr; /* 17% - 66% - 17% */
-  grid-template-rows: 1fr auto;
-  height: calc(100vh - 90px); /* Altura total sin navbar */
-  width: 100%;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* 📌 Secciones */
+.home-container {
+  display: grid;
+  grid-template-columns: 1fr 6fr 1fr;
+  width: 100%;
+  min-height: 100vh;
+}
+
 .home-left,
 .home-right {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  min-height: 100%;
 }
 
-/* 🎯 Contenedor principal con espacio fijo para grupos */
 .home-main {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  background-color: rgba(42, 140, 185, 0.2);
-  border: 2px solid rgba(36, 114, 150, 0.377);
-  border-radius: 3%;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00f2ff;
+  border-radius: 20px;
   padding: 20px;
   text-align: center;
+  box-shadow: 0 0 25px #00f2ff;
+  margin-top: -4rem;
+  width: 100%;
+
+  max-height: calc(100vh - 14rem); /* altura máxima relativa al viewport */
+  overflow-y: auto;               /* permite scroll vertical */
+  scrollbar-width: thin;          /* para Firefox */
+  scrollbar-color: #00f2ff #000;  /* color barra en Firefox */
 }
 
-/* 🎯 Filtros */
+.section-title {
+  color: #00f2ff;
+  font-size: 2rem;
+  text-shadow: 0 0 10px #00f2ff;
+  margin-bottom: 1rem;
+}
+
 .filters {
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 2px solid #00f2ff;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
 }
 
-/* 🧩 Contenedor de grupos */
+.filters select,
+.filters .btn {
+  border-radius: 10px;
+  padding: 0.4rem 1rem;
+  font-size: 1rem;
+}
+
 .groups-wrapper {
-  height: 100%;
-  flex: 1;
+  width: 100%;
+  display: grid;
+  gap: 0.5rem;
+  min-height: 20%;
 }
 
 .group-list {
   list-style: none;
   padding: 0;
-  width: 100%;
-  height: 100%; /* 👈 Necesario para repartir el 100% */
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.5rem;
 }
 
-/* 💡 Diseño de tarjetas de grupo */
 .group-card {
-  background: #f4f4f4;
-  padding: 10px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid #00f2ff;
   border-radius: 12px;
-  border: 3px solid #2a8cb9;
+  padding: 1rem;
+  color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  text-align: left;
-  position: relative;
-  margin: 5px 0;
-
-  height: 33%;
-  max-height: 33%;
-  overflow: hidden;
+  box-shadow: 0 0 10px #0ff;
+  transition: transform 0.2s ease;
+  animation: fadeInUp 0.5s ease;
 }
 
-/* 🧩 Tarjetas vacías */
-.empty-card {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-  pointer-events: none;
+.group-card:hover {
+  transform: scale(1.02);
 }
 
-/* 🧷 Cabecera de la tarjeta */
+/* CABECERA: Nombre del juego + Jugadores */
 .group-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
-/* 🧾 Descripción */
-.group-description {
-  margin-top: 10px;
-  color: #666;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.game-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #00f2ff;
+  text-shadow: 0 0 8px #00f2ff;
+  text-align: left;
+  margin: 0;
+  flex: 1;
+}
+
+.players-count {
+  font-size: 0.9rem;
+  color: #ccc;
+  text-align: right;
   white-space: nowrap;
 }
 
-/* 🕹️ Comunicación */
-.group-communication {
-  font-size: 0.95rem;
-  color: #333;
+.group-description {
+  width: 100%;
+  margin: 0.8rem 0;
+  font-style: italic;
+  color: #bbb;
+  text-align: left;
 }
 
-/* 🧮 Contador de jugadores */
-.players-count {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-/* 📌 Título del juego */
-.game-title {
-  color: #ec640d;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-/* 🎯 Fila inferior con botón */
+/* COMUNICACIÓN + BOTÓN */
 .group-bottom-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  width: 100%;
 }
 
-/* ✅ Botón Unirse */
+.group-communication {
+  color: #0ff;
+  font-weight: 500;
+  text-align: left;
+  flex: 1;
+}
+
 .join-button {
-  background-color: #28a745;
-  color: white;
+  margin-left: auto;
+  background-color: transparent;
+  border: 2px solid #00f2ff;
+  color: #00f2ff;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
   font-weight: bold;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: 2px solid #1d7833;
+  transition: 0.3s;
 }
 
-/* 📄 Paginación */
+.join-button:hover {
+  background-color: #00f2ff;
+  color: black;
+  box-shadow: 0 0 10px #0ff;
+}
+
+.join-button:disabled {
+  background-color: #999;
+  border-color: #666;
+  color: #333;
+  cursor: not-allowed;
+}
+
+.empty-card {
+  background-color: transparent;
+  border: none;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* Paginación */
 .pagination {
-  margin-top: 15px;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 
 .pagination button {
-  margin: 5px;
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
+  background-color: transparent;
+  border: 2px solid #00f2ff;
+  color: #00f2ff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #00f2ff;
+  color: black;
+  box-shadow: 0 0 10px #0ff;
 }
 
 .pagination button:disabled {
-  background-color: #ccc;
+  border-color: #666;
+  color: #666;
   cursor: not-allowed;
+}
+
+/* Botón crear grupo */
+.create-group-btn {
+  background-color: transparent;
+  border: 2px solid #00f2ff;
+  color: #00f2ff;
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.create-group-btn:hover {
+  background-color: #00f2ff;
+  color: black;
+  box-shadow: 0 0 15px #0ff;
+}
+
+.pagination span {
+  color: #00f2ff;
+  font-weight: bold;
+  text-shadow: 0 0 8px #00f2ff;
+}
+
+.no-groups-msg {
+  color: #00f2ff;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 2rem 0;
+  font-weight: bold;
+  text-shadow: 0 0 8px #00f2ff;
+}
+
+select.custom-select {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00f2ff;
+  border-radius: 8px;
+  color: #00f2ff;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #00f2ff20;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+select.custom-select:focus,
+select.custom-select:hover {
+  border-color: #00f2ff;
+  box-shadow: 0 0 12px #00f2ff;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+select.custom-select option {
+  background-color: #000;
+  color: #00f2ff;
+  padding: 0.5rem;
+  font-size: 1rem;
 }

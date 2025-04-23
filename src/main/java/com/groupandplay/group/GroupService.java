@@ -106,8 +106,8 @@ public class GroupService {
         if (isMemberOfGroup(user, group)) {
             throw new IllegalArgumentException("Ya eres parte de este grupo");
         }
-        if (groupRepository.findManyGroupsOpenOrClosed(user.getId()) >= 5) {
-            throw new IllegalArgumentException("Ya formas parte de 5 grupos, abandona alguno para unirte a este");
+        if (groupRepository.findManyGroupsOpenOrClosed(user.getId()) >= 6) {
+            throw new IllegalArgumentException("Ya formas parte de 6 grupos, abandona alguno para unirte a este");
         }
         if (group.getStatus() != Status.OPEN) {
             throw new IllegalArgumentException("Grupo no disponible");
