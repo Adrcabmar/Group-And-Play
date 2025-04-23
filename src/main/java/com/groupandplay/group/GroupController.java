@@ -65,11 +65,13 @@ public class GroupController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "3") int size,
         @RequestParam(required = false) String game,
-        @RequestParam(required = false) String communication
+        @RequestParam(required = false) String communication,
+        @RequestParam(required = false) String platform
+
     ) {
         String username = getCurrentUserLogged().getUsername();
         Pageable pageable = PageRequest.of(page, size);
-        Page<Group> openGroups = groupService.getFilteredOpenGroups(pageable, username, game, communication);
+        Page<Group> openGroups = groupService.getFilteredOpenGroups(pageable, username, game, communication, platform);
         Page<GroupDTO> openGroupsDTO = openGroups.map(GroupDTO::new);
         return ResponseEntity.ok(openGroupsDTO);
     }
@@ -88,11 +90,7 @@ public class GroupController {
     public ResponseEntity<?> createGroup(@Valid @RequestBody GroupDTO groupDTO) throws IllegalArgumentException {
         User creator = getCurrentUserLogged();
 
-        Game game = gameRepository.findByName(groupDTO.getGameName())
-                .orElseThrow(() -> new IllegalArgumentException("Juego no encontrado"));
-
-        Group newGroup = groupService.createGroup(creator, game, groupDTO.getCommunication().toString(),
-                groupDTO.getDescription());
+        Group newGroup = groupService.createGroup(groupDTO, creator);
         return ResponseEntity.ok(new GroupDTO(newGroup));
     }
 

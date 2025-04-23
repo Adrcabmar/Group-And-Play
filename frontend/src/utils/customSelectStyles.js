@@ -2,7 +2,7 @@
 const customSelectStyles = {
     control: (base, state) => ({
       ...base,
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      backgroundColor: "rgba(31, 26, 51, 0.9)",
       borderColor: "#00f2ff",
       width: "300px",
       boxShadow: state.isFocused ? "0 0 10px #00f2ff" : "0 0 5px #00f2ff",
@@ -13,7 +13,7 @@ const customSelectStyles = {
     }),
     singleValue: (base) => ({
       ...base,
-      color: "#00f2ff",
+      color: "#rgba(31, 26, 51, 1)",
     }),
     option: (base, { isFocused, isSelected }) => ({
       ...base,
@@ -27,9 +27,13 @@ const customSelectStyles = {
     }),
     menu: (base) => ({
       ...base,
-      backgroundColor: "#111",
+      backgroundColor: "rgba(31, 26, 51, 0.9)",
       border: "1px solid #00f2ff",
       boxShadow: "0 0 10px #00f2ff"
+    }),
+    menuList: (base) => ({
+      ...base,
+      backgroundColor: "rgba(31, 26, 51, 0.9)",
     }),
     input: (base) => ({
       ...base,

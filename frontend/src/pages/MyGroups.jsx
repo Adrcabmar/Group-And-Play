@@ -100,7 +100,9 @@ const MyGroups = () => {
                 <span style={{ color: "#00f2ff" }}> (Tú)</span>
               )}
             </p>
-            <p>Comunicación: {TipoComunicacion(selectedGroup.communication)}</p>
+            <p>Comunicación: <span className="info-highlight">{TipoComunicacion(selectedGroup.communication)}</span></p>
+            <p>Plataforma: <strong>{selectedGroup.platform}</strong></p>
+            <p>Usuario en la plataforma: <strong>{selectedGroup.usergame}</strong></p>
             <div className="modal-buttons">
               <button className="modal-close-btn" onClick={() => setSelectedGroup(null)}>Cerrar</button>
               <button className="modal-action-btn"

@@ -9,6 +9,7 @@ import CrearGrupo from "./pages/CrearGrupo";
 import MyGroups from "./pages/MyGroups";
 import MyProfile from "./pages/MyProfile";
 import "./App.css"; 
+import "./static/resources/css/Navbar.css";
 
 import { UserProvider, useUser } from "./components/UserContext";
 
@@ -19,7 +20,7 @@ function AppContent() {
     <div className="app-container"> 
       <div className="neon-static-bg" />
       <Router>
-        <div className="navbar"><MyNavbar /></div>
+        <div className="navbar-wrapper"><MyNavbar /></div>
         <div className="content">
           <Routes>
             <Route path="/user" />

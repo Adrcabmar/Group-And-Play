@@ -15,14 +15,14 @@
     padding: 2rem;
     border-radius: 20px;
     border: 2px solid #00f2ff;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(31, 26, 51, 0.95) !important;
     box-shadow: 0 0 25px #00f2ff;
   }
   
   /* Tarjetas ocupadas y vacías */
   .group-card,
   .empty-slot {
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(31, 26, 51, 0.95) !important;
     border-radius: 12px;
     color: white;
     position: relative;
@@ -83,7 +83,7 @@
   }
   
   .modal-content {
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: rgba(31, 26, 51, 0.95) !important;
     padding: 2rem;
     border-radius: 20px;
     border: 2px solid #00f2ff;
@@ -130,7 +130,12 @@
   
   .modal-buttons button:hover {
     background-color: #00f2ff;
-    color: black;
+    color: rgba(31, 26, 51, 0.95) !important;
     box-shadow: 0 0 10px #0ff, 0 0 20px #00f2ff;
+  }
+
+  .info-highlight {
+    color: #00f2ff;
+    font-weight: bold;
   }
    

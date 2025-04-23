@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.groupandplay.game.Game;
+import com.groupandplay.game.Platform;
 import com.groupandplay.model.BaseEntity;
 import com.groupandplay.user.User;
 
@@ -40,6 +41,15 @@ public class Group extends BaseEntity {
     @Column(name = "description", nullable = true)
     @Size(min = 1, max = 256)
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "platform", nullable = false)
+    private Platform platform;
+
+    //Nombre en el juego o la plataforma en la que se va a jugar.
+    @Column(name = "usergame", nullable = false)
+    @Size(min = 1, max = 32)
+    private String usergame;
 
     @ManyToOne
     @JoinColumn(name = "game_id", nullable = false)

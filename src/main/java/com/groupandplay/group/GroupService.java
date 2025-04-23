@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
+import org.checkerframework.checker.units.qual.g;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,9 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import com.groupandplay.dto.GroupDTO;
 import com.groupandplay.game.Game;
 import com.groupandplay.game.GameRepository;
+import com.groupandplay.game.Platform;
 import com.groupandplay.user.User;
 import com.groupandplay.user.UserRepository;
 
@@ -50,7 +52,7 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Group> getFilteredOpenGroups(Pageable pageable, String username, String gameName, String communicationStr) {
+    public Page<Group> getFilteredOpenGroups(Pageable pageable, String username, String gameName, String communicationStr,String platformStr) throws IllegalArgumentException {
         User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
@@ -65,22 +67,37 @@ public class GroupService {
             communication = Communication.valueOf(communicationStr);
         }
 
-        return groupRepository.findFilteredOpenGroups(Status.OPEN, user, game, communication, pageable);
+        Platform platform = null;
+        if (platformStr != null && !platformStr.isEmpty()) {
+            platform = Platform.valueOf(platformStr);
+        }
+
+        return groupRepository.findFilteredOpenGroups(Status.OPEN, user, game, communication, platform, pageable);
     }
 
     @Transactional
-    public Group createGroup(User creator, Game game, String communication, String description) throws IllegalArgumentException {
+    public Group createGroup(GroupDTO groupDTO, User creator) throws IllegalArgumentException {
 
         if (groupRepository.findManyGroupsOpenOrClosed(creator.getId()) >= 5) {
             throw new IllegalArgumentException("Ya formas parte de 5 grupos, abandona alguno para crear otro");
+        }
+
+        Platform selectedPlatform = Platform.valueOf(groupDTO.getPlatform());
+
+        Game game = gameRepository.findByName(groupDTO.getGameName())
+            .orElseThrow(() -> new IllegalArgumentException("Juego no encontrado"));
+        if (!game.getPlatforms().contains(selectedPlatform)) {
+            throw new IllegalArgumentException("La plataforma seleccionada no está disponible para este juego");
         }
 
         Group group = new Group();
         group.setCreator(creator);
         group.setGame(game);
         group.setStatus(Status.OPEN);
-        group.setCommunication(Communication.valueOf(communication));
-        group.setDescription(description);
+        group.setPlatform(selectedPlatform);
+        group.setCommunication(Communication.valueOf(groupDTO.getCommunication()));
+        group.setUsergame(group.getUsergame());
+        group.setDescription(groupDTO.getDescription());
         group.setCreation(LocalDateTime.now());
     
         if (group.getUsers() == null) {
