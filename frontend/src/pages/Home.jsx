@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../static/resources/css/Home.css";
 import Select from 'react-select';
+import  customSelectStyles  from "../utils/customSelectStyles";
 
 function Home({ user }) {
   const navigate = useNavigate();
@@ -133,10 +134,10 @@ function Home({ user }) {
       <aside className="home-left">
         <p>IZQUIERDA</p>
       </aside>
-  
+
       <main className="home-main">
         <h2 className="section-title">Grupos Disponibles</h2>
-  
+
         <div className="filters d-flex justify-content-center align-items-center gap-2">
           <Select
             className="basic-single"
@@ -148,13 +149,11 @@ function Home({ user }) {
             placeholder="Selecciona un juego"
             value={searchGame}
             onChange={(selectedOption) => setSearchGame(selectedOption)}
-            styles={{
-              container: (base) => ({ ...base, width: 300 }),
-            }}
+            styles={customSelectStyles}
           />
-  
+
           <select
-            className="form-select"
+            className="custom-select"
             value={searchCommunication}
             onChange={(e) => setSearchCommunication(e.target.value)}
             style={{ maxWidth: "220px" }}
@@ -164,72 +163,73 @@ function Home({ user }) {
             <option value="VOICE_CHAT">Chat de voz del juego</option>
             <option value="NO_COMMUNICATION">Sin comunicación</option>
           </select>
-  
+
           <button className="btn btn-secondary" onClick={clearFilters}>
             Limpiar
           </button>
         </div>
-  
+
         <div className="groups-wrapper">
           {groups.length > 0 ? (
-            <ul className="group-list">
-              {groups.map((group) => (
-                <li key={group.id} className="group-card">
-                  <div className="group-header">
-                    <div className="group-header-left">
-                      <h3 className="game-title">{group.gameName}</h3>
-                      <p className="group-description">{group.description}</p>
+            <>
+              <ul className="group-list">
+                {groups.map((group) => (
+                  <li key={group.id} className="group-card">
+                    <div className="group-header">
+                      <div className="group-header-left">
+                        <h3 className="game-title">{group.gameName}</h3>
+                        <p className="group-description">{group.description}</p>
+                      </div>
+                      <div className="group-header-right">
+                        <span className="players-count">
+                          Jugadores: {group.users.length} / {group.maxPlayers}
+                        </span>
+                      </div>
                     </div>
-                    <div className="group-header-right">
-                      <span className="players-count">
-                        Jugadores: {group.users.length} / {group.maxPlayers}
-                      </span>
+
+                    <div className="group-bottom-row">
+                      <span className="group-communication">{formatCommunication(group.communication)}</span>
+                      <button
+                        className="join-button"
+                        onClick={() => handleJoinGroup(group.id)}
+                        disabled={group.users.length >= group.maxPlayers}
+                      >
+                        {group.users.length >= group.maxPlayers ? "Lleno" : "Unirse"}
+                      </button>
                     </div>
-                  </div>
-  
-                  <div className="group-bottom-row">
-                    <span className="group-communication">{formatCommunication(group.communication)}</span>
-                    <button
-                      className="join-button"
-                      onClick={() => handleJoinGroup(group.id)}
-                      disabled={group.users.length >= group.maxPlayers}
-                    >
-                      {group.users.length >= group.maxPlayers ? "Lleno" : "Unirse"}
-                    </button>
-                  </div>
-                </li>
-              ))}
-              {Array.from({ length: 3 - groups.length }).map((_, i) => (
-                <li key={`empty-${i}`} className="group-card empty-card"></li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+                {Array.from({ length: 3 - groups.length }).map((_, i) => (
+                  <li key={`empty-${i}`} className="group-card empty-card"></li>
+                ))}
+              </ul>
+
+              {/* ✅ Solo se muestra si hay grupos */}
+              <div className="pagination">
+                <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+                  Anterior
+                </button>
+                <span>
+                  Página {page + 1} de {totalPages}
+                </span>
+                <button disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>
+                  Siguiente
+                </button>
+              </div>
+            </>
           ) : (
-            <p>No hay grupos disponibles.</p>
+            <p className="no-groups-msg">No hay grupos disponibles.</p>
           )}
         </div>
-  
-        {/* ✅ Paginación colocada dentro del main */}
-        <div className="pagination">
-          <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-            Anterior
-          </button>
-          <span>
-            Página {page + 1} de {totalPages}
-          </span>
-          <button disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>
-            Siguiente
-          </button>
-        </div>
       </main>
-  
       <aside className="home-right">
-        <button className="create-group-btn btn btn-primary" onClick={() => navigate("/create-group")}>
-          Crear Grupo
-        </button>
-      </aside>
+          <button className="create-group-btn btn btn-primary" onClick={() => navigate("/create-group")}>
+            Crear Grupo
+          </button>
+        </aside>
     </div>
   );
-  
+
 }
 
 export default Home;

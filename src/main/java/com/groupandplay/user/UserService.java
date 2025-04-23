@@ -109,6 +109,12 @@ public class UserService {
             throw new IllegalArgumentException("El archivo está vacío");
         }
 
+        String contentType = file.getContentType();
+        if (contentType == null ||
+            !(contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/webp"))) {
+            throw new IllegalArgumentException("Formato no permitido. Solo se permiten imágenes JPG, PNG o WEBP.");
+        }
+
         User user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 

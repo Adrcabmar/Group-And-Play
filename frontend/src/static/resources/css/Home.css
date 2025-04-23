@@ -11,7 +11,7 @@
 
 .home-container {
   display: grid;
-  grid-template-columns: 1fr 5fr 1fr;
+  grid-template-columns: 1fr 6fr 1fr;
   width: 100%;
   min-height: 100vh;
 }
@@ -34,7 +34,8 @@
   text-align: center;
   box-shadow: 0 0 25px #00f2ff;
   margin-top: -4rem;
-  
+  width: 100%;
+
   max-height: calc(100vh - 14rem); /* altura máxima relativa al viewport */
   overflow-y: auto;               /* permite scroll vertical */
   scrollbar-width: thin;          /* para Firefox */
@@ -232,4 +233,41 @@
   color: #00f2ff;
   font-weight: bold;
   text-shadow: 0 0 8px #00f2ff;
+}
+
+.no-groups-msg {
+  color: #00f2ff;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 2rem 0;
+  font-weight: bold;
+  text-shadow: 0 0 8px #00f2ff;
+}
+
+select.custom-select {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00f2ff;
+  border-radius: 8px;
+  color: #00f2ff;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #00f2ff20;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+select.custom-select:focus,
+select.custom-select:hover {
+  border-color: #00f2ff;
+  box-shadow: 0 0 12px #00f2ff;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+select.custom-select option {
+  background-color: #000;
+  color: #00f2ff;
+  padding: 0.5rem;
+  font-size: 1rem;
 }
