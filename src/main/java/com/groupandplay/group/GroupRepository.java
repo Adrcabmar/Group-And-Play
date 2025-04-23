@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.groupandplay.game.Game;
+import com.groupandplay.game.Platform;
 import com.groupandplay.user.User;
 
 @Repository
@@ -32,12 +33,14 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
        "WHERE g.status = :status " +
        "AND (:user NOT MEMBER OF g.users) " +
        "AND (:game IS NULL OR g.game = :game) " +
+       "AND (:platform IS NULL OR g.platform = :platform) " +
        "AND (:communication IS NULL OR g.communication = :communication)")
     Page<Group> findFilteredOpenGroups(
         @Param("status") Status status,
         @Param("user") User user,
         @Param("game") Game game,
         @Param("communication") Communication communication,
+        @Param("platform") Platform platform,
         Pageable pageable
     );
 

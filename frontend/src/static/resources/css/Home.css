@@ -11,7 +11,7 @@
 
 .home-container {
   display: grid;
-  grid-template-columns: 1fr 6fr 1fr;
+  grid-template-columns: 1fr 3fr 1fr;
   width: 100%;
   min-height: 100vh;
 }
@@ -27,19 +27,19 @@
 .home-main {
   display: flex;
   flex-direction: column;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(47, 40, 80, 0.8);
   border: 2px solid #00f2ff;
   border-radius: 20px;
   padding: 20px;
   text-align: center;
   box-shadow: 0 0 25px #00f2ff;
-  margin-top: -4rem;
+  margin-top: -3rem;
   width: 100%;
 
-  max-height: calc(100vh - 14rem); /* altura máxima relativa al viewport */
-  overflow-y: auto;               /* permite scroll vertical */
-  scrollbar-width: thin;          /* para Firefox */
-  scrollbar-color: #00f2ff #000;  /* color barra en Firefox */
+  max-height: calc(100vh - 12rem); 
+  overflow-y: auto;               
+  scrollbar-width: thin;          
+  scrollbar-color: #00f2ff #000;  
 }
 
 .section-title {
@@ -50,7 +50,7 @@
 }
 
 .filters {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(31, 26, 51) !important;
   border: 2px solid #00f2ff;
   border-radius: 12px;
   padding: 1rem;
@@ -86,7 +86,7 @@
 }
 
 .group-card {
-  background: rgba(0, 0, 0, 0.85);
+  background-color: rgba(31, 26, 51, 0.9) !important;
   border: 2px solid #00f2ff;
   border-radius: 12px;
   padding: 1rem;
@@ -241,11 +241,10 @@
   text-align: center;
   padding: 2rem 0;
   font-weight: bold;
-  text-shadow: 0 0 8px #00f2ff;
 }
 
 select.custom-select {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(31, 26, 51, 0.9) !important;
   border: 2px solid #00f2ff;
   border-radius: 8px;
   color: #00f2ff;
@@ -262,12 +261,42 @@ select.custom-select:focus,
 select.custom-select:hover {
   border-color: #00f2ff;
   box-shadow: 0 0 12px #00f2ff;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(31, 26, 51, 0.9);
 }
 
 select.custom-select option {
-  background-color: #000;
+  background-color: rgba(31, 26, 51, 0.9) !important;
   color: #00f2ff;
   padding: 0.5rem;
   font-size: 1rem;
+}
+
+.group-description,
+.group-platform {
+  text-align: left;
+}
+.group-description-block {
+  display: flex;
+  flex-direction: column;
+  width: 100%;          
+  padding: 0 10px;     
+  box-sizing: border-box; 
+  margin-top: 5px;
+  padding: 0px 0px;
+}
+
+.group-description {
+  margin: 0;
+  font-style: italic;
+  color: #ccc;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%; 
+}
+
+.group-platform {
+  margin: 4px 0 0;
+  color: #00f2ff;
+  font-weight: 500;
 }

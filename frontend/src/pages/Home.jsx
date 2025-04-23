@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../static/resources/css/Home.css";
 import Select from 'react-select';
-import  customSelectStyles  from "../utils/customSelectStyles";
+import customSelectStyles from "../utils/customSelectStyles";
 
 function Home({ user }) {
   const navigate = useNavigate();
@@ -15,9 +15,17 @@ function Home({ user }) {
   const pageSize = 3;
 
   const [allGames, setAllGames] = useState([]);
-  const [searchGame, setSearchGame] = useState(null); // objeto de react-select
+  const [searchGame, setSearchGame] = useState(null);
   const [searchCommunication, setSearchCommunication] = useState("");
-
+  const [searchPlatform, setSearchPlatform] = useState("");
+  const platformOptions = [
+    { value: "", label: "Cualquier plataforma" },
+    { value: "PC", label: "PC" },
+    { value: "PLAYSTATION", label: "PlayStation" },
+    { value: "XBOX", label: "Xbox" },
+    { value: "SWITCH", label: "Switch" },
+    { value: "MOBILE", label: "Mobile" },
+  ];
   const token = localStorage.getItem("jwt");
 
   useEffect(() => {
@@ -26,7 +34,7 @@ function Home({ user }) {
 
   useEffect(() => {
     fetchGroups(page);
-  }, [page, searchGame, searchCommunication]);
+  }, [page, searchGame, searchCommunication, searchPlatform]);
 
   const formatCommunication = (type) => {
     switch (type) {
@@ -44,6 +52,7 @@ function Home({ user }) {
   const clearFilters = () => {
     setSearchGame(null);
     setSearchCommunication("");
+    setSearchPlatform("");
     setPage(0);
   };
 
@@ -80,6 +89,7 @@ function Home({ user }) {
       size: pageSize,
       ...(searchGame && { game: searchGame.value }),
       ...(searchCommunication && { communication: searchCommunication }),
+      ...(searchPlatform && { platform: searchPlatform }),
     });
 
     try {
@@ -129,10 +139,26 @@ function Home({ user }) {
     }
   };
 
+  const formatPlatform = (platform) => {
+    switch (platform) {
+      case "PC":
+        return "PC";
+      case "PLAYSTATION":
+        return "PlayStation";
+      case "XBOX":
+        return "Xbox";
+      case "SWITCH":
+        return "Switch";
+      case "MOBILE":
+        return "Mobile";
+      default:
+        return platform;
+    }
+  };
+
   return (
     <div className="home-container">
       <aside className="home-left">
-        <p>IZQUIERDA</p>
       </aside>
 
       <main className="home-main">
@@ -164,6 +190,19 @@ function Home({ user }) {
             <option value="NO_COMMUNICATION">Sin comunicación</option>
           </select>
 
+          <select
+            className="custom-select"
+            value={searchPlatform}
+            onChange={(e) => setSearchPlatform(e.target.value)}
+            style={{ maxWidth: "220px" }}
+          >
+            {platformOptions.map(opt => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+
           <button className="btn btn-secondary" onClick={clearFilters}>
             Limpiar
           </button>
@@ -173,38 +212,40 @@ function Home({ user }) {
           {groups.length > 0 ? (
             <>
               <ul className="group-list">
-                {groups.map((group) => (
-                  <li key={group.id} className="group-card">
-                    <div className="group-header">
-                      <div className="group-header-left">
-                        <h3 className="game-title">{group.gameName}</h3>
-                        <p className="group-description">{group.description}</p>
-                      </div>
-                      <div className="group-header-right">
-                        <span className="players-count">
-                          Jugadores: {group.users.length} / {group.maxPlayers}
-                        </span>
-                      </div>
-                    </div>
+              {groups.map((group) => (
+                <li key={group.id} className="group-card">
+                  {/* Header: título a la izquierda, jugadores a la derecha */}
+                  <div className="group-header d-flex justify-content-between align-items-center">
+                    <h3 className="game-title">{group.gameName}</h3>
+                    <span className="players-count">
+                      Jugadores: {group.users.length} / {group.maxPlayers}
+                    </span>
+                  </div>
 
-                    <div className="group-bottom-row">
-                      <span className="group-communication">{formatCommunication(group.communication)}</span>
-                      <button
-                        className="join-button"
-                        onClick={() => handleJoinGroup(group.id)}
-                        disabled={group.users.length >= group.maxPlayers}
-                      >
-                        {group.users.length >= group.maxPlayers ? "Lleno" : "Unirse"}
-                      </button>
-                    </div>
-                  </li>
-                ))}
+                  {/* Descripción y Plataforma */}
+                  <div className="group-description-block">
+                    <p className="group-description">{group.description}</p>
+                    <p className="group-platform"><strong>Plataforma:</strong> {formatPlatform(group.platform)}</p>
+                  </div>
+
+                  {/* Comunicación y Unirse */}
+                  <div className="group-bottom-row">
+                    <span className="group-communication">{formatCommunication(group.communication)}</span>
+                    <button
+                      className="join-button"
+                      onClick={() => handleJoinGroup(group.id)}
+                      disabled={group.users.length >= group.maxPlayers}
+                    >
+                      {group.users.length >= group.maxPlayers ? "Lleno" : "Unirse"}
+                    </button>
+                  </div>
+                </li>
+              ))}
                 {Array.from({ length: 3 - groups.length }).map((_, i) => (
-                  <li key={`empty-${i}`} className="group-card empty-card"></li>
+                  <li key={`empty-${i}`} className="empty-card"></li>
                 ))}
               </ul>
 
-              {/* ✅ Solo se muestra si hay grupos */}
               <div className="pagination">
                 <button disabled={page === 0} onClick={() => setPage(page - 1)}>
                   Anterior
@@ -222,14 +263,11 @@ function Home({ user }) {
           )}
         </div>
       </main>
+
       <aside className="home-right">
-          <button className="create-group-btn btn btn-primary" onClick={() => navigate("/create-group")}>
-            Crear Grupo
-          </button>
-        </aside>
+      </aside>
     </div>
   );
-
 }
 
 export default Home;

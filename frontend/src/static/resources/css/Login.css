@@ -30,7 +30,7 @@ html, body, #root {
 }
 
 .login-box {
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(31, 26, 51, 0.9);
   padding: 2.5rem 3rem;
   border-radius: 15px;
   border: 2px solid #00f2ff;
@@ -56,7 +56,7 @@ html, body, #root {
 
 .login-box input {
   padding: 0.75rem;
-  background-color: #111;
+  background-color: rgba(31, 26, 51, 1);
   border: 1px solid #00f2ff;
   border-radius: 8px;
   color: #0ff;
