@@ -145,6 +145,54 @@ public class GroupService {
     }
 
     @Transactional
+    public Group editGroup(Group group, GroupDTO groupDTO) throws IllegalArgumentException {
+        if (group == null || groupDTO == null) {
+            throw new IllegalArgumentException("Ha ocurrido un problema al editar el grupo");
+        }
+
+        if (group.getGame() != null && groupDTO.getPlatform() != null) {
+            boolean platformValida = group.getGame().getPlatforms().stream()
+                .anyMatch(p -> p.name().equalsIgnoreCase(groupDTO.getPlatform()));
+            if (!platformValida) {
+                throw new IllegalArgumentException("La plataforma seleccionada no está entre las disponibles del juego.");
+            }
+
+            group.setPlatform(Platform.valueOf(groupDTO.getPlatform().toUpperCase()));
+        }
+
+        if (groupDTO.getDescription() != null) {
+            group.setDescription(groupDTO.getDescription());
+        }
+
+        if (groupDTO.getUsergame() != null) {
+            group.setUsergame(groupDTO.getUsergame());
+        }
+
+        if (groupDTO.getCommunication() != null) {
+            String commUpper = groupDTO.getCommunication().toUpperCase();
+            try {
+                group.setCommunication(Communication.valueOf(commUpper));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Tipo de comunicación inválido: " + commUpper);
+            }
+        }
+        
+
+        if (groupDTO.getStatus() != null) {
+            String status = groupDTO.getStatus().toUpperCase();
+        
+            if (!status.equals("OPEN") && !status.equals("CLOSED")) {
+                throw new IllegalArgumentException("El estado del grupo debe ser OPEN o CLOSED.");
+            }
+        
+            group.setStatus(Status.valueOf(status));
+        }
+
+        return groupRepository.save(group);
+    }
+    
+
+    @Transactional
     public void deleteMyGroup(Integer userId, Integer groupId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
