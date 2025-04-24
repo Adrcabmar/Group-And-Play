@@ -27,4 +27,9 @@ public class GameService {
                 .map(Game::getName)
                 .toList();
     }
+
+    public Game findByName(String gameName) throws IllegalArgumentException {
+        return gameRepository.findByName(gameName)
+                .orElseThrow(() -> new IllegalArgumentException("Juego no encontrado"));
+    }
 }

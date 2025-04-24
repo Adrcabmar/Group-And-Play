@@ -102,6 +102,19 @@ public class GroupController {
         return ResponseEntity.ok(new GroupDTO(groupUpdated));
     }
 
+    @PutMapping("/edit/{groupId}")
+    public ResponseEntity<?> editGroup(@PathVariable Integer groupId, @Valid @RequestBody GroupDTO groupDTO) throws IllegalArgumentException {
+        User user = getCurrentUserLogged();
+        Group group = groupService.findById(groupId);
+
+        if(!hasRole("ROLE_ADMIN") && user.getId() != group.getCreator().getId()) {
+            throw new IllegalArgumentException("No tienes permisos para editar este grupo");
+        }
+
+        Group groupUpdated = groupService.editGroup(group, groupDTO);
+        return ResponseEntity.ok(new GroupDTO(groupUpdated));
+    }
+
     @DeleteMapping("/delete-my-group/{groupId}")
     public ResponseEntity<?> deleteMyGroup(@PathVariable Integer groupId) throws IllegalArgumentException {
         User user = getCurrentUserLogged();
