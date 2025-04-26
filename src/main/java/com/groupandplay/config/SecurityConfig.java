@@ -44,8 +44,12 @@ public class SecurityConfig {
                     "/resources/**", "/static/**", "/images/**", "/css/**", "/js/**"
                 ).permitAll()
 
-                // .requestMatchers() //toDO
-                // .hasAuthority("ADMIN")S
+                // URIS DE ADMIN
+                .requestMatchers(
+                    "/api/users/admin/**",
+                    "api/groups/admin/**",
+                    "/api/games/admin/**")
+                .hasAuthority( "ADMIN")
 
     
                 // URIS DE USER
