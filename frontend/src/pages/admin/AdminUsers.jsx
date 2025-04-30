@@ -201,7 +201,7 @@ function AdminUsers() {
           <div className="user-modal" onClick={(e) => e.stopPropagation()}>
             {!isEditing && (
               <img
-                src={`http://localhost:8080${selectedUser.profilePictureUrl || "/resources/images/defecto.png"}`}
+                src={`${apiUrl}${selectedUser.profilePictureUrl || "/resources/images/defecto.png"}`}
                 alt="Foto de perfil"
                 className="user-profile-pic"
               />)}

@@ -1,0 +1,208 @@
+select.custom-select {
+    background-color: rgba(31, 26, 51, 0.9) !important;
+    border: 2px solid #00f2ff;
+    border-radius: 8px;
+    color: #00f2ff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #00f2ff20;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+select.custom-select:focus,
+select.custom-select:hover {
+    border-color: #00f2ff;
+    box-shadow: 0 0 12px #00f2ff;
+    background-color: rgba(31, 26, 51, 0.9);
+}
+
+select.custom-select option {
+    background-color: rgba(31, 26, 51, 0.9) !important;
+    color: #00f2ff;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.admin-groups-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.admin-groups-title {
+    font-size: 2.5rem;
+    color: #00f2ff;
+    text-shadow: 0 0 10px #00f2ff;
+    margin-bottom: 2rem;
+}
+
+.admin-groups-box {
+    background-color: rgba(47, 40, 80, 0.9);
+    border: 2px solid #00f2ff;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 0 25px #00f2ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.admin-groups-search {
+    margin-bottom: 1.5rem;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.admin-groups-search-input,
+.custom-select {
+    padding: 0.8rem 1rem;
+    border: 2px solid #00f2ff;
+    border-radius: 10px;
+    background-color: rgba(47, 40, 80, 0.9);
+    color: #00f2ff;
+    font-size: 1.1rem;
+    box-shadow: 0 0 10px #00f2ff55;
+    outline: none;
+}
+
+.admin-groups-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(47, 40, 80, 0.9);
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 20px #00f2ff44;
+    margin-bottom: 1.5rem;
+}
+
+.admin-groups-table th,
+.admin-groups-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #00f2ff55;
+    color: #00f2ff;
+    text-align: center;
+}
+
+.admin-groups-row:hover {
+    background-color: rgba(0, 242, 255, 0.2);
+    cursor: pointer;
+}
+
+.admin-groups-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.admin-groups-pagination button {
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.admin-groups-pagination button:hover:not(:disabled) {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 10px #00f2ff;
+}
+
+.admin-groups-pagination button:disabled {
+    border-color: #666;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.admin-groups-pagination-numbers {
+    font-weight: bold;
+    color: #00f2ff;
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px #00f2ff;
+}
+
+.group-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.group-modal {
+    background-color: rgba(47, 40, 80, 1);
+    padding: 1rem;
+    border-radius: 20px;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    box-shadow: 0 0 25px #00f2ff;
+    max-width: 600px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.group-modal-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.group-modal-list li {
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+}
+
+.group-modal-button-row {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.group-modal-close {
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    border-radius: 10px;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.group-modal-close:hover {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 10px #0ff;
+}

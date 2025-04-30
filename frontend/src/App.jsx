@@ -14,6 +14,7 @@ import MyProfile from "./pages/MyProfile";
 // Admin
 import AdminHome from "./pages/admin/AdminHome";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminGroups from "./pages/admin/AdminGroups";
 
 import "./App.css"; 
 import "./static/resources/css/Navbar.css";
@@ -51,6 +52,7 @@ function AppContent() {
             {/* Admin */}
             <Route path="/admin" element={<AdminHome />} />
             <Route path="/admin/users" element={<AdminUsers />} />  
+            <Route path="/admin/groups" element={<AdminGroups />} />  
   
           </Routes>
         </div>

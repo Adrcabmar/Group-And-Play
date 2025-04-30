@@ -1,9 +1,11 @@
 package com.groupandplay.group;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.groupandplay.dto.GroupDTO;
+import com.groupandplay.dto.UserDTO;
 import com.groupandplay.game.Game;
 import com.groupandplay.game.GameRepository;
 import com.groupandplay.user.User;
@@ -59,6 +62,24 @@ public class GroupController {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
     }
+
+    @GetMapping("/admin/all")
+    public ResponseEntity<Page<GroupDTO>> getAllGroups(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String game,
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) String status) {
+
+        if(!hasRole("ADMIN")) {
+            throw new IllegalArgumentException("No tienes permiso para ver todos los grupos");
+        }
+        
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Group> groups = groupService.getAllGroups(pageable, id, game, status);
+        Page<GroupDTO> groupsDTO = groups.map(GroupDTO::new);
+        return ResponseEntity.ok(groupsDTO);
+    }
+
 
     @GetMapping("/open")
     public ResponseEntity<Page<GroupDTO>> getOpenGroups(
@@ -107,7 +128,7 @@ public class GroupController {
         User user = getCurrentUserLogged();
         Group group = groupService.findById(groupId);
 
-        if(!hasRole("ROLE_ADMIN") && user.getId() != group.getCreator().getId()) {
+        if(!hasRole("ADMIN") && user.getId() != group.getCreator().getId()) {
             throw new IllegalArgumentException("No tienes permisos para editar este grupo");
         }
 

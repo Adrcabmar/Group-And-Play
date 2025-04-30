@@ -6,6 +6,7 @@ const customSelectStyles = {
       borderColor: "#00f2ff",
       width: "300px",
       boxShadow: state.isFocused ? "0 0 10px #00f2ff" : "0 0 5px #00f2ff",
+      minHeight: "100%",
       color: "#fff",
       "&:hover": {
         borderColor: "#00f2ff"
