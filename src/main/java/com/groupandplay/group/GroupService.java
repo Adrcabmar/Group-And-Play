@@ -121,7 +121,7 @@ public class GroupService {
         group.setStatus(Status.OPEN);
         group.setPlatform(selectedPlatform);
         group.setCommunication(Communication.valueOf(groupDTO.getCommunication()));
-        group.setUsergame(group.getUsergame());
+        group.setUsergame(groupDTO.getUsergame());
         group.setDescription(groupDTO.getDescription());
         group.setCreation(LocalDateTime.now());
     
