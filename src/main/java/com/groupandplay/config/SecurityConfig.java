@@ -3,6 +3,7 @@ package com.groupandplay.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,22 +32,43 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()) // Desactiva CSRF para facilitar pruebas
+            .csrf(csrf -> csrf.disable())
+            .cors(Customizer.withDefaults()) // Habilita CORS
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", 
-                "/api/users/auth/register",
-                "/api/users/auth/login", 
-                "/api/groups/**", 
-                "/api/users/auth/current-user",
-                "/api/group/**").permitAll() // Permite el acceso a estas rutas
+                // Permitir sin autenticación (rutas públicas)
+                .requestMatchers(
+                    "/api/auth/**", 
+                    "/api/users/auth/register",
+                    "/api/users/auth/login",
+                    "/api/users/auth/current-user",
+                    "/resources/**", "/static/**", "/images/**", "/css/**", "/js/**"
+                ).permitAll()
+
+                // URIS DE ADMIN
+                .requestMatchers(
+                    "/api/users/admin/**",
+                    "api/groups/admin/**",
+                    "/api/games/admin/**")
+                .hasAuthority( "ADMIN")
+
+    
+                // URIS DE USER
+                .requestMatchers(
+                    "/api/users/{id}/**",
+                "/api/games/all",
+                "/api/games/find/{gameName}", 
+                "/api/groups/my-groups",
+                "/api/groups/open",
+                "/api/groups/**")
+                .hasAnyAuthority("USER", "ADMIN")
+                
+                // Cualquier otra solicitud requiere autenticación
                 .anyRequest().authenticated()
             )
-            .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider()).addFilterBefore(
-                jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            /* .formLogin(login -> login.disable()) // Desactiva el formulario de login por defecto
-            .httpBasic(httpBasic -> httpBasic.disable())*/; // Desactiva la autenticación HTTP básica
-        
+            .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    
         return http.build();
     }
 

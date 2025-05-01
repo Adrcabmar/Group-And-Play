@@ -1,34 +1,302 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .home-container {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr; /* 17% - 66% - 17% */
-    height: calc(100vh - 90px); /* Ajuste para evitar el navbar */
-    width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  width: 100%;
+  min-height: 100vh;
 }
 
-/* 📌 Secciones */
-.home-left, 
-.home-main, 
+.home-left,
 .home-right {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    min-height: 100%; /* Asegura que ocupen toda la altura */
-}
-
-.home-left {
-    background-color: rgba(255, 0, 0, 0.2);
-    border: 2px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 .home-main {
-    background-color: rgba(0, 255, 0, 0.2);
-    border: 2px solid green;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(47, 40, 80, 0.8);
+  border: 2px solid #00f2ff;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 25px #00f2ff;
+  margin-top: -3rem;
+  width: 100%;
+
+  max-height: calc(100vh - 12rem); 
+  overflow-y: auto;               
+  scrollbar-width: thin;          
+  scrollbar-color: #00f2ff #000;  
 }
 
-.home-right {
-    background-color: rgba(0, 0, 255, 0.2);
-    border: 2px solid blue;
-    justify-content: flex-start;
+.section-title {
+  color: #00f2ff;
+  font-size: 2rem;
+  text-shadow: 0 0 10px #00f2ff;
+  margin-bottom: 1rem;
+}
+
+.filters {
+  background-color: rgba(31, 26, 51) !important;
+  border: 2px solid #00f2ff;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.filters select,
+.filters .btn {
+  border-radius: 10px;
+  padding: 0.4rem 1rem;
+  font-size: 1rem;
+}
+
+.groups-wrapper {
+  width: 100%;
+  display: grid;
+  gap: 0.5rem;
+  min-height: 20%;
+}
+
+.group-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.group-card {
+  background-color: rgba(31, 26, 51, 0.9) !important;
+  border: 2px solid #00f2ff;
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 0 10px #0ff;
+  transition: transform 0.2s ease;
+  animation: fadeInUp 0.5s ease;
+}
+
+.group-card:hover {
+  transform: scale(1.02);
+}
+
+/* CABECERA: Nombre del juego + Jugadores */
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.game-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #00f2ff;
+  text-shadow: 0 0 8px #00f2ff;
+  text-align: left;
+  margin: 0;
+  flex: 1;
+}
+
+.players-count {
+  font-size: 0.9rem;
+  color: #ccc;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.group-description {
+  width: 100%;
+  margin: 0.8rem 0;
+  font-style: italic;
+  color: #bbb;
+  text-align: left;
+}
+
+/* COMUNICACIÓN + BOTÓN */
+.group-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.group-communication {
+  color: #0ff;
+  font-weight: 500;
+  text-align: left;
+  flex: 1;
+}
+
+.join-button {
+  margin-left: auto;
+  background-color: transparent;
+  border: 2px solid #00f2ff;
+  color: #00f2ff;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.join-button:hover {
+  background-color: #00f2ff;
+  color: black;
+  box-shadow: 0 0 10px #0ff;
+}
+
+.join-button:disabled {
+  background-color: #999;
+  border-color: #666;
+  color: #333;
+  cursor: not-allowed;
+}
+
+.empty-card {
+  background-color: transparent;
+  border: none;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* Paginación */
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination button {
+  background-color: transparent;
+  border: 2px solid #00f2ff;
+  color: #00f2ff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #00f2ff;
+  color: black;
+  box-shadow: 0 0 10px #0ff;
+}
+
+.pagination button:disabled {
+  border-color: #666;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Botón crear grupo */
+.create-group-btn {
+  background-color: transparent;
+  border: 2px solid #00f2ff;
+  color: #00f2ff;
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.create-group-btn:hover {
+  background-color: #00f2ff;
+  color: black;
+  box-shadow: 0 0 15px #0ff;
+}
+
+.pagination span {
+  color: #00f2ff;
+  font-weight: bold;
+  text-shadow: 0 0 8px #00f2ff;
+}
+
+.no-groups-msg {
+  color: #00f2ff;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 2rem 0;
+  font-weight: bold;
+}
+
+select.custom-select {
+  background-color: rgba(31, 26, 51, 0.9) !important;
+  border: 2px solid #00f2ff;
+  border-radius: 8px;
+  color: #00f2ff;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #00f2ff20;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+select.custom-select:focus,
+select.custom-select:hover {
+  border-color: #00f2ff;
+  box-shadow: 0 0 12px #00f2ff;
+  background-color: rgba(31, 26, 51, 0.9);
+}
+
+select.custom-select option {
+  background-color: rgba(31, 26, 51, 0.9) !important;
+  color: #00f2ff;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.group-description,
+.group-platform {
+  text-align: left;
+}
+.group-description-block {
+  display: flex;
+  flex-direction: column;
+  width: 100%;          
+  padding: 0 10px;     
+  box-sizing: border-box; 
+  margin-top: 5px;
+  padding: 0px 0px;
+}
+
+.group-description {
+  margin: 0;
+  font-style: italic;
+  color: #ccc;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%; 
+}
+
+.group-platform {
+  margin: 4px 0 0;
+  color: #00f2ff;
+  font-weight: 500;
 }

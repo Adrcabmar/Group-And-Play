@@ -71,23 +71,32 @@ public class UserManagementService {
         return resp;
     }
 
-    public ReqRes login(ReqRes loginRequest){
+    public ReqRes login(ReqRes loginRequest) {
         ReqRes response = new ReqRes();
         try {
-            authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                            loginRequest.getPassword()));
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()
+                )
+            );
+    
             var user = userRepo.findByUsername(loginRequest.getUsername()).orElseThrow();
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
+    
+            UserDTO userDTO = new UserDTO(user);
+    
             response.setStatusCode(200);
             response.setToken(jwt);
-            response.setRole(user.getRole());
+            response.setRole(user.getRole()); 
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
             response.setMessage("Inicio de sesión exitoso");
-
-        }catch (Exception e){
+    
+            response.setUser(userDTO);
+    
+        } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage(e.getMessage());
         }
