@@ -1,0 +1,245 @@
+.admin-games-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.admin-games-title {
+    font-size: 2.5rem;
+    color: #00f2ff;
+    text-shadow: 0 0 10px #00f2ff;
+    margin-bottom: 2rem;
+}
+
+.admin-games-box {
+    background-color: rgba(47, 40, 80, 0.9);
+    border: 2px solid #00f2ff;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 0 25px #00f2ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.admin-games-search-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.admin-games-search-input {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border: 2px solid #00f2ff;
+    border-radius: 10px;
+    background-color: rgba(47, 40, 80, 0.9);
+    color: #00f2ff;
+    font-size: 1.1rem;
+    box-shadow: 0 0 10px #00f2ff55;
+    outline: none;
+}
+
+.admin-games-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(47, 40, 80, 0.9);
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 20px #00f2ff44;
+    margin-bottom: 1.5rem;
+}
+
+.admin-games-table th,
+.admin-games-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #00f2ff55;
+    color: #00f2ff;
+    text-align: center;
+}
+
+.admin-games-row:hover {
+    background-color: rgba(0, 242, 255, 0.2);
+    cursor: pointer;
+}
+
+.admin-games-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.admin-games-pagination button {
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.admin-games-pagination button:hover:not(:disabled) {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 10px #00f2ff;
+}
+
+.admin-games-pagination button:disabled {
+    border-color: #666;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.admin-games-pagination-numbers {
+    font-weight: bold;
+    color: #00f2ff;
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px #00f2ff;
+}
+
+.game-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.game-modal {
+    background-color: rgba(47, 40, 80, 1);
+    padding: 1rem;
+    border-radius: 20px;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    box-shadow: 0 0 25px #00f2ff;
+    max-width: 600px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-modal-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.game-modal-list li {
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+}
+
+.game-modal-button-row {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.game-modal-input,
+.game-modal-select {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    background-color: rgba(31, 26, 51, 0.95);
+    border: 2px solid #00f2ff;
+    color: white;
+    font-size: 1rem;
+    margin-top: 0.3rem;
+}
+
+.game-modal-error {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
+}
+
+.game-modal-close {
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    border-radius: 10px;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.game-modal-close:hover {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 10px #0ff;
+}
+
+.admin-games-create-button {
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    transition: 0.3s ease;
+}
+
+.admin-games-create-button:hover {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 10px #00f2ff;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.admin-games-create-button {
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-left: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #00f2ff55;
+  }
+  
+  .admin-games-create-button:hover {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 15px #00f2ff;
+    cursor: pointer;
+  }
+  

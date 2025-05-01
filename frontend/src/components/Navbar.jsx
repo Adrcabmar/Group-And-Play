@@ -12,6 +12,10 @@ const MyNavbar = () => {
 
   if (!currentUser) return null;
 
+  
+  const isAdmin = currentUser.role === "ADMIN";
+
+
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   const handleLogout = () => {
@@ -30,22 +34,38 @@ const MyNavbar = () => {
 
       <div className="navbar-center">
         <Nav>
-          <NavItem>
-            <NavLink href="/" className="nav-link navbar-button">Buscar grupo</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="/my-groups" className="nav-link navbar-button">Mis grupos</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="/create-group" className="nav-link navbar-button">Crear grupo</NavLink>
-          </NavItem>
+          {isAdmin ? (
+            <>
+              <NavItem>
+                <NavLink href="/admin/groups" className="nav-link navbar-button">Grupos</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/admin/users" className="nav-link navbar-button">Usuarios</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/admin/games" className="nav-link navbar-button">Juegos</NavLink>
+              </NavItem>
+            </>
+          ) : (
+            <>
+              <NavItem>
+                <NavLink href="/" className="nav-link navbar-button">Buscar grupo</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/my-groups" className="nav-link navbar-button">Mis grupos</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/create-group" className="nav-link navbar-button">Crear grupo</NavLink>
+              </NavItem>
+            </>
+          )}
         </Nav>
       </div>
 
       <div className="navbar-right">
         <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} className="user-dropdown" direction="down">
           <DropdownToggle tag="span" style={{ cursor: "pointer" }}>
-            <span className="user-name" style={{ marginRight: "10px"}}>{currentUser?.username}</span>
+            <span className="user-name" style={{ marginRight: "10px" }}>{currentUser?.username}</span>
             <img
               src={`http://localhost:8080${currentUser?.profilePictureUrl || "/resources/images/defecto.png"}`}
               alt="Usuario"

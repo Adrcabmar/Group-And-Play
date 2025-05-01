@@ -1,0 +1,204 @@
+.admin-users-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+  }
+  
+  .admin-users-title {
+    font-size: 2.5rem;
+    color: #00f2ff;
+    text-shadow: 0 0 10px #00f2ff;
+    margin-bottom: 2rem;
+  }
+  
+  .admin-users-box {
+    background-color: rgba(47, 40, 80, 0.9);
+    border: 2px solid #00f2ff;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 1rem;
+    box-shadow: 0 0 25px #00f2ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .admin-users-search {
+    margin-bottom: 1.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .admin-users-search-input {
+    padding: 0.8rem 1rem;
+    border: 2px solid #00f2ff;
+    border-radius: 10px;
+    background-color: rgba(47, 40, 80, 0.9);
+    color: #00f2ff;
+    font-size: 1.1rem;
+    box-shadow: 0 0 10px #00f2ff55;
+    outline: none;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .admin-users-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(47, 40, 80, 0.9);
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 20px #00f2ff44;
+    margin-bottom: 1.5rem;
+  }
+  
+  .admin-users-table th,
+  .admin-users-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #00f2ff55;
+    color: #00f2ff;
+  }
+  
+  .admin-users-row:hover {
+    background-color: rgba(0, 242, 255, 0.2);
+    cursor: pointer;
+  }
+  
+  .admin-users-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .admin-users-pagination button {
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    transition: 0.3s;
+  }
+  
+  .admin-users-pagination button:hover:not(:disabled) {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 10px #00f2ff;
+  }
+  
+  .admin-users-pagination button:disabled {
+    border-color: #666;
+    color: #666;
+    cursor: not-allowed;
+  }
+  
+  .admin-users-pagination-numbers {
+    font-weight: bold;
+    color: #00f2ff;
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px #00f2ff;
+  }
+  
+  .user-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.4s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .user-modal {
+    background-color: rgba(47, 40, 80, 1);
+    padding: 1rem;
+    border-radius: 20px;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    box-shadow: 0 0 25px #00f2ff;
+    max-width: 600px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .user-modal-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 0.1rem;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .user-modal-list li {
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+  }
+  
+  .user-modal-close,
+  .user-modal-edit,
+  .user-modal-save,
+  .user-modal-cancel,
+  .user-modal-password {
+    margin-top: 1rem;
+    background-color: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .user-modal-close:hover,
+  .user-modal-edit:hover,
+  .user-modal-save:hover,
+  .user-modal-cancel:hover,
+  .user-modal-password:hover {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 10px #0ff;
+  }
+  
+  .user-profile-pic {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    border: 3px solid #00f2ff;
+    box-shadow: 0 0 15px #00f2ff;
+  }
+  
+  .user-modal-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+    border: 2px solid #00f2ff;
+    border-radius: 8px;
+    background-color: rgba(31, 26, 51, 0.95);
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .user-modal-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  

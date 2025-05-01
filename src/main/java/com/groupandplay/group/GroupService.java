@@ -52,6 +52,31 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
+    public Page<Group> getAllGroups(Pageable pageable, Integer id, String gameName, String statusStr) throws IllegalArgumentException {
+        if (id != null) {
+            groupRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
+        }
+    
+        Game game = null;
+        if (gameName != null && !gameName.isEmpty()) {
+            game = gameRepository.findByName(gameName)
+                                 .orElse(null);
+        }
+    
+        Status status = null;
+        if (statusStr != null && !statusStr.isEmpty()) {
+            try {
+                status = Status.valueOf(statusStr.toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                throw new IllegalArgumentException("Estado no válido: " + statusStr);
+            }
+        }
+    
+        return groupRepository.findFilteredGroups(status, id, game, pageable);
+    }
+
+    @Transactional(readOnly = true)
     public Page<Group> getFilteredOpenGroups(Pageable pageable, String username, String gameName, String communicationStr,String platformStr) throws IllegalArgumentException {
         User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));

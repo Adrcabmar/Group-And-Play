@@ -20,6 +20,8 @@ public class UserDTO {
     private String profilePictureUrl;
     private String favGame;
     private List<GroupDTO> groups;
+    private String role;
+
     
     // Constructor que toma la entidad User y la convierte a DTO
     public UserDTO(User user) {
@@ -31,6 +33,7 @@ public class UserDTO {
         this.telephone = user.getTelephone();
         this.profilePictureUrl = user.getProfilePictureUrl();
         this.favGame = user.getFavGame() != null ? user.getFavGame().getName() : null;
+        this.role = user.getRole();
         if(user.getGroups() != null){
             this.groups = user.getGroups().stream()
                     .map(GroupDTO::new)  // Convertir la lista de eventos a DTOs

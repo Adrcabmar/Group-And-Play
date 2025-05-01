@@ -13,6 +13,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -30,6 +32,8 @@ public class Game extends BaseEntity {
     private String name;
 
     @Column(name = "max_players", nullable = false)
+    @Min(2)
+    @Max(1024)
     private Integer maxPlayers;
 
     @ElementCollection(fetch = FetchType.EAGER)

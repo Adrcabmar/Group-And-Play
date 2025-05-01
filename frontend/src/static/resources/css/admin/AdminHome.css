@@ -1,0 +1,66 @@
+@keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .admin-home-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 90vh;
+  }
+  
+  .admin-home-main {
+    background-color: rgba(47, 40, 80, 0.8);
+    border: 2px solid #00f2ff;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 0 30px #00f2ff;
+    animation: fadeInUp 0.8s ease;
+    width: 80%;
+    max-width: 1000px;
+  }
+  
+  .admin-home-title {
+    color: #00f2ff;
+    font-size: 3rem;
+    text-shadow: 0 0 10px #00f2ff;
+    margin-bottom: 2rem;
+  }
+  
+  .admin-home-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .admin-button {
+    background-color: transparent;
+    border: 3px solid #00f2ff;
+    color: #00f2ff;
+    padding: 1.2rem 2.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 15px;
+    transition: 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00f2ff55;
+    min-width: 250px;
+  }
+  
+  .admin-button:hover {
+    background-color: #00f2ff;
+    color: black;
+    box-shadow: 0 0 20px #00f2ff;
+  }
+  

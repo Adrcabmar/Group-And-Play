@@ -1,6 +1,5 @@
 package com.groupandplay.user;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,12 +17,19 @@ import com.groupandplay.dto.UserMapper;
 import com.groupandplay.game.GameRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import jakarta.validation.Valid;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.checkerframework.checker.units.qual.h;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,58 +59,66 @@ public class UserController {
     private User getCurrentUserLogged() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername(); 
+        String username = userDetails.getUsername();
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
     }
 
+    @GetMapping("/admin/all")
+    public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) Integer id) {
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        if (users.isEmpty()) {
+        if(!hasRole("ADMIN")) {
+            throw new IllegalArgumentException("No tienes permiso para ver todos los usuarios");
+        }
+        
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage;
+
+        if (username != null && !username.isEmpty()) {
+            userPage = userService.findByUsernamePageable(username, pageable);
+        } else if (id != null) {
+            Optional<User> userOptional = userService.getUserById(id);
+            if (userOptional.isPresent()) {
+                userPage = new PageImpl<>(List.of(userOptional.get()), pageable, 1);
+            } else {
+                return ResponseEntity.noContent().build();
+            }
+        } else {
+            userPage = userService.getAllUsers(pageable);
+        }
+
+        if (userPage.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        List<UserDTO> dtoList = UserDTO.fromEntities(users);
-        return ResponseEntity.ok(dtoList);
+
+        Page<UserDTO> dtoPage = userPage.map(UserDTO::new);
+        return ResponseEntity.ok(dtoPage);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
         User user = userService.getUserById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
         return ResponseEntity.ok(new UserDTO(user));
     }
-
 
     @GetMapping("/username/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
         Optional<User> user = Optional.ofNullable(userService.getUserByUsername(username)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado")));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado")));
         return ResponseEntity.ok(user);
     }
 
-    /**
-     * Registrar un nuevo usuario.
-     */
-    // @PostMapping("/register")
-    // public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
-    //     logger.info("Intentando registrar usuario: {}", user.getUsername());
-
-    //     try {
-    //         User newUser = userService.registerUser(user);
-    //         return ResponseEntity.ok(newUser);
-    //     } catch (RuntimeException e) {
-    //         return ResponseEntity.badRequest().body(e.getMessage());
-    //     }
-    // }
 
     /**
      * Actualizar un usuario existente.
      */
     @PutMapping("/{id}/edit")
     public ResponseEntity<?> updateUser(@PathVariable Integer id, @Valid @RequestBody EditUserDTO dto) {
-        if (!hasRole("ROLE_ADMIN") && getCurrentUserLogged().getId() != id) {
+        if (!hasRole("ADMIN") && getCurrentUserLogged().getId() != id) {
             throw new IllegalArgumentException("No tienes permiso para editar este usuario");
         }
 
@@ -123,10 +137,9 @@ public class UserController {
      */
     @PostMapping("/{id}/upload-photo")
     public ResponseEntity<String> uploadProfilePicture(
-        @PathVariable Integer id,
-        @RequestParam("file") MultipartFile file
-    )  throws IllegalArgumentException {
-        if (!hasRole("ROLE_ADMIN") && getCurrentUserLogged().getId() != id) {
+            @PathVariable Integer id,
+            @RequestParam("file") MultipartFile file) throws IllegalArgumentException {
+        if (!hasRole("ADMIN") && getCurrentUserLogged().getId() != id) {
             throw new IllegalArgumentException("No tienes permiso para editar este usuario");
         }
         try {
@@ -141,14 +154,13 @@ public class UserController {
 
     @PatchMapping("/{id}/change-password")
     public ResponseEntity<String> changePassword(
-        @PathVariable Integer id,
-        @Valid @RequestBody ChangePasswordDTO dto
-    ) {
-        User currentUser = getCurrentUserLogged(); 
+            @PathVariable Integer id,
+            @Valid @RequestBody ChangePasswordDTO dto) {
+        User currentUser = getCurrentUserLogged();
 
-        if (!hasRole("ROLE_ADMIN") && !currentUser.getId().equals(id)) {
+        if (!hasRole("ADMIN") && !currentUser.getId().equals(id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body("No tienes permiso para cambiar esta contraseña");
+                    .body("No tienes permiso para cambiar esta contraseña");
         }
 
         try {

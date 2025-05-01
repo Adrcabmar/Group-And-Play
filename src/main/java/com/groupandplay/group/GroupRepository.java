@@ -30,6 +30,15 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     Integer findManyGroupsOpenOrClosed(@Param("userId") Integer userId);
 
     @Query("SELECT g FROM Group g " +
+       "WHERE (:status IS NULL OR g.status = :status) " +
+       "AND (:id IS NULL OR g.id = :id) " +
+       "AND (:game IS NULL OR g.game = :game)")
+    Page<Group> findFilteredGroups(@Param("status") Status status,
+                                @Param("id") Integer id,
+                                @Param("game") Game game,
+                                Pageable pageable);
+
+    @Query("SELECT g FROM Group g " +
        "WHERE g.status = :status " +
        "AND (:user NOT MEMBER OF g.users) " +
        "AND (:game IS NULL OR g.game = :game) " +
