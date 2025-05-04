@@ -23,7 +23,6 @@ public class UserDTO {
     private String role;
 
     
-    // Constructor que toma la entidad User y la convierte a DTO
     public UserDTO(User user) {
         this.id = user.getId();
         this.lastname = user.getLastName();
@@ -36,12 +35,11 @@ public class UserDTO {
         this.role = user.getRole();
         if(user.getGroups() != null){
             this.groups = user.getGroups().stream()
-                    .map(GroupDTO::new)  // Convertir la lista de eventos a DTOs
+                    .map(GroupDTO::new)  
                     .collect(Collectors.toList());
         }
     }
 
-    // Método estático para convertir una lista de usuarios en una lista de DTOs
     public static List<UserDTO> fromEntities(List<User> users) {
         return users.stream()
                 .map(UserDTO::new)

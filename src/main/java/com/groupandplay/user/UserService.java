@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.*;
 
 import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public class UserService {
 
@@ -64,15 +65,15 @@ public class UserService {
         if (user.getId() != null) {
             throw new RuntimeException("No se puede registrar un usuario con ID preexistente");
         }
-    
+
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("El username ya está en uso");
         }
-    
+
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("El email ya está registrado");
         }
-        
+
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
 
@@ -82,7 +83,7 @@ public class UserService {
     @Transactional
     public User updateUserFromDTO(Integer id, EditUserDTO dto) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         user.setUsername(dto.getUsername());
         user.setFirstName(dto.getFirstname());
@@ -97,17 +98,16 @@ public class UserService {
             user.setFavGame(null);
         }
 
-        userRepository.save(user); 
+        userRepository.save(user);
 
         return user;
     }
 
     public boolean checkIfUsernameChanged(Integer id, String newUsername) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return !user.getUsername().equals(newUsername);
     }
-
 
     @Transactional
     public String uploadProfilePicture(Integer id, MultipartFile file) {
@@ -117,12 +117,13 @@ public class UserService {
 
         String contentType = file.getContentType();
         if (contentType == null ||
-            !(contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/webp"))) {
+                !(contentType.equals("image/jpeg") || contentType.equals("image/png")
+                        || contentType.equals("image/webp"))) {
             throw new IllegalArgumentException("Formato no permitido. Solo se permiten imágenes JPG, PNG o WEBP.");
         }
 
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         try {
 
@@ -154,7 +155,7 @@ public class UserService {
     @Transactional
     public void changePassword(Integer userId, ChangePasswordDTO dto, User currentUser) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         boolean isAdmin = currentUser.getRole().equals("ADMIN");
         boolean isOwner = currentUser.getId().equals(userId);
@@ -172,11 +173,24 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(user);
     }
-    
+
     @Transactional
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
-    
-    
+
+    @Transactional
+    public void removeFriend(User user, String friendUsername) {
+        User friend = userRepository.findByUsername(friendUsername)
+                .orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario " + friendUsername));
+
+        if (!user.getFriends().contains(friend)) {
+            throw new IllegalArgumentException(friendUsername + " no está en tu lista de amigos.");
+        }
+
+        user.removeFriend(friend);
+        userRepository.save(user);
+        userRepository.save(friend);
+    }
+
 }

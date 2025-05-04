@@ -2,6 +2,7 @@ package com.groupandplay.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,8 +38,6 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -182,5 +181,12 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(404).body("Usuario no encontrado");
         }
+    }
+
+    @DeleteMapping("friends/{username}")
+    public ResponseEntity<?> removeFriend(@PathVariable String username) {
+        User user = getCurrentUserLogged(); 
+        userService.removeFriend(user, username);
+        return ResponseEntity.ok("Amigo eliminado correctamente.");
     }
 }
