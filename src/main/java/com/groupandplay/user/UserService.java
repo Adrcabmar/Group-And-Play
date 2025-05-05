@@ -2,7 +2,10 @@ package com.groupandplay.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,9 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.groupandplay.dto.ChangePasswordDTO;
 import com.groupandplay.dto.EditUserDTO;
+import com.groupandplay.dto.FriendDTO;
 import com.groupandplay.game.Game;
 import com.groupandplay.game.GameRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.io.IOException;
@@ -179,6 +184,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    // #region Amigos
+
     @Transactional
     public void removeFriend(User user, String friendUsername) {
         User friend = userRepository.findByUsername(friendUsername)
@@ -193,4 +200,26 @@ public class UserService {
         userRepository.save(friend);
     }
 
+    @Transactional(readOnly = true)
+    public Page<FriendDTO> searchFriends(User user, int page, int size, String username) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("username").ascending());
+
+        Page<User> friendsPage = userRepository.findFriendsByUser(user, pageable);
+
+        if (username != null && !username.isBlank()) {
+            List<User> filtered = friendsPage.getContent().stream()
+                    .filter(friend -> friend.getUsername() != null &&
+                            friend.getUsername().toLowerCase().contains(username.toLowerCase()))
+                    .toList();
+
+            return new PageImpl<>(
+                    filtered.stream().map(FriendDTO::new).toList(),
+                    pageable,
+                    filtered.size());
+        }
+
+        return friendsPage.map(FriendDTO::new);
+    }
+
+    // #endregion
 }

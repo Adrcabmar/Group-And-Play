@@ -10,6 +10,7 @@ import MyNavbar from "./components/Navbar";
 import CrearGrupo from "./pages/CrearGrupo";
 import MyGroups from "./pages/MyGroups";
 import MyProfile from "./pages/MyProfile";
+import Friends from "./pages/Friends";
 
 // Admin
 import AdminHome from "./pages/admin/AdminHome";
@@ -46,10 +47,12 @@ function AppContent() {
             {/* Usuarios */}
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/home" element={<Home user={user} />} /> {/* Aquí pasamos el user */}
+            <Route path="/home" element={<Home user={user} />} />
             <Route path="/create-group" element={<CrearGrupo />} />
             <Route path="/my-groups" element={<MyGroups />} />
             <Route path="/my-profile" element={<MyProfile />} />
+            <Route path="/friends" element={<Friends />} />
+
 
             {/* Admin */}
             <Route path="/admin" element={<AdminHome />} />

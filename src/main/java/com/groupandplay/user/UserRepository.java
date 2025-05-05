@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -22,5 +24,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Page<User> findByUsernameContainingIgnoreCase(String username, Pageable pageable);
 
+    @Query("SELECT f FROM User u JOIN u.friends f WHERE u = :user")
+    Page<User> findFriendsByUser(@Param("user") User user, Pageable pageable);
+
+    @Query("SELECT COUNT(u) > 0 FROM User u JOIN u.friends f WHERE u = :creator AND f = :receiver")
+    boolean areUsersFriends(@Param("creator") User creator, @Param("receiver") User receiver);
 
 }

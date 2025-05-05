@@ -54,13 +54,21 @@ public class SecurityConfig {
     
                 // URIS DE USER
                 .requestMatchers(
-                    "/api/users/{id}/**",
-                "/api/games/all",
-                "/api/games/find/{gameName}", 
-                "/api/groups/my-groups",
-                "/api/groups/open",
-                "/api/groups/**")
-                .hasAnyAuthority("USER", "ADMIN")
+                    "/api/users/friends/**",
+                    "/api/invitations/**"
+                ).hasAnyAuthority("USER", "ADMIN")
+            
+                .requestMatchers(
+                    "/api/users/{id:[0-9]+}/**" 
+                ).hasAnyAuthority("USER", "ADMIN")
+            
+                .requestMatchers(
+                    "/api/games/all",
+                    "/api/games/find/{gameName}", 
+                    "/api/groups/my-groups",
+                    "/api/groups/open",
+                    "/api/groups/**"
+                ).hasAnyAuthority("USER", "ADMIN")
                 
                 // Cualquier otra solicitud requiere autenticación
                 .anyRequest().authenticated()

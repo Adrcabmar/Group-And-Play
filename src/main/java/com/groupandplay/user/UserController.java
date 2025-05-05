@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.groupandplay.dto.ChangePasswordDTO;
 import com.groupandplay.dto.EditUserDTO;
+import com.groupandplay.dto.FriendDTO;
 import com.groupandplay.dto.UserDTO;
 import com.groupandplay.dto.UserMapper;
 import com.groupandplay.game.GameRepository;
@@ -69,10 +70,10 @@ public class UserController {
             @RequestParam(required = false) String username,
             @RequestParam(required = false) Integer id) {
 
-        if(!hasRole("ADMIN")) {
+        if (!hasRole("ADMIN")) {
             throw new IllegalArgumentException("No tienes permiso para ver todos los usuarios");
         }
-        
+
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage;
 
@@ -110,7 +111,6 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado")));
         return ResponseEntity.ok(user);
     }
-
 
     /**
      * Actualizar un usuario existente.
@@ -183,10 +183,24 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("friends/{username}")
+    // #region Amigos
+
+    @GetMapping("/friends/all")
+    public ResponseEntity<Page<FriendDTO>> getFriends(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String username) {
+        User user = getCurrentUserLogged();
+        Page<FriendDTO> friends = userService.searchFriends(user, page, size, username);
+        return ResponseEntity.ok(friends);
+    }
+
+    @DeleteMapping("/friends/{username}")
     public ResponseEntity<?> removeFriend(@PathVariable String username) {
-        User user = getCurrentUserLogged(); 
+        User user = getCurrentUserLogged();
         userService.removeFriend(user, username);
         return ResponseEntity.ok("Amigo eliminado correctamente.");
     }
+
+    // #endregion
 }
