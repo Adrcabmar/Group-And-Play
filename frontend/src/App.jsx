@@ -11,6 +11,7 @@ import CrearGrupo from "./pages/CrearGrupo";
 import MyGroups from "./pages/MyGroups";
 import MyProfile from "./pages/MyProfile";
 import Friends from "./pages/Friends";
+import Invitations from "./pages/Invitations";
 
 // Admin
 import AdminHome from "./pages/admin/AdminHome";
@@ -52,6 +53,7 @@ function AppContent() {
             <Route path="/my-groups" element={<MyGroups />} />
             <Route path="/my-profile" element={<MyProfile />} />
             <Route path="/friends" element={<Friends />} />
+            <Route path="/invitations" element={<Invitations />} />
 
 
             {/* Admin */}

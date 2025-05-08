@@ -57,6 +57,9 @@ const MyNavbar = () => {
               <NavItem>
                 <NavLink href="/create-group" className="nav-link navbar-button">Crear grupo</NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink href="/invitations" className="nav-link navbar-button"> Invitaciones</NavLink>
+              </NavItem>
             </>
           )}
         </Nav>

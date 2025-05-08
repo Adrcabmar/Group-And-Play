@@ -36,9 +36,9 @@ INSERT IGNORE INTO users_groups (user_id, group_id) VALUES
 (3, 3), (5, 3), (1, 3);
 
 --INVITACIONES
-INSERT IGNORE INTO invitation (id, is_group_invitation, sender_id, receiver_id, group_id) VALUES 
-(1, false, 1, 3, NULL),
-(2, true, 2, 1, 2);
+INSERT IGNORE INTO invitation (id, is_group_invitation, sender_id, receiver_id, group_id, date) VALUES 
+(1, false, 1, 3, NULL, '2025-05-08 18:30:00'),
+(2, true, 2, 1, 2, '2025-05-08 18:45:00');
 
 
 --AMIGOS

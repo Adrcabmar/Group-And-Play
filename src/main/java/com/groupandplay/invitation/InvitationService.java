@@ -1,5 +1,7 @@
 package com.groupandplay.invitation;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,29 +41,44 @@ public class InvitationService {
         return pageResult.map(InvitationDTO::new);
     }
 
+    @Transactional(readOnly = true)
+    public Page<InvitationDTO> getFriendInvitations(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Invitation> pageResult = invitationRepository.findAllByReceiverAndGroupInvitation(user, false, pageable);
+        return pageResult.map(InvitationDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InvitationDTO> getGroupInvitations(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Invitation> pageResult = invitationRepository.findAllByReceiverAndGroupInvitation(user, true, pageable);
+        return pageResult.map(InvitationDTO::new);
+    }
+
     @Transactional
     public Invitation createInvitation(InvitationDTO invitationDTO, User creator) throws IllegalArgumentException {
         Invitation invitation = new Invitation();
-    
+
         User receiver = userService.getUserByUsername(invitationDTO.getReceiverUsername())
                 .orElseThrow(() -> new IllegalArgumentException("No existe el usuario destino."));
-    
+
         if (creator.equals(receiver)) {
             throw new IllegalArgumentException("No puedes enviarte una invitación a ti mismo.");
         }
-    
+
         invitation.setReceiver(receiver);
         invitation.setSender(creator);
         invitation.setGroupInvitation(invitationDTO.getGroupInvitation());
-    
+        invitation.setDate(LocalDateTime.now());
+
         if (invitationDTO.getGroupInvitation() == true) {
-            //Si es invitacion de grupo
+            // Si es invitacion de grupo
             if (invitationDTO.getGroupId() == null) {
                 throw new IllegalArgumentException("Una invitación de grupo debe incluir un ID de grupo.");
             }
-    
+
             Group group = groupService.findById(invitationDTO.getGroupId());
-    
+
             if (groupService.isMemberOfGroup(receiver, group)) {
                 throw new IllegalArgumentException("El usuario ya pertenece a este grupo.");
             }
@@ -69,11 +86,11 @@ public class InvitationService {
             if (invitationRepository.existsByReceiverAndGroupAndGroupInvitation(receiver, group, true)) {
                 throw new IllegalArgumentException("El usuario ya tiene una invitación a este grupo.");
             }
-    
+
             invitation.setGroup(group);
-    
+
         } else {
-            //Si es invitacion de amistad
+            // Si es invitacion de amistad
             if (userRepository.areUsersFriends(creator, receiver)) {
                 throw new IllegalArgumentException("Ya sois amigos.");
             }
@@ -81,37 +98,40 @@ public class InvitationService {
             if (invitationRepository.existsByReceiverAndSenderAndGroupInvitation(receiver, creator, false)) {
                 throw new IllegalArgumentException("Ya has enviado una invitación de amistad a este usuario.");
             }
-    
+
             invitation.setGroup(null);
         }
-    
+
         return invitationRepository.save(invitation);
     }
-    
+
     @Transactional
-    public void acceptInvitation(Integer invitationId, User user) throws IllegalArgumentException {
+    public void acceptInvitation(Integer invitationId, Integer userId) throws IllegalArgumentException {
         Invitation invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new IllegalArgumentException("No se ha encontrado la invitación."));
 
-        if (!invitation.getReceiver().equals(user)) {
+        User user = userRepository.findByIdWithFriends(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+
+        if (!invitation.getReceiver().getId().equals(user.getId())) {
             throw new IllegalArgumentException("No puedes aceptar una invitación que no es para ti.");
         }
 
-        if (invitation.getGroupInvitation() == true) {
+        if (invitation.getGroupInvitation()) {
             if (invitation.getGroup() == null) {
                 throw new IllegalArgumentException("La invitación de grupo no tiene un grupo asociado.");
             }
 
             Group group = groupService.findById(invitation.getGroup().getId());
-    
+
             if (groupService.isMemberOfGroup(user, group)) {
                 throw new IllegalArgumentException("El usuario ya pertenece a este grupo.");
             }
-            groupService.joinGroup(user, group);
+            groupService.joinGroup(user, group, true);
 
         } else {
             User sender = invitation.getSender();
-            if (user.getFriends().contains(sender)) {
+            if (userRepository.areUsersFriends(user, sender)) {
                 throw new IllegalArgumentException("Ya sois amigos.");
             }
             user.addFriend(sender);
@@ -125,7 +145,7 @@ public class InvitationService {
         Invitation invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new IllegalArgumentException("No se ha encontrado la invitación."));
 
-        if (!invitation.getReceiver().equals(user)) {
+        if (!invitation.getReceiver().getId().equals(user.getId())) {
             throw new IllegalArgumentException("No puedes rechazar una invitación que no es para ti.");
         }
 

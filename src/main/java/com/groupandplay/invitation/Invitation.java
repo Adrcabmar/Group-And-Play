@@ -1,6 +1,9 @@
 package com.groupandplay.invitation;
 
 import com.groupandplay.user.User;
+
+import java.time.LocalDateTime;
+
 import com.groupandplay.group.Group;
 import com.groupandplay.model.BaseEntity;
 
@@ -18,6 +21,9 @@ public class Invitation extends BaseEntity {
 
     @Column(name = "is_group_invitation", nullable = false)
     private Boolean groupInvitation;
+
+    @Column(name = "date", nullable = false)
+    private LocalDateTime date;
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)

@@ -119,7 +119,7 @@ public class GroupController {
     public ResponseEntity<?> joinGroup(@Valid @RequestBody Integer groupId) throws IllegalArgumentException {
         Group group = groupService.findById(groupId);
         User user = getCurrentUserLogged();
-        Group groupUpdated = groupService.joinGroup(user, group);
+        Group groupUpdated = groupService.joinGroup(user, group, false);
         return ResponseEntity.ok(new GroupDTO(groupUpdated));
     }
 

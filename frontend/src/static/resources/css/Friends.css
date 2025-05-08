@@ -1,5 +1,4 @@
 .friends-container {
-    padding: 2rem;
     text-align: center;
     color: #00f2ff;
 }
@@ -128,4 +127,47 @@
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
+}
+
+.friends-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.friend-requests-box {
+    width: 300px;
+    padding: 1.5rem;
+    background-color: rgba(31, 26, 51, 0.7);
+    border: 2px solid #00f2ff;
+    border-radius: 16px;
+    box-shadow: 0 0 20px #00f2ff40;
+    color: #00f2ff;
+    display: flex;
+    flex-direction: column;
+}
+
+.friend-request-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #00f2ff;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.friend-request-card span {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #00f2ff;
+}
+
+.friend-request-card .modal-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
 }

@@ -30,4 +30,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT COUNT(u) > 0 FROM User u JOIN u.friends f WHERE u = :creator AND f = :receiver")
     boolean areUsersFriends(@Param("creator") User creator, @Param("receiver") User receiver);
 
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.friends WHERE u.id = :id")
+    Optional<User> findByIdWithFriends(@Param("id") Integer id);
+
 }

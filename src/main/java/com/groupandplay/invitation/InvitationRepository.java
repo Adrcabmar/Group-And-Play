@@ -19,4 +19,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, Integer>
 
     boolean existsByReceiverAndSenderAndGroupInvitation(User receiver, User sender, boolean groupInvitation);
 
+    Page<Invitation> findAllByReceiverAndGroupInvitation(User receiver, boolean groupInvitation, Pageable pageable);
+
 }

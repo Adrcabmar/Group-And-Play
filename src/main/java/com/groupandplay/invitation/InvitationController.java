@@ -45,13 +45,31 @@ public class InvitationController {
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
     }
 
-    @GetMapping("/my-invitations")
+    @GetMapping("/all-invitations")
     public ResponseEntity<?> getMyInvitations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
         User user = getCurrentUserLogged();
         Page<InvitationDTO> invitations = invitationService.getMyInvitations(user, page, size);
+        return ResponseEntity.ok(invitations);
+    }
+
+    @GetMapping("/friend-invitations")
+    public ResponseEntity<?> getMyFriendInvitations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        User user = getCurrentUserLogged();
+        Page<InvitationDTO> invitations = invitationService.getFriendInvitations(user, page, size);
+        return ResponseEntity.ok(invitations);
+    }
+
+    @GetMapping("/group-invitations")
+    public ResponseEntity<?> getMyGroupInvitations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        User user = getCurrentUserLogged();
+        Page<InvitationDTO> invitations = invitationService.getGroupInvitations(user, page, size);
         return ResponseEntity.ok(invitations);
     }
 
@@ -68,7 +86,7 @@ public class InvitationController {
     @PostMapping("/accept/{invitationId}")
     public ResponseEntity<?> acceptInvitation(@PathVariable Integer invitationId) {
         User user = getCurrentUserLogged();
-        invitationService.acceptInvitation(invitationId, user);
+        invitationService.acceptInvitation(invitationId, user.getId());
         return ResponseEntity.ok("Invitación aceptada correctamente.");
     }
 
