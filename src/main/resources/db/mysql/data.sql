@@ -34,3 +34,15 @@ INSERT IGNORE INTO users_groups (user_id, group_id) VALUES
 (1, 1), (2, 1),
 (2, 2), (3, 2), (4, 2), 
 (3, 3), (5, 3), (1, 3);
+
+--INVITACIONES
+INSERT IGNORE INTO invitation (id, is_group_invitation, sender_id, receiver_id, group_id, date) VALUES 
+(1, false, 1, 3, NULL, '2025-05-08 18:30:00'),
+(2, true, 2, 1, 2, '2025-05-08 18:45:00');
+
+
+--AMIGOS
+INSERT IGNORE INTO user_friends (user_id, friend_id) VALUES 
+(1, 2), (2, 1),  -- Alice y Bob
+(2, 3), (3, 2);  -- Bob y Charlie
+

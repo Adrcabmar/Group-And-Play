@@ -9,6 +9,9 @@ const MyGroups = () => {
   const [editMode, setEditMode] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem("user"));
   const [selectedGame, setSelectedGame] = useState(null);
+  const [friends, setFriends] = useState([]);
+  const [showInviteDropdown, setShowInviteDropdown] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState("");
 
   useEffect(() => {
     fetchGroups();
@@ -28,8 +31,23 @@ const MyGroups = () => {
       if (!res.ok) throw new Error("Error al obtener los grupos");
       const data = await res.json();
       setGroups(data);
+      console.log("Grupos obtenidos:", data);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const fetchFriends = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/friends/all?size=100`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      setFriends(data.content || []);
+    } catch (err) {
+      console.error("Error al cargar amigos:", err);
     }
   };
 
@@ -108,6 +126,27 @@ const MyGroups = () => {
     }
   };
 
+  const handleInvite = async (username, groupId) => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/invitations/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          receiverUsername: username,
+          groupInvitation: true,
+          groupId: groupId
+        })
+      });
+      alert(`Invitación enviada a ${username}`);
+      setSelectedFriend("");
+    } catch (err) {
+      alert("Error al invitar: " + (await err.response?.text()));
+    }
+  };
+
 
   const TipoComunicacion = (tipo) => {
     switch (tipo) {
@@ -134,7 +173,8 @@ const MyGroups = () => {
                 setSelectedGroup(group);
                 setEditMode(false);
                 fetchGameByName(group.gameName);
-
+                fetchFriends();
+                setShowInviteDropdown(false);
               }}
             >
               <h2>{group.gameName}</h2>
@@ -158,6 +198,7 @@ const MyGroups = () => {
 
             {editMode ? (
               <>
+                {/* campos de edición como antes */}
                 <label>Descripción:</label>
                 <textarea
                   value={selectedGroup.description}
@@ -256,9 +297,46 @@ const MyGroups = () => {
                 <p>Usuario en la plataforma: <strong>{selectedGroup.usergame}</strong></p>
 
                 {selectedGroup.creatorUsername === currentUser.username && (
-                  <button className="modal-edit-btn" onClick={() => setEditMode(true)}>
-                    Editar grupo
-                  </button>
+                  <>
+                    <button className="modal-edit-btn" onClick={() => setEditMode(true)}>
+                      Editar grupo
+                    </button>
+
+                    {!showInviteDropdown && (
+                      <button
+                        className="modal-edit-btn"
+                        onClick={() => setShowInviteDropdown(!showInviteDropdown)}
+                      >
+                        Invitar
+                      </button>)
+                    }
+
+                    {showInviteDropdown && (
+                      <div style={{ marginTop: "1rem" }}>
+                        <select
+                          className="custom-select"
+                          value={selectedFriend}
+                          onChange={(e) => setSelectedFriend(e.target.value)}
+                        >
+                          <option value="">Selecciona un amigo</option>
+                          {friends
+                            .filter(friend => !selectedGroup.users.includes(friend.username))
+                            .map(friend => (
+                              <option key={friend.id} value={friend.username}>
+                                {friend.username}
+                              </option>
+                            ))}
+                        </select>
+                        <button
+                          className="modal-invite-btn"
+                          disabled={!selectedFriend}
+                          onClick={() => handleInvite(selectedFriend, selectedGroup.id)}
+                        >
+                          Enviar invitación
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
 
                 <div className="modal-buttons">
@@ -284,6 +362,6 @@ const MyGroups = () => {
       )}
     </div>
   );
-};
+}
 
 export default MyGroups;

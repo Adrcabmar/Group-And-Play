@@ -16,6 +16,7 @@ import com.groupandplay.dto.GroupDTO;
 import com.groupandplay.game.Game;
 import com.groupandplay.game.GameRepository;
 import com.groupandplay.game.Platform;
+import com.groupandplay.invitation.InvitationRepository;
 import com.groupandplay.user.User;
 import com.groupandplay.user.UserRepository;
 
@@ -31,7 +32,10 @@ public class GroupService {
     @Autowired
     private GameRepository gameRepository;
 
-    private boolean isMemberOfGroup(User user, Group group) {
+    @Autowired
+    private InvitationRepository invitationRepository;
+
+    public boolean isMemberOfGroup(User user, Group group) {
         return group.getUsers().stream()
         .anyMatch(u -> u.getId().equals(user.getId()));    
     }
@@ -143,7 +147,7 @@ public class GroupService {
         return group;
     }
 
-    public Group joinGroup(User user, Group group) throws IllegalArgumentException {
+    public Group joinGroup(User user, Group group, Boolean fromInvitation) throws IllegalArgumentException {
 
         if (isMemberOfGroup(user, group)) {
             throw new IllegalArgumentException("Ya eres parte de este grupo");
@@ -151,8 +155,8 @@ public class GroupService {
         if (groupRepository.findManyGroupsOpenOrClosed(user.getId()) >= 6) {
             throw new IllegalArgumentException("Ya formas parte de 6 grupos, abandona alguno para unirte a este");
         }
-        if (group.getStatus() != Status.OPEN) {
-            throw new IllegalArgumentException("Grupo no disponible");
+        if (!fromInvitation && group.getStatus() != Status.OPEN) {
+            throw new IllegalArgumentException("Solo puedes unirte a grupos abiertos");
         }
 
         group.getUsers().add(user);
@@ -228,6 +232,8 @@ public class GroupService {
         if (!group.getCreator().getId().equals(user.getId())) {
             throw new IllegalArgumentException("No puedes eliminar un grupo que no has creado");
         }
+
+        invitationRepository.deleteAllByGroup(group);
 
         for (User u : group.getUsers()) {
             u.getGroups().remove(group);

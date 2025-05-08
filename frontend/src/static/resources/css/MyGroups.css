@@ -214,8 +214,24 @@
   overflow-wrap: break-word;
   white-space: pre-wrap;
   max-height: 120px;
-  /* puedes ajustar este valor */
   overflow-y: auto;
   margin-bottom: 1rem;
   color: #ccc;
+}
+
+.modal-invite-btn {
+  background-color: transparent;
+  border: 2px solid #00f2ff;
+  color: #00f2ff;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-invite-btn:hover {
+  background-color: #00f2ff;
+  color: rgba(31, 26, 51, 0.95) !important;
+  box-shadow: 0 0 10px #0ff, 0 0 20px #00f2ff;
 }
