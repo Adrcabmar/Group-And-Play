@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.groupandplay.dto.ChangePasswordDTO;
 import com.groupandplay.dto.EditUserDTO;
 import com.groupandplay.dto.FriendDTO;
+import com.groupandplay.dto.PublicUserDTO;
 import com.groupandplay.dto.UserDTO;
 import com.groupandplay.dto.UserMapper;
 import com.groupandplay.game.GameRepository;
@@ -113,10 +114,29 @@ public class UserController {
     }
 
     @GetMapping("/public/{id}")
-    public ResponseEntity<UserDTO> getPublicUserById(@PathVariable Integer id) {
-        User user = userService.getUserById(id)
+    public ResponseEntity<?> getPublicUserById(@PathVariable Integer id) {
+        User target = userService.getUserById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        return ResponseEntity.ok(new UserDTO(user));
+    
+        User userLogged = getCurrentUserLogged(); 
+
+        if (userLogged.getId().equals(target.getId())) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("self", true); 
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response); 
+        }
+    
+        boolean isFriend = userRepository.areUsersFriends(userLogged, target);
+    
+        PublicUserDTO dto = new PublicUserDTO(
+            target.getUsername(),
+            target.getFavGame() != null ? target.getFavGame().getName() : "Sin juego favorito",
+            target.getProfilePictureUrl(),
+            target.getDescription(),
+            isFriend
+        );
+    
+        return ResponseEntity.ok(dto);
     }
 
     /**

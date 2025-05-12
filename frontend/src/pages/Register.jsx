@@ -9,7 +9,6 @@ const Register = () => {
     lastName: "",
     username: "",
     email: "",
-    telephone: "",
     password: "",
   });
 
@@ -30,7 +29,6 @@ const Register = () => {
         lastName: form.lastName,
         username: form.username,
         email: form.email,
-        telephone: Number(form.telephone), 
         password: form.password,
         role: "USER"      
       });
@@ -59,7 +57,6 @@ const Register = () => {
           <input type="text" name="lastName" placeholder="Apellido" value={form.lastName} onChange={handleChange} required />
           <input type="text" name="username" placeholder="Usuario" value={form.username} onChange={handleChange} required />
           <input type="email" name="email" placeholder="Correo electrónico" value={form.email} onChange={handleChange} required />
-          <input type="tel" name="telephone" placeholder="Teléfono" value={form.telephone} onChange={handleChange} required />
           <input type="password" name="password" placeholder="Contraseña" value={form.password} onChange={handleChange} required />
           <button type="submit">Registrarse</button>
         </form>

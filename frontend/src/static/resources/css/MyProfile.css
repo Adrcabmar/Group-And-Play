@@ -20,6 +20,16 @@
   margin: 0 auto;
 }
 
+.profile-description {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  width: 100%;
+  text-align: left;
+  max-width: 100%;
+  display: block;
+}
+
 .profile-left {
   display: flex;
   flex-direction: column;
@@ -195,4 +205,22 @@
   background-color: #00f2ff;
   color: black;
   box-shadow: 0 0 12px #00f2ff, 0 0 20px #00f2ff;
+}
+
+.profile-input,
+.profile-right input,
+.profile-right textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-right textarea {
+  resize: none;
+  height: 80px;
+}
+
+.field-label {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }

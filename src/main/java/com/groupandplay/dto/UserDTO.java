@@ -16,7 +16,7 @@ public class UserDTO {
     private String firstname;
     private String username;
     private String email;
-    private Integer telephone;
+    private String description;
     private String profilePictureUrl;
     private String favGame;
     private List<GroupDTO> groups;
@@ -29,7 +29,7 @@ public class UserDTO {
         this.firstname = user.getFirstName();
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.telephone = user.getTelephone();
+        this.description = user.getDescription();
         this.profilePictureUrl = user.getProfilePictureUrl();
         this.favGame = user.getFavGame() != null ? user.getFavGame().getName() : null;
         this.role = user.getRole();
