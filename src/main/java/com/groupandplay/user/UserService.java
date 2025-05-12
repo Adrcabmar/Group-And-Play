@@ -188,15 +188,18 @@ public class UserService {
 
     @Transactional
     public void removeFriend(User user, String friendUsername) {
+        User userConAmigos = userRepository.findByIdWithFriends(user.getId())
+            .orElseThrow(() -> new IllegalArgumentException("Usuario logueado no encontrado"));
+    
         User friend = userRepository.findByUsername(friendUsername)
-                .orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario " + friendUsername));
-
-        if (!user.getFriends().contains(friend)) {
-            throw new IllegalArgumentException(friendUsername + " no está en tu lista de amigos.");
+            .orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario " + friendUsername));
+    
+        if (!userRepository.areUsersFriends(userConAmigos, friend)) {
+            throw new IllegalArgumentException("No sois amigos " + userConAmigos.getUsername() + " y " + friend.getUsername());
         }
-
-        user.removeFriend(friend);
-        userRepository.save(user);
+    
+        userConAmigos.removeFriend(friend);
+        userRepository.save(userConAmigos);
         userRepository.save(friend);
     }
 
