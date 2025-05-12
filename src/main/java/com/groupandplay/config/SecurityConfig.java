@@ -55,7 +55,8 @@ public class SecurityConfig {
                 // URIS DE USER
                 .requestMatchers(
                     "/api/users/friends/**",
-                    "/api/invitations/**"
+                    "/api/invitations/**",
+                    "/api/users/public/**"
                 ).hasAnyAuthority("USER", "ADMIN")
             
                 .requestMatchers(

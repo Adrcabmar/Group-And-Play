@@ -122,7 +122,7 @@ function Friends() {
         <div className="friends-layout">
             <div className="friends-container">
                 <div className="friends-box">
-                <h2 className="neon-title">Amigos</h2>
+                    <h2 className="neon-title">Amigos</h2>
 
                     <div className="friends-header">
                         <input
@@ -139,49 +139,54 @@ function Friends() {
 
 
                     <div className="friends-list">
-                        {friends.map((friend) => (
-                            <div className="friend-card" key={friend.id}>
-                                <div className="friend-info">
-
-                                    <img
-                                        src={`${apiUrl}${friend.profilePictureUrl}`}
-                                        alt="avatar"
-                                        className="friend-avatar"
-                                    />
-                                    <span className="friend-name">{friend.username}</span>
+                        {friends.length === 0 ? (
+                            <p className="no-friends">Actualmente no tienes amigos ¡Invita a alguien!</p>
+                        ) : (
+                            friends.map((friend) => (
+                                <div className="friend-card" key={friend.id}>
+                                    <div className="friend-info">
+                                        <img
+                                            src={`${apiUrl}${friend.profilePictureUrl}`}
+                                            alt="avatar"
+                                            className="friend-avatar"
+                                        />
+                                        <span className="friend-name">{friend.username}</span>
+                                    </div>
+                                    <div className="friend-buttons">
+                                        <button
+                                            className="neon-button-secondary"
+                                            onClick={() => window.location.href = `/user/${friend.id}`}
+                                        >
+                                            Perfil
+                                        </button>
+                                        <button
+                                            className="neon-button-danger"
+                                            onClick={() => {
+                                                setSelectedToDelete(friend);
+                                                setShowDeleteModal(true);
+                                            }}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="friend-buttons">
-                                    <button
-                                        className="neon-button-secondary"
-                                        onClick={() => window.location.href = `/user/${friend.id}`}
-                                    >
-                                        Perfil
-                                    </button>
-                                    <button
-                                        className="neon-button-danger"
-                                        onClick={() => {
-                                            setSelectedToDelete(friend);
-                                            setShowDeleteModal(true);
-                                        }}
-                                    >
-                                        Eliminar
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
 
-                    <div className="pagination">
-                        <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-                            Anterior
-                        </button>
-                        <span className="pagination-text">
-                            Página {page + 1} de {totalPages}
-                        </span>
-                        <button disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>
-                            Siguiente
-                        </button>
-                    </div>
+                    {friends.length > 0 && (
+                        <div className="pagination">
+                            <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+                                Anterior
+                            </button>
+                            <span className="pagination-text">
+                                Página {page + 1} de {totalPages}
+                            </span>
+                            <button disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>
+                                Siguiente
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {showModal && (

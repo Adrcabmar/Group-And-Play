@@ -12,6 +12,7 @@ import MyGroups from "./pages/MyGroups";
 import MyProfile from "./pages/MyProfile";
 import Friends from "./pages/Friends";
 import Invitations from "./pages/Invitations";
+import PublicProfile from "./pages/PublicProfile";
 
 // Admin
 import AdminHome from "./pages/admin/AdminHome";
@@ -20,7 +21,7 @@ import AdminGroups from "./pages/admin/AdminGroups";
 import AdminGames from "./pages/admin/AdminGames";
 
 
-import "./App.css"; 
+import "./App.css";
 import "./static/resources/css/Navbar.css";
 
 import { UserProvider, useUser } from "./components/UserContext";
@@ -37,14 +38,14 @@ function AppContent() {
   }
 
   return (
-    <div className="app-container"> 
+    <div className="app-container">
       <div className="neon-static-bg" />
       <Router>
         <div className="navbar-wrapper"><MyNavbar /></div>
         <div className="content">
           <Routes>
             <Route path="/" element={<Navigate to={getInitialRoute()} />} />
-            
+
             {/* Usuarios */}
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/register" element={<Register />} />
@@ -54,14 +55,15 @@ function AppContent() {
             <Route path="/my-profile" element={<MyProfile />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="/invitations" element={<Invitations />} />
+            <Route path="/user/:id" element={<PublicProfile />} />
 
 
             {/* Admin */}
             <Route path="/admin" element={<AdminHome />} />
-            <Route path="/admin/users" element={<AdminUsers />} />  
-            <Route path="/admin/groups" element={<AdminGroups />} /> 
-            <Route path="/admin/games" element={<AdminGames />} />   
-  
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/groups" element={<AdminGroups />} />
+            <Route path="/admin/games" element={<AdminGames />} />
+
           </Routes>
         </div>
       </Router>

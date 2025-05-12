@@ -35,10 +35,9 @@ public class Person extends BaseEntity {
 	@Email
     private String email;
 
-	@Column(name = "telephone", nullable = false)
-    @NotNull 
-	@Digits(integer = 9, fraction = 0)
-    private Integer telephone;
+    @Size(max = 256)
+    @Column(name = "description", nullable = true)
+    private String description;
 
     @Column(name = "password", nullable = false)
     @NotBlank

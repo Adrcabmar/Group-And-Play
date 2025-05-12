@@ -94,7 +94,7 @@ public class UserService {
         user.setFirstName(dto.getFirstname());
         user.setLastName(dto.getLastname());
         user.setEmail(dto.getEmail());
-        user.setTelephone(dto.getTelephone());
+        user.setDescription(dto.getDescription());
         user.setProfilePictureUrl(dto.getProfilePictureUrl());
 
         if (dto.getFavGame() != null && !dto.getFavGame().isBlank()) {

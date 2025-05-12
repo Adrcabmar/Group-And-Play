@@ -85,9 +85,14 @@ function AdminUsers() {
   const handleSaveChanges = async () => {
     try {
       const token = localStorage.getItem("jwt");
-      const { firstname, lastname, username, email, telephone, favGame } = editData;
+      const { firstname, lastname, username, email, description, favGame } = editData;
 
-      const bodyToSend = { firstname, lastname, username, email, telephone, favGame };
+      if (description && (description.length < 1 || description.length > 256)) {
+        alert("La descripción debe tener entre 1 y 256 caracteres.");
+        return;
+      }
+      
+      const bodyToSend = { firstname, lastname, username, email, description, favGame };
 
       const response = await fetch(`${apiUrl}/api/users/${selectedUser.id}/edit`, {
         method: "PUT",
@@ -239,10 +244,18 @@ function AdminUsers() {
               </li>
 
               <li>
-                <strong>Teléfono: </strong>
+                <strong>Descripción: </strong>
                 {isEditing ? (
-                  <input type="text" name="telephone" value={editData.telephone || ""} onChange={handleEditChange} className="user-modal-input" />
-                ) : selectedUser.telephone}
+                  <textarea
+                    name="description"
+                    value={editData.description || ""}
+                    onChange={handleEditChange}
+                    className="user-modal-input"
+                    maxLength={256}
+                    rows={3}
+                    placeholder="Descripción del usuario"
+                  />
+                ) : (selectedUser.description || "N/A")}
               </li>
 
               {!isEditing && (

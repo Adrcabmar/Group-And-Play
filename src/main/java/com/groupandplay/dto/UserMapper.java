@@ -14,7 +14,7 @@ public class UserMapper {
         user.setFirstName(dto.getFirstname());
         user.setLastName(dto.getLastname());
         user.setEmail(dto.getEmail());
-        user.setTelephone(dto.getTelephone());
+        user.setDescription(dto.getDescription());
 
         if (dto.getFavGame() != null && !dto.getFavGame().isBlank()) {
             Optional<Game> game = gameRepository.findByName(dto.getFavGame());
