@@ -112,6 +112,13 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/public/{id}")
+    public ResponseEntity<UserDTO> getPublicUserById(@PathVariable Integer id) {
+        User user = userService.getUserById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        return ResponseEntity.ok(new UserDTO(user));
+    }
+
     /**
      * Actualizar un usuario existente.
      */
@@ -173,22 +180,22 @@ public class UserController {
     /**
      * Eliminar un usuario por ID.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
-        try {
-            userService.deleteUser(id);
-            return ResponseEntity.ok("Usuario eliminado correctamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body("Usuario no encontrado");
-        }
-    }
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+    //     try {
+    //         userService.deleteUser(id);
+    //         return ResponseEntity.ok("Usuario eliminado correctamente");
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(404).body("Usuario no encontrado");
+    //     }
+    // }
 
     // #region Amigos
 
     @GetMapping("/friends/all")
     public ResponseEntity<Page<FriendDTO>> getFriends(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String username) {
         User user = getCurrentUserLogged();
         Page<FriendDTO> friends = userService.searchFriends(user, page, size, username);

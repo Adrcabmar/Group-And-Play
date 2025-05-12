@@ -11,6 +11,8 @@ function Friends() {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("jwt");
     const [requests, setRequests] = useState([]);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedToDelete, setSelectedToDelete] = useState(null);
 
 
 
@@ -95,10 +97,33 @@ function Friends() {
             console.error(err);
         }
     };
+
+
+    const handleDeleteFriend = async (username) => {
+        try {
+            const res = await fetch(`${apiUrl}/api/users/friends/${username}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            if (!res.ok) throw new Error("Error al enviar invitación");
+            alert("Amigo " + username + " eliminado");
+            fetchFriends();
+            setShowDeleteModal(false);
+            setSelectedToDelete(null);
+        } catch (err) {
+            alert("Error al borrar el amigo");
+            console.error(err);
+        }
+    };
+
     return (
         <div className="friends-layout">
             <div className="friends-container">
                 <div className="friends-box">
+                <h2 className="neon-title">Amigos</h2>
+
                     <div className="friends-header">
                         <input
                             type="text"
@@ -107,28 +132,55 @@ function Friends() {
                             value={usernameSearch}
                             onChange={(e) => setUsernameSearch(e.target.value)}
                         />
-                        <button className="neon-button" onClick={() => setShowModal(true)}>Agregar usuario</button>
+                        <button className="neon-button" onClick={() => setShowModal(true)}>
+                            Agregar usuario
+                        </button>
                     </div>
 
-                    <h2 className="neon-title">Amigos</h2>
 
                     <div className="friends-list">
-                        {friends.length === 0 ? (
-                            <p className="no-friends">No se encontraron amigos.</p>
-                        ) : (
-                            friends.map(friend => (
-                                <div className="friend-card" key={friend.id}>
-                                    <img src={`${apiUrl}${friend.profilePictureUrl}`} alt="avatar" className="friend-avatar" />
+                        {friends.map((friend) => (
+                            <div className="friend-card" key={friend.id}>
+                                <div className="friend-info">
+
+                                    <img
+                                        src={`${apiUrl}${friend.profilePictureUrl}`}
+                                        alt="avatar"
+                                        className="friend-avatar"
+                                    />
                                     <span className="friend-name">{friend.username}</span>
                                 </div>
-                            ))
-                        )}
+                                <div className="friend-buttons">
+                                    <button
+                                        className="neon-button-secondary"
+                                        onClick={() => window.location.href = `/user/${friend.id}`}
+                                    >
+                                        Perfil
+                                    </button>
+                                    <button
+                                        className="neon-button-danger"
+                                        onClick={() => {
+                                            setSelectedToDelete(friend);
+                                            setShowDeleteModal(true);
+                                        }}
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
 
                     <div className="pagination">
-                        <button disabled={page === 0} onClick={() => setPage(page - 1)}>Anterior</button>
-                        <span className="pagination-text">Página {page + 1} de {totalPages}</span>
-                        <button disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>Siguiente</button>
+                        <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+                            Anterior
+                        </button>
+                        <span className="pagination-text">
+                            Página {page + 1} de {totalPages}
+                        </span>
+                        <button disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>
+                            Siguiente
+                        </button>
                     </div>
                 </div>
 
@@ -144,8 +196,15 @@ function Friends() {
                                 onChange={(e) => setAddUsername(e.target.value)}
                             />
                             <div className="modal-buttons">
-                                <button className="neon-button" onClick={handleAddFriend}>Enviar</button>
-                                <button className="neon-button-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+                                <button className="neon-button" onClick={handleAddFriend}>
+                                    Enviar
+                                </button>
+                                <button
+                                    className="neon-button-secondary"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -161,15 +220,56 @@ function Friends() {
                         <div key={req.id} className="friend-request-card">
                             <span>{req.senderUsername}</span>
                             <div className="modal-buttons">
-                                <button className="neon-button" onClick={() => handleAccept(req.id)}>Aceptar</button>
-                                <button className="neon-button-secondary" onClick={() => handleReject(req.id)}>Rechazar</button>
+                                <button className="neon-button" onClick={() => handleAccept(req.id)}>
+                                    Aceptar
+                                </button>
+                                <button
+                                    className="neon-button-secondary"
+                                    onClick={() => handleReject(req.id)}
+                                >
+                                    Rechazar
+                                </button>
                             </div>
                         </div>
                     ))
                 )}
             </div>
+
+            {showDeleteModal && selectedToDelete && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h3 className="neon-subtitle">
+                            ¿Eliminar a {selectedToDelete.username}?
+                        </h3>
+                        <p>¿Estás seguro de que quieres eliminar a este amigo?</p>
+                        <div className="modal-buttons">
+                            <button
+                                className="neon-button"
+                                onClick={() => {
+                                    handleDeleteFriend(selectedToDelete.username);
+                                    setShowDeleteModal(false);
+                                    setSelectedToDelete(null);
+                                }}
+                            >
+                                Sí, eliminar
+                            </button>
+                            <button
+                                className="neon-button-secondary"
+                                onClick={() => {
+                                    setShowDeleteModal(false);
+                                    setSelectedToDelete(null);
+                                }}
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
+
+
 
 }
 

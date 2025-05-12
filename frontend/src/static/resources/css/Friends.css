@@ -70,13 +70,19 @@
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid #00f2ff;
     border-radius: 12px;
-    padding: 1rem 2rem;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    box-shadow: 0 0 12px #00f2ff30;
+}
+
+.friend-info {
     display: flex;
     align-items: center;
     gap: 1rem;
-    width: 280px;
-    justify-content: center;
-    box-shadow: 0 0 12px #00f2ff30;
 }
 
 .friend-avatar {
@@ -170,4 +176,26 @@
     display: flex;
     gap: 0.5rem;
     justify-content: center;
+}
+
+.friend-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.neon-button-danger {
+    background-color: transparent;
+    border: 2px solid #ff4d4d;
+    color: #ff4d4d;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.neon-button-danger:hover {
+    background-color: #ff4d4d;
+    color: black;
+    box-shadow: 0 0 10px #ff4d4d80;
 }
