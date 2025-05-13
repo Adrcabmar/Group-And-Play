@@ -37,18 +37,18 @@ public class GroupService {
 
     public boolean isMemberOfGroup(User user, Group group) {
         return group.getUsers().stream()
-        .anyMatch(u -> u.getId().equals(user.getId()));    
+                .anyMatch(u -> u.getId().equals(user.getId()));
     }
 
     @Transactional(readOnly = true)
     public Group findById(Integer groupId) throws IllegalArgumentException {
-        Group group = groupRepository.findById(groupId)                
-            .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
         return group;
     }
 
-    @Transactional(readOnly = true )
-    public List<Group> findMyGroups(String username)  throws IllegalArgumentException {
+    @Transactional(readOnly = true)
+    public List<Group> findMyGroups(String username) throws IllegalArgumentException {
         if (username == null) {
             throw new IllegalArgumentException("El usuario no puede ser nulo");
         }
@@ -56,18 +56,19 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Group> getAllGroups(Pageable pageable, Integer id, String gameName, String statusStr) throws IllegalArgumentException {
+    public Page<Group> getAllGroups(Pageable pageable, Integer id, String gameName, String statusStr)
+            throws IllegalArgumentException {
         if (id != null) {
             groupRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
+                    .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
         }
-    
+
         Game game = null;
         if (gameName != null && !gameName.isEmpty()) {
             game = gameRepository.findByName(gameName)
-                                 .orElse(null);
+                    .orElse(null);
         }
-    
+
         Status status = null;
         if (statusStr != null && !statusStr.isEmpty()) {
             try {
@@ -76,19 +77,20 @@ public class GroupService {
                 throw new IllegalArgumentException("Estado no válido: " + statusStr);
             }
         }
-    
+
         return groupRepository.findFilteredGroups(status, id, game, pageable);
     }
 
     @Transactional(readOnly = true)
-    public Page<Group> getFilteredOpenGroups(Pageable pageable, String username, String gameName, String communicationStr,String platformStr) throws IllegalArgumentException {
+    public Page<Group> getFilteredOpenGroups(Pageable pageable, String username, String gameName,
+            String communicationStr, String platformStr) throws IllegalArgumentException {
         User user = userRepository.findByUsername(username)
-                        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
         Game game = null;
         if (gameName != null && !gameName.isEmpty()) {
             game = gameRepository.findByName(gameName)
-                                .orElse(null); // puede ser null si no se encuentra
+                    .orElse(null); // puede ser null si no se encuentra
         }
 
         Communication communication = null;
@@ -114,36 +116,41 @@ public class GroupService {
         Platform selectedPlatform = Platform.valueOf(groupDTO.getPlatform());
 
         Game game = gameRepository.findByName(groupDTO.getGameName())
-            .orElseThrow(() -> new IllegalArgumentException("Juego no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Juego no encontrado"));
         if (!game.getPlatforms().contains(selectedPlatform)) {
             throw new IllegalArgumentException("La plataforma seleccionada no está disponible para este juego");
         }
 
+        if (!groupDTO.getStatus().equalsIgnoreCase("OPEN") && !groupDTO.getStatus().equalsIgnoreCase("CLOSED")) {
+            throw new IllegalArgumentException("El estado del grupo es incorrecto.");
+        }
+        
         Group group = new Group();
         group.setCreator(creator);
         group.setGame(game);
-        group.setStatus(Status.OPEN);
+
+        group.setStatus(Status.valueOf(groupDTO.getStatus()));
         group.setPlatform(selectedPlatform);
         group.setCommunication(Communication.valueOf(groupDTO.getCommunication()));
         group.setUsergame(groupDTO.getUsergame());
         group.setDescription(groupDTO.getDescription());
         group.setCreation(LocalDateTime.now());
-    
+
         if (group.getUsers() == null) {
             group.setUsers(new HashSet<>());
         }
-        
+
         group.getUsers().add(creator);
-    
+
         if (creator.getGroups() == null) {
             creator.setGroups(new HashSet<>());
         }
         creator.getGroups().add(group);
-    
+
         group = groupRepository.save(group);
-        
+
         userRepository.save(creator);
-    
+
         return group;
     }
 
@@ -160,16 +167,16 @@ public class GroupService {
         }
 
         group.getUsers().add(user);
-    
+
         if (user.getGroups() == null) {
             user.setGroups(new HashSet<>());
         }
         user.getGroups().add(group);
-    
+
         group = groupRepository.save(group);
-        
+
         userRepository.save(user);
-    
+
         return group;
     }
 
@@ -181,9 +188,10 @@ public class GroupService {
 
         if (group.getGame() != null && groupDTO.getPlatform() != null) {
             boolean platformValida = group.getGame().getPlatforms().stream()
-                .anyMatch(p -> p.name().equalsIgnoreCase(groupDTO.getPlatform()));
+                    .anyMatch(p -> p.name().equalsIgnoreCase(groupDTO.getPlatform()));
             if (!platformValida) {
-                throw new IllegalArgumentException("La plataforma seleccionada no está entre las disponibles del juego.");
+                throw new IllegalArgumentException(
+                        "La plataforma seleccionada no está entre las disponibles del juego.");
             }
 
             group.setPlatform(Platform.valueOf(groupDTO.getPlatform().toUpperCase()));
@@ -205,29 +213,27 @@ public class GroupService {
                 throw new IllegalArgumentException("Tipo de comunicación inválido: " + commUpper);
             }
         }
-        
 
         if (groupDTO.getStatus() != null) {
             String status = groupDTO.getStatus().toUpperCase();
-        
+
             if (!status.equals("OPEN") && !status.equals("CLOSED")) {
                 throw new IllegalArgumentException("El estado del grupo debe ser OPEN o CLOSED.");
             }
-        
+
             group.setStatus(Status.valueOf(status));
         }
 
         return groupRepository.save(group);
     }
-    
 
     @Transactional
     public void deleteMyGroup(Integer userId, Integer groupId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
         Group group = groupRepository.findById(groupId)
-            .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
 
         if (!group.getCreator().getId().equals(user.getId())) {
             throw new IllegalArgumentException("No puedes eliminar un grupo que no has creado");
@@ -238,27 +244,28 @@ public class GroupService {
         for (User u : group.getUsers()) {
             u.getGroups().remove(group);
         }
-        group.getUsers().clear(); 
+        group.getUsers().clear();
 
-        groupRepository.delete(group); 
+        groupRepository.delete(group);
     }
+
     @Transactional
     public void leaveGroup(Integer userId, Integer groupId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
         Group group = groupRepository.findById(groupId)
-            .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
-        
+                .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
+
         if (!isMemberOfGroup(user, group)) {
             throw new IllegalArgumentException("No eres miembro de este grupo");
         }
-    
+
         if (group.getCreator().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("No puedes abandonar un grupo que has creado. Intenta eliminarlo en su lugar.");
+            throw new IllegalArgumentException(
+                    "No puedes abandonar un grupo que has creado. Intenta eliminarlo en su lugar.");
         }
 
-        
         user.getGroups().remove(group);
         group.getUsers().remove(user);
 
