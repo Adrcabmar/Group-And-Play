@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import MyNavbar from "./components/Navbar";
 import CrearGrupo from "./pages/CrearGrupo";
 import MyGroups from "./pages/MyGroups";
 import MyProfile from "./pages/MyProfile";
@@ -20,6 +19,9 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminGroups from "./pages/admin/AdminGroups";
 import AdminGames from "./pages/admin/AdminGames";
 
+//Componentes
+import MyNavbar from "./components/Navbar";
+import { AlertProvider } from "./components/AlertContext";
 
 import "./App.css";
 import "./static/resources/css/Navbar.css";
@@ -74,7 +76,9 @@ function AppContent() {
 function App() {
   return (
     <UserProvider>
-      <AppContent />
+      <AlertProvider>
+        <AppContent />
+      </AlertProvider>
     </UserProvider>
   );
 }

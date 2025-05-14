@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useUser } from "../../components/UserContext";
 import { Navigate } from "react-router-dom";
 import "../../static/resources/css/admin/AdminUsers.css";
+import { useAlert } from "../../components/AlertContext";
 
 function AdminUsers() {
   const { user } = useUser();
@@ -15,6 +16,7 @@ function AdminUsers() {
   const [changingPassword, setChangingPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const apiUrl = import.meta.env.VITE_API_URL;
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     fetchUsers();
@@ -88,7 +90,7 @@ function AdminUsers() {
       const { firstname, lastname, username, email, description, favGame } = editData;
 
       if (description && (description.length < 1 || description.length > 256)) {
-        alert("La descripción debe tener entre 1 y 256 caracteres.");
+        showAlert("La descripción debe tener entre 1 y 256 caracteres.");
         return;
       }
       
@@ -108,13 +110,13 @@ function AdminUsers() {
         throw new Error(errorMsg || "Error al actualizar usuario");
       }
 
-      alert("✅ Cambios guardados correctamente");
+      showAlert("Cambios guardados correctamente");
       setIsEditing(false);
       fetchUsers(); // Refrescamos listado
       handleCloseModal();
     } catch (error) {
       console.error(error);
-      alert(error.message || "Error al guardar cambios");
+      showAlert(error.message || "Error al guardar cambios");
     }
   };
 
@@ -136,13 +138,13 @@ function AdminUsers() {
         throw new Error(error || "Error al cambiar contraseña");
       }
 
-      alert("✅ Contraseña cambiada correctamente");
+      showAlert("Contraseña cambiada correctamente");
       setChangingPassword(false);
       setNewPassword("");
       handleCloseModal();
     } catch (error) {
       console.error(error);
-      alert(error.message || "Error al cambiar contraseña");
+      showAlert(error.message || "Error al cambiar contraseña");
     }
   };
 

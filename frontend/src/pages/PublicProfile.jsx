@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../static/resources/css/MyProfile.css";
+import { useAlert } from "../components/AlertContext";
 
 function PublicProfile() {
     const { id } = useParams();
@@ -9,6 +10,7 @@ function PublicProfile() {
     const [status, setStatus] = useState("loading");
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("jwt");
+    const { showAlert } = useAlert();
 
     useEffect(() => {
         const fetchPublicUser = async () => {
@@ -58,9 +60,9 @@ function PublicProfile() {
                 throw new Error(errorData.error || "Error al enviar invitación");
             }
 
-            alert(" Invitación enviada");
+            showAlert(" Invitación enviada");
         } catch (err) {
-            alert(`${err.message}`);
+            showAlert(`${err.message}`);
             console.error(err);
         }
     };
