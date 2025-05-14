@@ -1,5 +1,6 @@
 import "../static/resources/css/Friends.css";
 import { useEffect, useState } from 'react';
+import { useAlert } from "../components/AlertContext";
 
 function Friends() {
     const [friends, setFriends] = useState([]);
@@ -13,6 +14,7 @@ function Friends() {
     const [requests, setRequests] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedToDelete, setSelectedToDelete] = useState(null);
+    const { showAlert } = useAlert();
 
 
 
@@ -89,11 +91,11 @@ function Friends() {
                 })
             });
             if (!res.ok) throw new Error("Error al enviar invitación");
-            alert("Invitación enviada");
+            showAlert("Invitación enviada");
             setShowModal(false);
             setAddUsername('');
         } catch (err) {
-            alert("Error al enviar la invitación");
+            showAlert("Error al enviar la invitación");
             console.error(err);
         }
     };
@@ -108,12 +110,12 @@ function Friends() {
                 }
             });
             if (!res.ok) throw new Error("Error al enviar invitación");
-            alert("Amigo " + username + " eliminado");
+            showAlert("Amigo " + username + " eliminado");
             fetchFriends();
             setShowDeleteModal(false);
             setSelectedToDelete(null);
         } catch (err) {
-            alert("Error al borrar el amigo");
+            showAlert("Error al borrar el amigo");
             console.error(err);
         }
     };

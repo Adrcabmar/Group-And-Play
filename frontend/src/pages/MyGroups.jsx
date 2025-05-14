@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import "../static/resources/css/MyGroups.css";
+import { useAlert } from "../components/AlertContext";
 
 const MyGroups = () => {
   const token = localStorage.getItem("jwt");
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const { showAlert } = useAlert();
   const currentUser = JSON.parse(localStorage.getItem("user"));
   const [selectedGame, setSelectedGame] = useState(null);
   const [friends, setFriends] = useState([]);
@@ -99,7 +101,7 @@ const MyGroups = () => {
       setEditMode(false);
     } catch (err) {
       console.error("Error editando grupo:", err);
-      alert("No se pudo guardar el grupo");
+      showAlert("No se pudo guardar el grupo");
     }
   };
 
@@ -140,10 +142,10 @@ const MyGroups = () => {
           groupId: groupId
         })
       });
-      alert(`Invitación enviada a ${username}`);
+      showAlert(`Invitación enviada a ${username}`);
       setSelectedFriend("");
     } catch (err) {
-      alert("Error al invitar: " + (await err.response?.text()));
+      showAlert("Error al invitar: " + (await err.response?.text()));
     }
   };
 

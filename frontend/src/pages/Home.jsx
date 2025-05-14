@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../static/resources/css/Home.css";
 import Select from 'react-select';
 import customSelectStyles from "../utils/customSelectStyles";
+import { useAlert } from "../components/AlertContext";
 
 function Home({ user }) {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ function Home({ user }) {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 3;
-
+  const { showAlert } = useAlert();
   const [allGames, setAllGames] = useState([]);
   const [searchGame, setSearchGame] = useState(null);
   const [searchCommunication, setSearchCommunication] = useState("");
@@ -131,11 +132,11 @@ function Home({ user }) {
       }
 
       const data = await response.json();
-      alert(`✅ Te has unido al grupo de: ${data.creatorUsername}`);
+      showAlert(`Te has unido al grupo de: ${data.creatorUsername}`);
       fetchGroups(page);
     } catch (error) {
       console.error("⚠ Error al unirse al grupo:", error);
-      alert("❌ No se pudo unir al grupo. Inténtalo más tarde.");
+      showAlert("No se pudo unir al grupo. Inténtalo más tarde.");
     }
   };
 

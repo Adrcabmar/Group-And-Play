@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import Select from "react-select";
 import "../../static/resources/css/admin/AdminGroups.css";
 import customSelectStyles from "../../utils/customSelectStyles";
+import { useAlert } from "../../components/AlertContext";
 
 function AdminGroups() {
   const { user } = useUser();
@@ -18,6 +19,7 @@ function AdminGroups() {
   const apiUrl = import.meta.env.VITE_API_URL;
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState(null);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     fetchGames();
@@ -114,13 +116,13 @@ function AdminGroups() {
         throw new Error(errorMsg || "Error al actualizar el grupo");
       }
 
-      alert("✅ Cambios guardados correctamente");
+      showAlert("Cambios guardados correctamente");
       setIsEditing(false);
       fetchGroups();
       setSelectedGroup(null);
     } catch (error) {
       console.error(error);
-      alert(error.message || "Error al guardar cambios");
+      showAlert("Error al guardar cambios");
     }
   };
 

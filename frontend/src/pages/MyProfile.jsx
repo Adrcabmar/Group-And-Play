@@ -4,6 +4,7 @@ import "../static/resources/css/MyProfile.css";
 import Select from 'react-select';
 import { useUser } from "../components/UserContext";
 import customSelectStyles from "../utils/customSelectStyles";
+import { useAlert } from "../components/AlertContext";
 
 function MyProfile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -14,7 +15,7 @@ function MyProfile() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordForm, setPasswordForm] = useState({ actualPassword: "", newPassword: "" });
-
+  const { showAlert } = useAlert();
   const token = localStorage.getItem("jwt");
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -36,7 +37,7 @@ function MyProfile() {
       }));
       setAllGames(options);
     } catch (error) {
-      console.error("⚠ Error al obtener los juegos:", error);
+      console.error(" Error al obtener los juegos:", error);
     }
   };
 
@@ -49,22 +50,54 @@ function MyProfile() {
   };
 
   const handleSave = async () => {
-    const { firstname, lastname, email, description, favGame, profilePictureUrl, username } = formData;
+    const { firstname, lastname, email, description, favGame, username } = formData;
 
     if (description && (description.length < 1 || description.length > 256)) {
-      alert("La descripción debe tener entre 1 y 256 caracteres.");
+      showAlert("La descripción debe tener entre 1 y 256 caracteres.");
       return;
     }
 
+    let profilePictureUrl = formData.profilePictureUrl;
+
+    if (selectedFile) {
+      const imageFormData = new FormData();
+      imageFormData.append("file", selectedFile);
+
+      try {
+        const response = await fetch(`${apiUrl}/api/users/${user.id}/upload-photo`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: imageFormData,
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al subir la foto");
+        }
+
+        const fileName = selectedFile.name.replace(/\s+/g, "_");
+        profilePictureUrl = `/resources/images/user_${user.id}_${fileName}`;
+      } catch (err) {
+        console.error(" Error al subir foto:", err);
+        showAlert("Ocurrió un error al subir la foto.");
+        return;
+      }
+    }
+
     const bodyToSend = {
-      firstname, lastname, email, description, favGame, profilePictureUrl, username
+      firstname,
+      lastname,
+      email,
+      description,
+      favGame,
+      profilePictureUrl,
+      username,
     };
 
     if (username !== user.username) {
       const confirmLogout = window.confirm("Has cambiado tu nombre de usuario. Se cerrará la sesión por seguridad.\n¿Deseas continuar?");
-      if (!confirmLogout) {
-        return;
-      }
+      if (!confirmLogout) return;
     }
 
     try {
@@ -86,7 +119,7 @@ function MyProfile() {
       const updatedUser = result.user;
 
       if (result.usernameChanged) {
-        alert("Has cambiado tu nombre de usuario. Por seguridad, se cerrará la sesión.");
+        showAlert("Has cambiado tu nombre de usuario. Por seguridad, se cerrará la sesión.");
         localStorage.removeItem("jwt");
         localStorage.removeItem("user");
         window.location.href = "/login";
@@ -99,8 +132,8 @@ function MyProfile() {
       }
 
     } catch (error) {
-      console.error("❌ Error al actualizar usuario:", error);
-      alert(error.message || "Ocurrió un error al guardar los cambios.");
+      console.error(" Error al actualizar usuario:", error);
+      showAlert(error.message || "Ocurrió un error al guardar los cambios.");
     }
   };
 
@@ -121,54 +154,30 @@ function MyProfile() {
         throw new Error(error || "Error al cambiar la contraseña");
       }
 
-      alert("✅ Contraseña cambiada correctamente");
+      showAlert(" Contraseña cambiada correctamente");
       setShowPasswordModal(false);
       setPasswordForm({ actualPassword: "", newPassword: "" });
 
     } catch (error) {
-      console.error("❌", error);
-      alert(error.message);
+      console.error(error);
+      showAlert(error.message);
     }
   };
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const allowedTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
-      alert("❌ Formato no permitido. Solo se aceptan imágenes JPG, PNG o WEBP.");
+      showAlert("Formato no permitido. Solo se aceptan imágenes JPG, PNG o WEBP.");
       return;
     }
 
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch(`${apiUrl}/api/users/${user.id}/upload-photo`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al subir la foto");
-      }
-
-      const fileName = file.name.replace(/\s+/g, "_");
-      const updated = { ...user, profilePictureUrl: `/resources/images/user_${user.id}_${fileName}` };
-      setUser(updated);
-      setFormData(updated);
-    } catch (err) {
-      console.error("❌ Error al subir foto:", err);
-      alert("Ocurrió un error al subir la foto.");
-    }
   };
+
 
   return (
     <div className="profile-container">
