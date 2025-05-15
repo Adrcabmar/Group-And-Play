@@ -1,27 +1,29 @@
 select.custom-select {
-    background-color: rgba(0, 0, 0, 0.8);
-    border: 2px solid #00f2ff;
-    border-radius: 8px;
-    color: #00f2ff;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px #00f2ff20;
-    outline: none;
-    appearance: none;
-    cursor: pointer;
-  }
-  
-  select.custom-select:focus,
-  select.custom-select:hover {
-    border-color: #00f2ff;
-    box-shadow: 0 0 12px #00f2ff;
-    background-color: rgba(0, 0, 0, 0.9);
-  }
-  
-  select.custom-select option {
-    background-color: #000;
-    color: #00f2ff;
-    padding: 0.5rem;
-    font-size: 1rem;
-  }
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 0.125rem solid #00f2ff;
+  border-radius: 0.5rem;
+  color: #00f2ff;
+  padding: 0.5rem 1rem;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem); 
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0.625rem #00f2ff20;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px; 
+}
+
+select.custom-select:focus,
+select.custom-select:hover {
+  border-color: #00f2ff;
+  box-shadow: 0 0 0.75rem #00f2ff;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+select.custom-select option {
+  background-color: #000;
+  color: #00f2ff;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
