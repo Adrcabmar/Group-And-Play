@@ -124,11 +124,14 @@ function MyProfile() {
         localStorage.removeItem("user");
         window.location.href = "/login";
       } else {
-        setUser(updatedUser);
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        setIsEditing(false);
-        setSelectedFile(null);
-        setPreviewUrl(null);
+        setTimeout(() => {
+          setUser(updatedUser);
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          setIsEditing(false);
+          setSelectedFile(null);
+          setPreviewUrl(null);
+          showAlert("Cambios guardados correctamente");
+        }, 500);
       }
 
     } catch (error) {
