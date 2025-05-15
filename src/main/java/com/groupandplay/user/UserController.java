@@ -2,6 +2,7 @@ package com.groupandplay.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.groupandplay.dto.ChangePasswordDTO;
 import com.groupandplay.dto.EditUserDTO;
+import com.groupandplay.dto.FriendDTO;
+import com.groupandplay.dto.PublicUserDTO;
 import com.groupandplay.dto.UserDTO;
 import com.groupandplay.dto.UserMapper;
 import com.groupandplay.game.GameRepository;
@@ -37,8 +40,6 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -70,10 +71,10 @@ public class UserController {
             @RequestParam(required = false) String username,
             @RequestParam(required = false) Integer id) {
 
-        if(!hasRole("ADMIN")) {
+        if (!hasRole("ADMIN")) {
             throw new IllegalArgumentException("No tienes permiso para ver todos los usuarios");
         }
-        
+
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage;
 
@@ -112,6 +113,31 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/public/{id}")
+    public ResponseEntity<?> getPublicUserById(@PathVariable Integer id) {
+        User target = userService.getUserById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+    
+        User userLogged = getCurrentUserLogged(); 
+
+        if (userLogged.getId().equals(target.getId())) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("self", true); 
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response); 
+        }
+    
+        boolean isFriend = userRepository.areUsersFriends(userLogged, target);
+    
+        PublicUserDTO dto = new PublicUserDTO(
+            target.getUsername(),
+            target.getFavGame() != null ? target.getFavGame().getName() : "Sin juego favorito",
+            target.getProfilePictureUrl(),
+            target.getDescription(),
+            isFriend
+        );
+    
+        return ResponseEntity.ok(dto);
+    }
 
     /**
      * Actualizar un usuario existente.
@@ -174,13 +200,34 @@ public class UserController {
     /**
      * Eliminar un usuario por ID.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
-        try {
-            userService.deleteUser(id);
-            return ResponseEntity.ok("Usuario eliminado correctamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body("Usuario no encontrado");
-        }
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+    //     try {
+    //         userService.deleteUser(id);
+    //         return ResponseEntity.ok("Usuario eliminado correctamente");
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(404).body("Usuario no encontrado");
+    //     }
+    // }
+
+    // #region Amigos
+
+    @GetMapping("/friends/all")
+    public ResponseEntity<Page<FriendDTO>> getFriends(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String username) {
+        User user = getCurrentUserLogged();
+        Page<FriendDTO> friends = userService.searchFriends(user, page, size, username);
+        return ResponseEntity.ok(friends);
     }
+
+    @DeleteMapping("/friends/{username}")
+    public ResponseEntity<?> removeFriend(@PathVariable String username) {
+        User user = getCurrentUserLogged();
+        userService.removeFriend(user, username);
+        return ResponseEntity.ok("Amigo eliminado correctamente.");
+    }
+
+    // #endregion
 }

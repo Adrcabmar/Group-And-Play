@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import "../static/resources/css/MyProfile.css";
 import Select from 'react-select';
 import { useUser } from "../components/UserContext";
-import  customSelectStyles  from "../utils/customSelectStyles";
+import customSelectStyles from "../utils/customSelectStyles";
+import { useAlert } from "../components/AlertContext";
 
 function MyProfile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -14,7 +15,7 @@ function MyProfile() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordForm, setPasswordForm] = useState({ actualPassword: "", newPassword: "" });
-
+  const { showAlert } = useAlert();
   const token = localStorage.getItem("jwt");
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -36,7 +37,7 @@ function MyProfile() {
       }));
       setAllGames(options);
     } catch (error) {
-      console.error("⚠ Error al obtener los juegos:", error);
+      console.error(" Error al obtener los juegos:", error);
     }
   };
 
@@ -49,19 +50,56 @@ function MyProfile() {
   };
 
   const handleSave = async () => {
-    const { firstname, lastname, email, telephone, favGame, profilePictureUrl, username } = formData;
-  
-    const bodyToSend = {
-      firstname, lastname, email, telephone, favGame, profilePictureUrl, username
-    };
-  
-    if (username !== user.username) {
-      const confirmLogout = window.confirm("Has cambiado tu nombre de usuario. Se cerrará la sesión por seguridad.\n¿Deseas continuar?");
-      if (!confirmLogout) {
+    const { firstname, lastname, email, description, favGame, username } = formData;
+
+    if (description && (description.length < 1 || description.length > 256)) {
+      showAlert("La descripción debe tener entre 1 y 256 caracteres.");
+      return;
+    }
+
+    let profilePictureUrl = formData.profilePictureUrl;
+
+    if (selectedFile) {
+      const imageFormData = new FormData();
+      imageFormData.append("file", selectedFile);
+
+      try {
+        const response = await fetch(`${apiUrl}/api/users/${user.id}/upload-photo`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: imageFormData,
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al subir la foto");
+        }
+
+        const fileName = selectedFile.name.replace(/\s+/g, "_");
+        profilePictureUrl = `/resources/images/user_${user.id}_${fileName}`;
+      } catch (err) {
+        console.error(" Error al subir foto:", err);
+        showAlert("Ocurrió un error al subir la foto.");
         return;
       }
     }
-  
+
+    const bodyToSend = {
+      firstname,
+      lastname,
+      email,
+      description,
+      favGame,
+      profilePictureUrl,
+      username,
+    };
+
+    if (username !== user.username) {
+      const confirmLogout = window.confirm("Has cambiado tu nombre de usuario. Se cerrará la sesión por seguridad.\n¿Deseas continuar?");
+      if (!confirmLogout) return;
+    }
+
     try {
       const response = await fetch(`${apiUrl}/api/users/${user.id}/edit`, {
         method: "PUT",
@@ -71,34 +109,37 @@ function MyProfile() {
         },
         body: JSON.stringify(bodyToSend),
       });
-  
+
       if (!response.ok) {
         const errorMsg = await response.text();
         throw new Error(errorMsg || "Error al guardar los cambios");
       }
-  
+
       const result = await response.json();
       const updatedUser = result.user;
-  
+
       if (result.usernameChanged) {
-        alert("Has cambiado tu nombre de usuario. Por seguridad, se cerrará la sesión.");
+        showAlert("Has cambiado tu nombre de usuario. Por seguridad, se cerrará la sesión.");
         localStorage.removeItem("jwt");
         localStorage.removeItem("user");
         window.location.href = "/login";
       } else {
-        setUser(updatedUser);
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        setIsEditing(false);
-        setSelectedFile(null);
-        setPreviewUrl(null);
+        setTimeout(() => {
+          setUser(updatedUser);
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          setIsEditing(false);
+          setSelectedFile(null);
+          setPreviewUrl(null);
+          showAlert("Cambios guardados correctamente");
+        }, 500);
       }
-  
+
     } catch (error) {
-      console.error("❌ Error al actualizar usuario:", error);
-      alert(error.message || "Ocurrió un error al guardar los cambios.");
+      console.error(" Error al actualizar usuario:", error);
+      showAlert(error.message || "Ocurrió un error al guardar los cambios.");
     }
   };
-  
+
 
   const handlePasswordChange = async () => {
     try {
@@ -110,60 +151,36 @@ function MyProfile() {
         },
         body: JSON.stringify(passwordForm),
       });
-  
+
       if (!response.ok) {
         const error = await response.text();
         throw new Error(error || "Error al cambiar la contraseña");
       }
-  
-      alert("✅ Contraseña cambiada correctamente");
+
+      showAlert(" Contraseña cambiada correctamente");
       setShowPasswordModal(false);
       setPasswordForm({ actualPassword: "", newPassword: "" });
-  
+
     } catch (error) {
-      console.error("❌", error);
-      alert(error.message);
+      console.error(error);
+      showAlert(error.message);
     }
   };
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const allowedTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
-      alert("❌ Formato no permitido. Solo se aceptan imágenes JPG, PNG o WEBP.");
+      showAlert("Formato no permitido. Solo se aceptan imágenes JPG, PNG o WEBP.");
       return;
     }
 
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch(`${apiUrl}/api/users/${user.id}/upload-photo`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al subir la foto");
-      }
-
-      const fileName = file.name.replace(/\s+/g, "_");
-      const updated = { ...user, profilePictureUrl: `/resources/images/user_${user.id}_${fileName}` };
-      setUser(updated);
-      setFormData(updated);
-    } catch (err) {
-      console.error("❌ Error al subir foto:", err);
-      alert("Ocurrió un error al subir la foto.");
-    }
   };
+
 
   return (
     <div className="profile-container">
@@ -174,7 +191,7 @@ function MyProfile() {
             alt="Foto de perfil"
             className="profile-pic"
           />
-  
+
           {isEditing && (
             <>
               <input
@@ -191,7 +208,7 @@ function MyProfile() {
               )}
             </>
           )}
-  
+
           {isEditing ? (
             <div className="button-row">
               <button className="profile-btn" onClick={handleSave}>
@@ -221,7 +238,7 @@ function MyProfile() {
             </>
           )}
         </div>
-  
+
         <div className="profile-right">
           {isEditing ? (
             <label className="field-label">
@@ -237,7 +254,7 @@ function MyProfile() {
           ) : (
             <div className="username-display">{user.username}</div>
           )}
-  
+
           {isEditing ? (
             <>
               <label className="field-label">
@@ -250,7 +267,7 @@ function MyProfile() {
                   className="profile-input"
                 />
               </label>
-  
+
               <label className="field-label">
                 <strong>Apellidos:</strong>
                 <input
@@ -261,7 +278,7 @@ function MyProfile() {
                   className="profile-input"
                 />
               </label>
-  
+
               <label className="field-label">
                 <strong>Email:</strong>
                 <input
@@ -272,18 +289,20 @@ function MyProfile() {
                   className="profile-input"
                 />
               </label>
-  
+
               <label className="field-label">
-                <strong>Teléfono:</strong>
-                <input
-                  type="text"
-                  name="telephone"
-                  value={formData.telephone || ""}
+                <strong>Descripción:</strong>
+                <textarea
+                  name="description"
+                  value={formData.description || ""}
                   onChange={handleChange}
                   className="profile-input"
+                  maxLength={256}
+                  placeholder="Cuéntanos algo sobre ti ..."
+                  rows={4}
                 />
               </label>
-  
+
               <label className="field-label">
                 <strong>Juego favorito:</strong>
                 <Select
@@ -301,18 +320,18 @@ function MyProfile() {
               <span><strong>Nombre:</strong> {user.firstname}</span>
               <span><strong>Apellidos:</strong> {user.lastname}</span>
               <span><strong>Email:</strong> {user.email}</span>
-              <span><strong>Teléfono:</strong> {user.telephone}</span>
+              <span className="profile-description"><strong>Descripción:</strong> {user.description || "Sin descripción"}</span>
               <span><strong>Juego favorito:</strong> {user.favGame || "No especificado"}</span>
             </>
           )}
         </div>
       </div>
-  
+
       {showPasswordModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2>Cambiar contraseña</h2>
-  
+
             <label>Contraseña actual:</label>
             <input
               type="password"
@@ -322,7 +341,7 @@ function MyProfile() {
               }
               className="profile-input"
             />
-  
+
             <label>Nueva contraseña:</label>
             <input
               type="password"
@@ -332,7 +351,7 @@ function MyProfile() {
               }
               className="profile-input"
             />
-  
+
             <div className="button-row">
               <button className="profile-btn" onClick={handlePasswordChange}>
                 Guardar

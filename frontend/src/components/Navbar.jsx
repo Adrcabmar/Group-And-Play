@@ -57,6 +57,9 @@ const MyNavbar = () => {
               <NavItem>
                 <NavLink href="/create-group" className="nav-link navbar-button">Crear grupo</NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink href="/invitations" className="nav-link navbar-button"> Invitaciones</NavLink>
+              </NavItem>
             </>
           )}
         </Nav>
@@ -87,6 +90,16 @@ const MyNavbar = () => {
             >
               Mi perfil
             </DropdownItem>
+
+            <DropdownItem
+              style={{ color: "black", backgroundColor: "transparent" }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = "#4FC3F7"}
+              onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
+              onClick={() => navigate("/friends")}
+            >
+              Amigos
+            </DropdownItem>
+
             <DropdownItem
               style={{
                 backgroundColor: "#81D4FA",

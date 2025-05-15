@@ -1,0 +1,89 @@
+.invitations-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.invitations-container {
+    width: 100%;
+    max-width: 600px;
+    background-color: rgba(31, 26, 51, 0.95);
+    padding: 2rem;
+    border: 2px solid #00f2ff;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #00f2ff;
+    color: #ccc;
+}
+
+.neon-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #00f2ff;
+    text-shadow: 0 0 10px #00f2ff;
+    margin-bottom: 1.5rem;
+}
+
+.invitation-card {
+    border: 1px solid #00f2ff;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px #00f2ff20;
+}
+
+.invitation-card p {
+    margin: 0;
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.invitation-actions {
+    margin-top: 0.8rem;
+    gap: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.invitation-actions button {
+    padding: 0.4rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 2px solid #00f2ff;
+    background-color: transparent;
+    color: #00f2ff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.invitation-actions button:hover {
+    background-color: #00f2ff;
+    color: #1f1a33;
+    box-shadow: 0 0 10px #00f2ff;
+}
+
+.no-invitations {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+}
+
+.pagination {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.pagination-text {
+    color: #00f2ff;
+    font-weight: bold;
+}
+
+.invitation-date {
+    flex: 1;
+    text-align: right;
+    font-size: 0.9rem;
+    color: #ccc;
+  }

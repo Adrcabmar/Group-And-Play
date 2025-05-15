@@ -15,6 +15,7 @@ function CrearGrupo() {
   const [selectedGame, setSelectedGame] = useState(null);
   const [platformOptions, setPlatformOptions] = useState([]);
   const [selectedPlatform, setSelectedPlatform] = useState("");
+  const [status, setStatus] = useState("OPEN");
 
   const [form, setForm] = useState({
     communication: "VOICE_CHAT",
@@ -75,6 +76,7 @@ function CrearGrupo() {
       usergame: form.usergame,
       gameName: selectedGame.value,
       creatorId: currentUser?.id,
+      status: status,
     };
 
     try {
@@ -177,6 +179,15 @@ function CrearGrupo() {
             <option value="VOICE_CHAT">Chat de voz del juego</option>
             <option value="NO_COMMUNICATION">Sin comunicación</option>
             <option value="DISCORD">Discord</option>
+          </select>
+
+          <select
+            className="custom-select"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option value="OPEN">Grupo Abierto </option>
+            <option value="CLOSED">Grupo Cerrado </option>
           </select>
 
           <button type="submit">Crear grupo</button>

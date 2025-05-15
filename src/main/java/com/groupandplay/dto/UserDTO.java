@@ -16,32 +16,30 @@ public class UserDTO {
     private String firstname;
     private String username;
     private String email;
-    private Integer telephone;
+    private String description;
     private String profilePictureUrl;
     private String favGame;
     private List<GroupDTO> groups;
     private String role;
 
     
-    // Constructor que toma la entidad User y la convierte a DTO
     public UserDTO(User user) {
         this.id = user.getId();
         this.lastname = user.getLastName();
         this.firstname = user.getFirstName();
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.telephone = user.getTelephone();
+        this.description = user.getDescription();
         this.profilePictureUrl = user.getProfilePictureUrl();
         this.favGame = user.getFavGame() != null ? user.getFavGame().getName() : null;
         this.role = user.getRole();
         if(user.getGroups() != null){
             this.groups = user.getGroups().stream()
-                    .map(GroupDTO::new)  // Convertir la lista de eventos a DTOs
+                    .map(GroupDTO::new)  
                     .collect(Collectors.toList());
         }
     }
 
-    // Método estático para convertir una lista de usuarios en una lista de DTOs
     public static List<UserDTO> fromEntities(List<User> users) {
         return users.stream()
                 .map(UserDTO::new)

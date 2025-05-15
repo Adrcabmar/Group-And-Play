@@ -2,7 +2,10 @@ package com.groupandplay.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,15 +15,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.groupandplay.dto.ChangePasswordDTO;
 import com.groupandplay.dto.EditUserDTO;
+import com.groupandplay.dto.FriendDTO;
 import com.groupandplay.game.Game;
 import com.groupandplay.game.GameRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.io.IOException;
 import java.nio.file.*;
 
 import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public class UserService {
 
@@ -64,15 +70,15 @@ public class UserService {
         if (user.getId() != null) {
             throw new RuntimeException("No se puede registrar un usuario con ID preexistente");
         }
-    
+
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("El username ya está en uso");
         }
-    
+
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("El email ya está registrado");
         }
-        
+
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
 
@@ -82,13 +88,13 @@ public class UserService {
     @Transactional
     public User updateUserFromDTO(Integer id, EditUserDTO dto) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         user.setUsername(dto.getUsername());
         user.setFirstName(dto.getFirstname());
         user.setLastName(dto.getLastname());
         user.setEmail(dto.getEmail());
-        user.setTelephone(dto.getTelephone());
+        user.setDescription(dto.getDescription());
         user.setProfilePictureUrl(dto.getProfilePictureUrl());
 
         if (dto.getFavGame() != null && !dto.getFavGame().isBlank()) {
@@ -97,17 +103,16 @@ public class UserService {
             user.setFavGame(null);
         }
 
-        userRepository.save(user); 
+        userRepository.save(user);
 
         return user;
     }
 
     public boolean checkIfUsernameChanged(Integer id, String newUsername) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return !user.getUsername().equals(newUsername);
     }
-
 
     @Transactional
     public String uploadProfilePicture(Integer id, MultipartFile file) {
@@ -117,12 +122,13 @@ public class UserService {
 
         String contentType = file.getContentType();
         if (contentType == null ||
-            !(contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/webp"))) {
+                !(contentType.equals("image/jpeg") || contentType.equals("image/png")
+                        || contentType.equals("image/webp"))) {
             throw new IllegalArgumentException("Formato no permitido. Solo se permiten imágenes JPG, PNG o WEBP.");
         }
 
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         try {
 
@@ -154,7 +160,7 @@ public class UserService {
     @Transactional
     public void changePassword(Integer userId, ChangePasswordDTO dto, User currentUser) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         boolean isAdmin = currentUser.getRole().equals("ADMIN");
         boolean isOwner = currentUser.getId().equals(userId);
@@ -172,11 +178,51 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(user);
     }
-    
+
     @Transactional
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
+
+    // #region Amigos
+
+    @Transactional
+    public void removeFriend(User user, String friendUsername) {
+        User userConAmigos = userRepository.findByIdWithFriends(user.getId())
+            .orElseThrow(() -> new IllegalArgumentException("Usuario logueado no encontrado"));
     
+        User friend = userRepository.findByUsername(friendUsername)
+            .orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario " + friendUsername));
     
+        if (!userRepository.areUsersFriends(userConAmigos, friend)) {
+            throw new IllegalArgumentException("No sois amigos " + userConAmigos.getUsername() + " y " + friend.getUsername());
+        }
+    
+        userConAmigos.removeFriend(friend);
+        userRepository.save(userConAmigos);
+        userRepository.save(friend);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<FriendDTO> searchFriends(User user, int page, int size, String username) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("username").ascending());
+
+        Page<User> friendsPage = userRepository.findFriendsByUser(user, pageable);
+
+        if (username != null && !username.isBlank()) {
+            List<User> filtered = friendsPage.getContent().stream()
+                    .filter(friend -> friend.getUsername() != null &&
+                            friend.getUsername().toLowerCase().contains(username.toLowerCase()))
+                    .toList();
+
+            return new PageImpl<>(
+                    filtered.stream().map(FriendDTO::new).toList(),
+                    pageable,
+                    filtered.size());
+        }
+
+        return friendsPage.map(FriendDTO::new);
+    }
+
+    // #endregion
 }

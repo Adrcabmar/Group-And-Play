@@ -12,7 +12,7 @@ public class EditUserDTO {
     private String firstname;
     private String lastname;
     private String email;
-    private Integer telephone;
+    private String description;
     private String favGame;
     private String profilePictureUrl;
 }

@@ -4,6 +4,7 @@ import { useUser } from "../../components/UserContext";
 import { Navigate } from "react-router-dom";
 import "../../static/resources/css/admin/AdminGames.css";
 import customMultiSelectStyles from "../../utils/customMultiSelectStyles";
+import { useAlert } from "../../components/AlertContext";
 
 const platformOptions = [
   { value: "PC", label: "PC" },
@@ -25,6 +26,7 @@ function AdminGames() {
   const [creating, setCreating] = useState(false);
   const [newGameData, setNewGameData] = useState({ name: "", maxPlayers: "", platforms: [] });
   const apiUrl = import.meta.env.VITE_API_URL;
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     fetchGames();
@@ -56,7 +58,7 @@ function AdminGames() {
   const handleSaveChanges = async () => {
     const token = localStorage.getItem("jwt");
     if (!editData.name.trim() || editData.maxPlayers < 2 || editData.maxPlayers > 1023 || editData.platforms.length === 0) {
-      alert("❌ Datos inválidos. Revisa los campos.");
+      showAlert("Datos inválidos. Revisa los campos.");
       return;
     }
     const response = await fetch(`${apiUrl}/api/games/edit`, {
@@ -68,7 +70,7 @@ function AdminGames() {
       body: JSON.stringify(editData),
     });
     if (response.ok) {
-      alert("✅ Juego actualizado");
+      showAlert("Juego actualizado");
       setIsEditing(false);
       setSelectedGame(null);
       fetchGames();
@@ -78,7 +80,7 @@ function AdminGames() {
   const handleCreateGame = async () => {
     const token = localStorage.getItem("jwt");
     if (!newGameData.name.trim() || newGameData.maxPlayers < 2 || newGameData.maxPlayers > 1023 || newGameData.platforms.length === 0) {
-      alert("❌ Datos inválidos. Revisa los campos.");
+      showAlert("Datos inválidos. Revisa los campos.");
       return;
     }
     const response = await fetch(`${apiUrl}/api/games/create`, {
@@ -93,7 +95,7 @@ function AdminGames() {
       }),
     });
     if (response.ok) {
-      alert("✅ Juego creado con éxito");
+      showAlert("Juego creado con éxito");
       setCreating(false);
       setNewGameData({ name: "", maxPlayers: "", platforms: [] });
       fetchGames();

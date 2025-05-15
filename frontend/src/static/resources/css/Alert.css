@@ -1,0 +1,47 @@
+.alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(31, 26, 51, 1);
+  color: #00f2ff;
+  border: 2px solid #00f2ff;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #00f2ff88;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: slideIn 0.3s ease;
+}
+
+.alert.success {
+  border-color: #00ff88;
+  color: #00ff88;
+  box-shadow: 0 0 20px #00ff8888;
+}
+
+.alert.error {
+  border-color: #ff4d4d;
+  color: #ff4d4d;
+  box-shadow: 0 0 20px #ff4d4d88;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
