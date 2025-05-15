@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../static/resources/css/Login.css"; 
+import "../static/resources/css/Login.css";
 import { getCurrentUser } from "../utils/api";
 
 
@@ -21,7 +21,7 @@ function Login({ setUser }) {
     try {
       const response = await axios.post("http://localhost:8080/api/users/auth/login", form);
       const token = response.data.token;
-      const data = await getCurrentUser({token});
+      const data = await getCurrentUser({ token });
       window.localStorage.setItem("user", JSON.stringify(data.user));
       window.localStorage.setItem("jwt", response.data.token);
       setUser(data.user);
@@ -32,7 +32,13 @@ function Login({ setUser }) {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "80vh",
+      }}>
       <div className="login-box">
         <h2>Login</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
