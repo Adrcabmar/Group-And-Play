@@ -54,3 +54,32 @@ INSERT IGNORE INTO user_friends (user_id, friend_id) VALUES
 (1, 2), (2, 1),  -- Alice y Bob
 (2, 3), (3, 2);  -- Bob y Charlie
 
+--CHATS
+INSERT IGNORE INTO chat (id, game_id) VALUES 
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4), 
+(5, 5);
+
+--MENSAJES
+INSERT IGNORE INTO message (id, chat_id, sender_id, content, date) VALUES 
+-- Chat del LoL
+(1, 1, 1, 'Hola, alguien para rankear?', '2025-05-16 10:00:00'),
+(2, 1, 2, 'Yo me apunto, main jungla!', '2025-05-16 10:01:00'),
+
+-- Chat del CS2
+(3, 2, 2, 'Estamos buscando un AWP para el equipo.', '2025-05-16 11:00:00'),
+(4, 2, 3, 'Yo juego AWP, soy nivel alto.', '2025-05-16 11:02:00'),
+
+-- Chat del Valo
+(5, 3, 4, 'Sage o Reyna?', '2025-05-16 12:00:00'),
+(6, 3, 5, 'Reyna siempre bb', '2025-05-16 12:01:00'),
+
+-- Chat del Mine
+(7, 4, 3, 'Estoy construyendo una granja de hierro.', '2025-05-16 13:00:00'),
+(8, 4, 1, 'Pásame las coordenadas!', '2025-05-16 13:02:00'),
+
+-- Chat del Overwatch
+(9, 5, 5, '¿Quién se anima a unas partidas rápidas?', '2025-05-16 14:00:00'),
+(10, 5, 4, 'Voy contigo, juego Sojourn.', '2025-05-16 14:01:00');

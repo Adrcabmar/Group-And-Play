@@ -1,11 +1,9 @@
 package com.groupandplay.group;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.groupandplay.dto.GroupDTO;
-import com.groupandplay.dto.UserDTO;
-import com.groupandplay.game.Game;
-import com.groupandplay.game.GameRepository;
+
 import com.groupandplay.user.User;
 import com.groupandplay.user.UserRepository;
 
@@ -41,9 +37,6 @@ public class GroupController {
     
     @Autowired
     private GroupService groupService;
-
-    @Autowired
-    private GameRepository gameRepository;
 
     @Autowired
     private UserRepository userRepository;
