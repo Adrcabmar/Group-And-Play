@@ -66,6 +66,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/games/all",
                                 "/api/games/find/{gameName}",
+                                "/api/games/search/{gameId}",
                                 "/api/groups/my-groups",
                                 "/api/groups/open",
                                 "/api/groups/**")

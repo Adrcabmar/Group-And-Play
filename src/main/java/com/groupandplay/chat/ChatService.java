@@ -66,6 +66,7 @@ public class ChatService {
             ChatMessageResponseDTO dto = new ChatMessageResponseDTO();
             dto.setId(message.getId());
             dto.setContent(message.getContent());
+            dto.setSenderId(message.getSender().getId());
             dto.setSenderUsername(message.getSender().getUsername());
             dto.setSenderProfilePictureUrl(message.getSender().getProfilePictureUrl());
             dto.setDate(message.getDate());

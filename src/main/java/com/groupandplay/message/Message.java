@@ -11,14 +11,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-public class Message extends BaseEntity{
-    
+public class Message extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
@@ -27,8 +28,9 @@ public class Message extends BaseEntity{
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 255)
     @NotBlank
+    @Size(max = 255)
     private String content;
 
     @Column(name = "date", nullable = false)

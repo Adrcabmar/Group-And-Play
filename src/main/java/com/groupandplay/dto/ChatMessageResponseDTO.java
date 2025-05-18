@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class ChatMessageResponseDTO {
     private Integer id;
     private String content;
+    private Integer senderId;
     private String senderUsername;
     private String senderProfilePictureUrl;
     private LocalDateTime date;
