@@ -300,7 +300,7 @@ const MyGroups = () => {
 
                 {selectedGroup.creatorUsername === currentUser.username && (
                   <>
-                    <button className="modal-edit-btn" onClick={() => setEditMode(true)}>
+                    <button className="modal-edit-btn" onClick={() => setEditMode(true)} style={{marginBottom: "0.5rem"}}>
                       Editar grupo
                     </button>
 

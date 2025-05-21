@@ -11,6 +11,31 @@ function PublicProfile() {
     const apiUrl = import.meta.env.VITE_API_URL;
     const token = localStorage.getItem("jwt");
     const { showAlert } = useAlert();
+    const [myGroups, setMyGroups] = useState([]);
+    const [selectedGroupId, setSelectedGroupId] = useState("");
+    const [showGroupInvite, setShowGroupInvite] = useState(false);
+
+    useEffect(() => {
+        if (publicUser?.friend) {
+            fetchMyGroups();
+        }
+    }, [publicUser]);
+
+    const fetchMyGroups = async () => {
+        try {
+            const res = await fetch(`${apiUrl}/api/groups/my-groups`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            const filtered = data.filter(
+                g => g.creatorUsername === JSON.parse(localStorage.getItem("user")).username &&
+                    !g.users.includes(publicUser.username)
+            );
+            setMyGroups(filtered);
+        } catch (err) {
+            console.error("Error al cargar grupos:", err);
+        }
+    };
 
     useEffect(() => {
         const fetchPublicUser = async () => {
@@ -40,6 +65,33 @@ function PublicProfile() {
 
         fetchPublicUser();
     }, [id, navigate]);
+
+    const handleInviteToGroup = async () => {
+        try {
+            const res = await fetch(`${apiUrl}/api/invitations/create`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    receiverUsername: publicUser.username,
+                    groupInvitation: true,
+                    groupId: selectedGroupId
+                }),
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || "Error al enviar invitación");
+            } 
+            showAlert("Invitación al grupo enviada");
+            setSelectedGroupId("");
+            setShowGroupInvite(false);
+        } catch (err) {
+            showAlert(`${err.message}`);
+        }
+    };
 
     const handleAddFriend = async () => {
         try {
@@ -91,9 +143,39 @@ function PublicProfile() {
                             className="profile-pic"
                         />
                         {publicUser.friend ? (
-                            <span className="profile-btn" style={{ cursor: "default" }}>
-                                Sois amigos
-                            </span>
+                            <>
+                                <span className="profile-btn" style={{ cursor: "default", marginBottom: "0.5rem" }}>
+                                    Sois amigos
+                                </span>
+                                <button className="profile-btn" onClick={() => setShowGroupInvite(!showGroupInvite)}>
+                                    {showGroupInvite ? "Cancelar" : "Invitar a grupo"}
+                                </button>
+
+                                {showGroupInvite && (
+                                    <div style={{ marginTop: "1rem" }}>
+                                        <select
+                                            className="custom-select"
+                                            value={selectedGroupId}
+                                            onChange={(e) => setSelectedGroupId(e.target.value)}
+                                        >
+                                            <option value="" >Selecciona un grupo</option>
+                                            {myGroups.map(group => (
+                                                <option key={group.id} value={group.id}>
+                                                    {group.gameName} - {group.description || "Sin descripción"}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            className="modal-invite-btn"
+                                            disabled={!selectedGroupId}
+                                            style={{ marginTop: "0.5rem" }}
+                                            onClick={handleInviteToGroup}
+                                        >
+                                            Enviar invitación
+                                        </button>
+                                    </div>
+                                )}
+                            </>
                         ) : (
                             <button className="profile-btn" onClick={handleAddFriend}>
                                 Enviar solicitud de amistad
