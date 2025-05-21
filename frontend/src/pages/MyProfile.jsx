@@ -23,6 +23,28 @@ function MyProfile() {
     fetchGames();
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const discordStatus = params.get("discord");
+    if (discordStatus === "success") {
+      showAlert("Tu cuenta de Discord ha sido vinculada correctamente");
+      fetch(`${apiUrl}/api/users/auth/current-user`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          const updatedUser = data.user;
+          setUser(updatedUser); 
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        });
+    }
+    else if (discordStatus === "error") {
+      showAlert("Hubo un problema al vincular tu cuenta de Discord.");
+    }
+  }, []);
+
   const fetchGames = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/games/all`, {
@@ -235,6 +257,67 @@ function MyProfile() {
               >
                 Cambiar contraseña
               </button>
+
+              {user.discordName ? (
+                <button
+                  className="profile-btn"
+                  style={{ marginTop: "10px" }}
+                  onClick={() => {
+                    if (!window.confirm("¿Estás seguro de que quieres desvincular tu cuenta de Discord?")) return;
+
+                    fetch(`${apiUrl}/api/auth/discord/unlink`, {
+                      method: "PATCH",
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                      },
+                    })
+                      .then((res) => {
+                        if (!res.ok) throw new Error("Error al desvincular Discord");
+                        return fetch(`${apiUrl}/api/users/auth/current-user`, {
+                          headers: { Authorization: `Bearer ${token}` },
+                        });
+                      })
+                      .then(res => res.json())
+                      .then(data => {
+                        const updatedUser = data.user;
+                        localStorage.setItem("user", JSON.stringify(updatedUser));
+                        setUser(updatedUser);
+                        showAlert("Discord desvinculado correctamente");
+                      })
+                      .catch((err) => {
+                        console.error(err);
+                        showAlert("Ocurrió un error al desvincular Discord");
+                      });
+                  }}
+                >
+                  Desvincular Discord
+                </button>
+              ) : (
+                <button
+                  className="profile-btn"
+                  style={{ marginTop: "10px" }}
+                  onClick={() => {
+                    const userId = user?.id;
+
+                    if (!userId) {
+                      alert("No se pudo obtener el ID de usuario");
+                      return;
+                    }
+
+                    const redirectUri = encodeURIComponent("http://localhost:8080/api/auth/discord/callback");
+                    const discordUrl =
+                      `https://discord.com/api/oauth2/authorize?client_id=1374722658574401596` +
+                      `&redirect_uri=${redirectUri}` +
+                      `&response_type=code` +
+                      `&scope=identify` +
+                      `&state=${userId}`;
+
+                    window.location.href = discordUrl;
+                  }}
+                >
+                  Vincular con Discord
+                </button>
+              )}
             </>
           )}
         </div>
@@ -321,6 +404,7 @@ function MyProfile() {
               <span><strong>Apellidos:</strong> {user.lastname}</span>
               <span><strong>Email:</strong> {user.email}</span>
               <span className="profile-description"><strong>Descripción:</strong> {user.description || "Sin descripción"}</span>
+              <span><strong>Nombre de Discord:</strong> {user.discordName || "Sin vincular"}</span>
               <span><strong>Juego favorito:</strong> {user.favGame || "No especificado"}</span>
             </>
           )}
@@ -369,6 +453,7 @@ function MyProfile() {
           </div>
         </div>
       )}
+
     </div>
   );
 }

@@ -35,7 +35,7 @@ public class Person extends BaseEntity {
 	@Email
     private String email;
 
-    @Size(max = 256)
+    @Size(max = 255)
     @Column(name = "description", nullable = true)
     private String description;
 

@@ -39,6 +39,9 @@ public class User extends Person implements UserDetails {
     @NotBlank
     private String role;
 
+    @Column(name = "discord_name")
+    private String discordName;
+
     @Column(name = "profile_picture_url")
     private String profilePictureUrl = "/resources/images/defecto.png";
 
