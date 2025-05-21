@@ -45,7 +45,7 @@ function Invitations() {
     const handleReject = async (id) => {
         try {
             await fetch(`${apiUrl}/api/invitations/reject/${id}`, {
-                method: "DELETE",
+                method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
             });
             fetchInvitations();
