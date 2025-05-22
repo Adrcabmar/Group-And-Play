@@ -46,31 +46,59 @@
 }
 
 .chat-message {
-  padding: 0.5rem 0.9rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
   border-radius: 0.6rem;
   max-width: 70%;
-  overflow-wrap: break-word;
+  word-wrap: break-word;
   word-break: break-word;
+  box-shadow: 0 0 0.4rem #00f2ff33;
   transition: background-color 0.2s ease;
 }
 
 .own-message {
   align-self: flex-end;
-  background-color: #003554;
-  border-left: 0.25rem solid #00f2ff;
+  flex-direction: row-reverse;
+  background-color: rgba(37, 107, 145, 0.95); 
+  border-left: 0.3rem solid #00f2ff;
   text-align: right;
+  border-radius: 0.8rem 0.2rem 0.8rem 0.8rem;
+  box-shadow: 0 0 0.5rem #00f2ff66;
 }
 
 .other-message {
   align-self: flex-start;
-  background-color: #1e2a3f;
-  border-right: 0.25rem solid #00f2ff;
+  background-color: rgba(36, 37, 99, 0.95);
+  border-right: 0.3rem solid #00f2ff;
   text-align: left;
+  border-radius: 0.2rem 0.8rem 0.8rem 0.8rem;
+  box-shadow: 0 0 0.5rem #00f2ff33;
 }
 
 .sender {
   font-weight: bold;
   color: #00f2ff;
+}
+
+.profile-bubble {
+  flex-shrink: 0;
+}
+
+.profile-img {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 0.15rem solid #00f2ffcc;
+  box-shadow: 0 0 0.4rem #00f2ff88;
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .chat-input-area {
@@ -106,47 +134,17 @@
   background-color: #00c2d3;
 }
 
+@keyframes fadeInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .chat-message {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.5rem 0.9rem;
-  border-radius: 0.6rem;
-  max-width: 70%;
-  word-wrap: break-word;
-}
-
-.own-message {
-  align-self: flex-end;
-  flex-direction: row-reverse;
-  background-color: #003554;
-  border-left: 0.25rem solid #00f2ff;
-  text-align: right;
-}
-
-.other-message {
-  align-self: flex-start;
-  background-color: #1e2a3f;
-  border-right: 0.25rem solid #00f2ff;
-  text-align: left;
-}
-
-.profile-bubble {
-  flex-shrink: 0;
-}
-
-.profile-img {
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 0.1rem solid #00f2ff66;
-  box-shadow: 0 0 0.2rem #00f2ff66;
-}
-
-.message-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  animation: fadeInMessage 0.2s ease-out;
 }

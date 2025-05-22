@@ -23,87 +23,96 @@ import com.groupandplay.config.jwt.services.UserDetailsServiceImpl;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsSer;
+        @Autowired
+        private UserDetailsServiceImpl userDetailsSer;
 
-    @Autowired
-    private JWTAuthFilter jwtAuthFilter;
+        @Autowired
+        private JWTAuthFilter jwtAuthFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults()) // Habilita CORS
-                .authorizeHttpRequests(auth -> auth
-                        // Permitir sin autenticación (rutas públicas)
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/api/users/auth/register",
-                                "/api/users/auth/login",
-                                "/ws/**",
-                                "/api/users/auth/current-user",
-                                "/resources/**", "/static/**", "/images/**", "/css/**", "/js/**")
-                        .permitAll()
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .cors(Customizer.withDefaults()) // Habilita CORS
+                                .authorizeHttpRequests(auth -> auth
+                                                // Permitir sin autenticación (rutas públicas)
+                                                .requestMatchers(
+                                                                "/api/auth/login",
+                                                                "/api/users/auth/register",
+                                                                "/api/users/auth/login",
+                                                                "/ws/**",
+                                                                "/api/users/auth/current-user",
+                                                                "/resources/**", "/static/**", "/images/**", "/css/**",
+                                                                "/js/**")
+                                                .permitAll()
 
-                        // URIS DE ADMIN
-                        .requestMatchers(
-                                "/api/users/admin/**",
-                                "api/groups/admin/**",
-                                "/api/games/admin/**")
-                        .hasAuthority("ADMIN")
+                                                // URIS DE ADMIN
+                                                .requestMatchers(
+                                                                "/api/users/admin/**",
+                                                                "api/groups/admin/**",
+                                                                "/api/games/admin/**")
+                                                .hasAuthority("ADMIN")
 
-                        // URIS DE USER
-                        .requestMatchers(
-                                "/api/users/friends/**",
-                                "/api/invitations/**",
-                                "/api/users/public/**")
-                        .hasAnyAuthority("USER", "ADMIN")
+                                                // URIS DE USER
+                                                .requestMatchers(
+                                                                "/api/users/friends/**",
+                                                                "/api/invitations/**",
+                                                                "/api/users/public/**")
+                                                .hasAnyAuthority("USER", "ADMIN")
 
-                        .requestMatchers(
-                                "/api/users/{id:[0-9]+}/**")
-                        .hasAnyAuthority("USER", "ADMIN")
+                                                .requestMatchers(
+                                                                "/api/users/{id:[0-9]+}/**")
+                                                .hasAnyAuthority("USER", "ADMIN")
 
-                        .requestMatchers(
-                                "/api/games/all",
-                                "/api/games/find/{gameName}",
-                                "/api/games/search/{gameId}",
-                                "/api/groups/my-groups",
-                                "/api/groups/open",
-                                "/api/groups/**")
-                        .hasAnyAuthority("USER", "ADMIN")
+                                                .requestMatchers(
+                                                                "/api/games/all",
+                                                                "/api/games/find/{gameName}",
+                                                                "/api/games/search/{gameId}",
+                                                                "/api/groups/my-groups",
+                                                                "/api/groups/open",
+                                                                "/api/groups/**")
+                                                .hasAnyAuthority("USER", "ADMIN")
 
-                        // URIS DE CHAT
-                        .requestMatchers(
-                                "/api/chat/**",
-                                "/app/**",
-                                "/topic/**")
-                        .hasAnyAuthority("USER", "ADMIN")
+                                                // URIS DE CHAT
+                                                .requestMatchers(
+                                                                "/api/chat/**",
+                                                                "/app/**",
+                                                                "/topic/**")
+                                                .hasAnyAuthority("USER", "ADMIN")
 
-                        // Todo lo demás requiere autenticación
-                        .anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                                                .requestMatchers("/api/auth/discord/callback")
+                                                .permitAll()
 
-        return http.build();
-    }
+                                                //DISCORD
+                                                .requestMatchers("/api/auth/discord/unlink")
+                                                .permitAll()
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailsSer);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        return daoAuthenticationProvider;
-    }
+                                                // Todo lo demás requiere autenticación
+                                                .anyRequest().authenticated())
+                                .sessionManagement(manager -> manager
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authenticationProvider(authenticationProvider())
+                                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
+                return http.build();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+        @Bean
+        public AuthenticationProvider authenticationProvider() {
+                DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+                daoAuthenticationProvider.setUserDetailsService(userDetailsSer);
+                daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+                return daoAuthenticationProvider;
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder(10);
+        }
+
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+                        throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
+        }
 }

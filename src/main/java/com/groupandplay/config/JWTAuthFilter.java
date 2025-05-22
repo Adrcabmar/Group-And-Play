@@ -1,6 +1,7 @@
 package com.groupandplay.config;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,23 +15,32 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.groupandplay.config.jwt.JWTUtils;
 import com.groupandplay.config.jwt.services.UserDetailsServiceImpl;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import java.security.Key;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 @Component
 public class JWTAuthFilter extends OncePerRequestFilter {
-    
+
     @Autowired
     private JWTUtils jwtUtils;
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-
-     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
         final String jwtToken;
@@ -50,8 +60,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
+                        userDetails, null, userDetails.getAuthorities());
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
@@ -60,4 +69,3 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
