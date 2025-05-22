@@ -129,11 +129,21 @@ public class AuthController {
     public ResponseEntity<?> unlinkDiscordAccount() {
         try {
             User user = getCurrentUserLogged();
+
+            if (userRepository.isCreatorOfDiscordGroup(user.getId())) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("Tienes grupos con comunicación 'Discord'. Borralos para desvincularte.");
+            }
+
             user.setDiscordName(null);
             userRepository.save(user);
+
             return ResponseEntity.ok("Cuenta de Discord desvinculada correctamente");
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al desvincular Discord");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error interno al desvincular Discord");
         }
     }
 

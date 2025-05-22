@@ -34,7 +34,6 @@
   box-shadow: 0 0 0.6rem #00f2ff30;
   outline: none;
   width: 100%;
-  max-width: 300px;
 }
 
 .neon-button,
@@ -140,7 +139,6 @@
   border: 2px solid #00f2ff;
   box-shadow: 0 0 1.25rem #00f2ff80;
   width: 100%;
-  max-width: 500px;
 }
 
 .modal-buttons {
@@ -161,7 +159,7 @@
 
 .friend-requests-box {
   width: 100%;
-  max-width: 300px;
+  max-width: 500px;
   padding: 1.5rem;
   background-color: rgba(31, 26, 51, 0.7);
   border: 2px solid #00f2ff;
@@ -201,8 +199,8 @@
 
 .neon-button-danger {
   background-color: transparent;
-  border: 2px solid #ff4d4d;
-  color: #ff4d4d;
+  border: 2px solid #ff4d4d !important;
+  color: #ff4d4d !important;
   padding: 0.4rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;

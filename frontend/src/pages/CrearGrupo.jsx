@@ -180,7 +180,9 @@ function CrearGrupo() {
           >
             <option value="VOICE_CHAT">Chat de voz del juego</option>
             <option value="NO_COMMUNICATION">Sin comunicación</option>
-            <option value="DISCORD">Discord</option>
+            <>
+            {currentUser.discordName? 
+            <option value="DISCORD">Discord</option>: null}</>
           </select>
 
           <select

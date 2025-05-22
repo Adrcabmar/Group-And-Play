@@ -31,6 +31,7 @@ public class GroupDTO {
     private String usergame;
     private List<String> users;
     private String platform;
+    private String discordName;
 
     public GroupDTO(Group group) {
         this.id = group.getId();
@@ -43,6 +44,7 @@ public class GroupDTO {
         this.maxPlayers = group.getGame().getMaxPlayers();
         this.platform = group.getPlatform().toString();
         this.usergame = group.getUsergame();
+        this.discordName = group.getCreator().getDiscordName();
         this.users = group.getUsers().stream()
                           .map(user -> user.getUsername())
                           .collect(Collectors.toList());

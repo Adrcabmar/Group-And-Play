@@ -80,7 +80,7 @@ function Invitations() {
                                 </p>
                                 <div className="invitation-actions">
                                     <button onClick={() => handleAccept(inv.id)}>Aceptar</button>
-                                    <button onClick={() => handleReject(inv.id)}>Rechazar</button>
+                                    <button className="neon-button-danger" onClick={() => handleReject(inv.id)}>Rechazar</button>
                                 </div>
                             </div>
                         ))}

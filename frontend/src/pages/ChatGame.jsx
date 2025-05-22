@@ -165,6 +165,12 @@ const ChatGame = () => {
                             setNewMsg(e.target.value);
                         }
                     }}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault(); 
+                            sendMessage();
+                        }
+                    }}
                     placeholder="Escribe un mensaje..."
                 />
                 <small style={{ color: "#00f2ff", marginTop: "0.5rem" }}>
