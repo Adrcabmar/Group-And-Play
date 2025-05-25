@@ -138,7 +138,7 @@ function PublicProfile() {
                 <div className="profile-box">
                     <div className="profile-left">
                         <img
-                            src={`http://localhost:8080${publicUser.profilePictureUrl || "/resources/images/defecto.png"}`}
+                            src={`${apiUrl}${publicUser.profilePictureUrl || "/resources/images/defecto.png"}`}
                             alt="Foto de perfil"
                             className="profile-pic"
                         />

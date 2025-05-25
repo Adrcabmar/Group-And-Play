@@ -6,11 +6,11 @@ import axios from "axios";
 import "../static/resources/css/Login.css";
 import { getCurrentUser } from "../utils/api";
 
-
 function Login({ setUser }) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,7 +19,7 @@ function Login({ setUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/users/auth/login", form);
+      const response = await axios.post(`${apiUrl}/api/users/auth/login` , form);
       const token = response.data.token;
       const data = await getCurrentUser({ token });
       window.localStorage.setItem("user", JSON.stringify(data.user));

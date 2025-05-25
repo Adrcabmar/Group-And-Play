@@ -6,7 +6,7 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
-import logo from "../static/resources/images/Logo.png";
+import logo from "../static/resources/images/logo.png";
 import { useUser } from "../components/UserContext";
 
 const MyNavbar = () => {
@@ -123,7 +123,7 @@ const MyNavbar = () => {
               <DropdownToggle tag="span" style={{ cursor: "pointer" }}>
                 <span className="user-name" style={{ marginRight: "10px" }}>{currentUser?.username}</span>
                 <img
-                  src={`http://localhost:8080${currentUser?.profilePictureUrl || "/resources/images/defecto.png"}`}
+                  src={`${apiUrl}${currentUser?.profilePictureUrl || "/resources/images/defecto.png"}`}
                   alt="Usuario"
                   className="user-avatar"
                 />

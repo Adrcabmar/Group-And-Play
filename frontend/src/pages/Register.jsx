@@ -11,7 +11,7 @@ const Register = () => {
     email: "",
     password: "",
   });
-
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -21,10 +21,9 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Formulario enviado:", form); 
 
     try {
-      const response = await axios.post("http://localhost:8080/api/users/auth/register", {
+      const response = await axios.post(`${apiUrl}/api/users/auth/register`, {
         firstName: form.firstName,
         lastName: form.lastName,
         username: form.username,
@@ -38,7 +37,6 @@ const Register = () => {
         return;
       }
 
-      console.log("Usuario registrado:", response.data);
       navigate("/login"); 
     } catch (error) {
       console.error("Error en el registro:", error.response?.data || error.message);
