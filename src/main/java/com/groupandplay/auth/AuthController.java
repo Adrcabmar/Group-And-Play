@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +39,15 @@ public class AuthController {
     @Autowired
     private JWTAuthFilter jwtAuthFilter;
 
+    @Value("${discord.redirect.uri}")
+    private String redirectUri;
+
+    @Value("${discord.frontend.success}")
+    private String frontendRedirectOk;
+
+    @Value("${discord.frontend.error}")
+    private String frontendRedirectError;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private User getCurrentUserLogged() {
@@ -62,13 +72,10 @@ public class AuthController {
             @RequestParam("code") String code,
             @RequestParam("state") String userIdString) {
 
-        String redirectUri = "http://localhost:8080/api/auth/discord/callback";
-        String frontendRedirectOk = "http://localhost:5173/my-profile?discord=success";
-        String frontendRedirectError = "http://localhost:5173/my-profile?discord=error";
-
         try {
             Integer userId = Integer.parseInt(userIdString);
-            User currentUser = userRepository.findById(userId).orElseThrow();
+            User currentUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -111,9 +118,8 @@ public class AuthController {
             Map<String, Object> discordUser = userResponse.getBody();
             String username = (String) discordUser.get("username");
             String discriminator = (String) discordUser.get("discriminator");
-            String discordName = discriminator.equals("0")
-                    ? username
-                    : username + "#" + discriminator;
+
+            String discordName = "0".equals(discriminator) ? username : username + "#" + discriminator;
             currentUser.setDiscordName(discordName);
             userRepository.save(currentUser);
 

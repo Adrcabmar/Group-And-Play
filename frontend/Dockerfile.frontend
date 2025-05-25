@@ -1,0 +1,25 @@
+# Etapa 1: Build del frontend con Node y Vite
+FROM node:20 AS build
+WORKDIR /app
+
+COPY . .
+
+# ⚠️ NO pongas NODE_ENV=production aquí todavía
+COPY .env.production .env
+
+# 1. Instala todas las dependencias incluyendo las dev (vite, eslint, etc.)
+RUN npm install
+
+# 2. Instala vite de forma global para que esté disponible durante el build
+RUN npm install -g vite
+
+# 3. Ejecuta el build
+RUN vite build
+
+# Etapa 2: Imagen final con Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

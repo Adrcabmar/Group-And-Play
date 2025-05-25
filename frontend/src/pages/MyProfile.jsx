@@ -115,7 +115,7 @@ function MyProfile() {
         if (!response.ok) throw new Error("Error al subir la foto");
 
         const fileName = selectedFile.name.replace(/\s+/g, "_");
-        profilePictureUrl = `/resources/images/user_${user.id}_${fileName}`;
+        profilePictureUrl = `/images/user_${user.id}_${fileName}`;
       } catch (err) {
         console.error("Error al subir foto:", err);
         showAlert("Ocurrió un error al subir la foto.");
