@@ -33,7 +33,6 @@ const MyGroups = () => {
       if (!res.ok) throw new Error("Error al obtener los grupos");
       const data = await res.json();
       setGroups(data);
-      console.log("Grupos obtenidos:", data);
     } catch (err) {
       console.error(err);
     }

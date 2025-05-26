@@ -131,24 +131,22 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         try {
-
             String oldPhoto = user.getProfilePictureUrl();
-            if (oldPhoto != null && !oldPhoto.equals("/resources/images/defecto.png")) {
-                Path oldPath = Paths.get("src/main/resources/static" + oldPhoto);
-                try {
-                    Files.deleteIfExists(oldPath);
-                } catch (IOException ex) {
-                    System.err.println("⚠ No se pudo eliminar la imagen anterior: " + oldPath);
-                }
+            if (oldPhoto != null && !oldPhoto.equals("/images/defecto.png")) {
+                String filename = Paths.get(oldPhoto).getFileName().toString();
+                Path oldPath = Paths.get("uploads/images", filename);
+                Files.deleteIfExists(oldPath);
             }
+
             String fileName = "user_" + id + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
-            Path uploadPath = Paths.get("src/main/resources/static/resources/images/");
+            Path uploadPath = Paths.get("uploads/images/");
             Files.createDirectories(uploadPath);
 
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            user.setProfilePictureUrl("/resources/images/" + fileName);
+            user.setProfilePictureUrl("/images/" + fileName);
+
             userRepository.save(user);
 
             return "Foto subida correctamente";
@@ -189,15 +187,16 @@ public class UserService {
     @Transactional
     public void removeFriend(User user, String friendUsername) {
         User userConAmigos = userRepository.findByIdWithFriends(user.getId())
-            .orElseThrow(() -> new IllegalArgumentException("Usuario logueado no encontrado"));
-    
+                .orElseThrow(() -> new IllegalArgumentException("Usuario logueado no encontrado"));
+
         User friend = userRepository.findByUsername(friendUsername)
-            .orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario " + friendUsername));
-    
+                .orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario " + friendUsername));
+
         if (!userRepository.areUsersFriends(userConAmigos, friend)) {
-            throw new IllegalArgumentException("No sois amigos " + userConAmigos.getUsername() + " y " + friend.getUsername());
+            throw new IllegalArgumentException(
+                    "No sois amigos " + userConAmigos.getUsername() + " y " + friend.getUsername());
         }
-    
+
         userConAmigos.removeFriend(friend);
         userRepository.save(userConAmigos);
         userRepository.save(friend);

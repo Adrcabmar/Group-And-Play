@@ -204,45 +204,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <!-- Instalar dependencias de React antes de compilar el backend -->
-          <execution>
-            <id>install-frontend</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>frontend</workingDirectory>
-              <executable>npm</executable>
-              <arguments>
-                <argument>install</argument>
-              </arguments>
-            </configuration>
-          </execution>
-
-          <!-- Construir el frontend React antes de empaquetar Spring Boot -->
-          <execution>
-            <id>build-frontend</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>frontend</workingDirectory>
-              <executable>npm</executable>
-              <arguments>
-                  <argument>run</argument>
-                  <argument>build</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
@@ -263,6 +224,11 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>2.4.4</version>
       </plugin>
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>

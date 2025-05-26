@@ -45,11 +45,10 @@ const ChatGame = () => {
     useEffect(() => {
         if (!token || !currentUser) return;
 
-        const socketUrl = `http://localhost:8080/ws?token=${token}`;
+        const socketUrl = `${apiUrl}/ws?token=${token}`;
         const client = new Client({
             webSocketFactory: () => new SockJS(socketUrl),
             onConnect: () => {
-                console.log("Conectado al WebSocket");
                 client.subscribe(`/topic/chat/${chatId}`, (message) => {
                     const body = JSON.parse(message.body);
                     setMessages((prev) => [...prev, body]);
@@ -139,7 +138,7 @@ const ChatGame = () => {
                                 style={{ cursor: "pointer" }}
                             >
                                 <img
-                                    src={`http://localhost:8080${msg.senderProfilePictureUrl || "/default-profile.png"}`}
+                                    src={`${apiUrl}${msg.senderProfilePictureUrl || "/default-profile.png"}`}
                                     alt="profile"
                                     className="profile-img"
                                 />

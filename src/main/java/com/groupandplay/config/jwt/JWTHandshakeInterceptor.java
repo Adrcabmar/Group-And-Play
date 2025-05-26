@@ -30,7 +30,6 @@ public class JWTHandshakeInterceptor implements HandshakeInterceptor {
 
             String tokenParam = httpServletRequest.getParameter("token");
 
-            System.out.println("[Handshake] Token recibido por parámetro: " + tokenParam);
 
             if (tokenParam != null && !tokenParam.isBlank()) {
                 try {

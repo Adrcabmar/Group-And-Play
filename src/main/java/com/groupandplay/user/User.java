@@ -43,7 +43,7 @@ public class User extends Person implements UserDetails {
     private String discordName;
 
     @Column(name = "profile_picture_url")
-    private String profilePictureUrl = "/resources/images/defecto.png";
+    private String profilePictureUrl = "/uploads/profile/defecto.png";
 
     @ManyToOne
     @JoinColumn(name = "fav_game_id")

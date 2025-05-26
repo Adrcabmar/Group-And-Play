@@ -115,7 +115,7 @@ function MyProfile() {
         if (!response.ok) throw new Error("Error al subir la foto");
 
         const fileName = selectedFile.name.replace(/\s+/g, "_");
-        profilePictureUrl = `/resources/images/user_${user.id}_${fileName}`;
+        profilePictureUrl = `/images/user_${user.id}_${fileName}`;
       } catch (err) {
         console.error("Error al subir foto:", err);
         showAlert("Ocurrió un error al subir la foto.");
@@ -243,7 +243,7 @@ function MyProfile() {
       <div className="profile-box">
         <div className="profile-left">
           <img
-            src={previewUrl || `http://localhost:8080${user.profilePictureUrl || "/resources/images/defecto.png"}`}
+            src={previewUrl || `${apiUrl}${user.profilePictureUrl || "/resources/images/defecto.png"}`}
             alt="Foto de perfil"
             className="profile-pic"
           />
@@ -320,7 +320,7 @@ function MyProfile() {
                       return;
                     }
 
-                    const redirectUri = encodeURIComponent("http://localhost:8080/api/auth/discord/callback");
+                    const redirectUri = encodeURIComponent(`${apiUrl}/api/auth/discord/callback`);
                     const discordUrl =
                       `https://discord.com/api/oauth2/authorize?client_id=1374722658574401596` +
                       `&redirect_uri=${redirectUri}` +
