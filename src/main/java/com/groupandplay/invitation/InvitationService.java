@@ -62,10 +62,10 @@ public class InvitationService {
         User receiver = userService.getUserByUsername(invitationDTO.getReceiverUsername())
                 .orElseThrow(() -> new IllegalArgumentException("No existe el usuario destino."));
 
-        if (creator.equals(receiver)) {
+        if (creator.getUsername().equals(receiver.getUsername())) {
             throw new IllegalArgumentException("No puedes enviarte una invitación a ti mismo.");
         }
-
+        
         invitation.setReceiver(receiver);
         invitation.setSender(creator);
         invitation.setGroupInvitation(invitationDTO.getGroupInvitation());
