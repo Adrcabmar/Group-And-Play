@@ -57,7 +57,7 @@ public class UserManagementService {
         } catch (DataIntegrityViolationException e) {
         // Manejo de excepciones por violaciones de integridad (ej. usuario ya existe)
         resp.setStatusCode(400);
-        resp.setError("El usuario con este nombre de usuario, correo electrónico y DNI ya existe.");
+        resp.setError("El usuario con este nombre de usuario o correo electrónico.");
         } catch (ConstraintViolationException e) {
             // Manejo de errores relacionados con restricciones (ej. campos vacíos)
             resp.setStatusCode(400);

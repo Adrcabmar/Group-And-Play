@@ -107,35 +107,34 @@ public class UserController {
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
-        Optional<User> user = Optional.ofNullable(userService.getUserByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado")));
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
+        User user = userService.getUserByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        return ResponseEntity.ok(new UserDTO(user));
     }
 
     @GetMapping("/public/{id}")
     public ResponseEntity<?> getPublicUserById(@PathVariable Integer id) {
         User target = userService.getUserById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-    
-        User userLogged = getCurrentUserLogged(); 
+
+        User userLogged = getCurrentUserLogged();
 
         if (userLogged.getId().equals(target.getId())) {
             Map<String, Object> response = new HashMap<>();
-            response.put("self", true); 
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response); 
+            response.put("self", true);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-    
+
         boolean isFriend = userRepository.areUsersFriends(userLogged, target);
-    
+
         PublicUserDTO dto = new PublicUserDTO(
-            target.getUsername(),
-            target.getFavGame() != null ? target.getFavGame().getName() : "Sin juego favorito",
-            target.getProfilePictureUrl(),
-            target.getDescription(),
-            isFriend
-        );
-    
+                target.getUsername(),
+                target.getFavGame() != null ? target.getFavGame().getName() : "Sin juego favorito",
+                target.getProfilePictureUrl(),
+                target.getDescription(),
+                isFriend);
+
         return ResponseEntity.ok(dto);
     }
 
@@ -196,19 +195,6 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-    /**
-     * Eliminar un usuario por ID.
-     */
-    // @DeleteMapping("/{id}")
-    // public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
-    //     try {
-    //         userService.deleteUser(id);
-    //         return ResponseEntity.ok("Usuario eliminado correctamente");
-    //     } catch (Exception e) {
-    //         return ResponseEntity.status(404).body("Usuario no encontrado");
-    //     }
-    // }
 
     // #region Amigos
 

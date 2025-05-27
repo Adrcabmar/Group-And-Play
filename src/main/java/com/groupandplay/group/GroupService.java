@@ -90,7 +90,7 @@ public class GroupService {
         Game game = null;
         if (gameName != null && !gameName.isEmpty()) {
             game = gameRepository.findByName(gameName)
-                    .orElse(null); // puede ser null si no se encuentra
+                    .orElse(null);
         }
 
         Communication communication = null;
@@ -124,7 +124,7 @@ public class GroupService {
         if (!groupDTO.getStatus().equalsIgnoreCase("OPEN") && !groupDTO.getStatus().equalsIgnoreCase("CLOSED")) {
             throw new IllegalArgumentException("El estado del grupo es incorrecto.");
         }
-        
+
         Group group = new Group();
         group.setCreator(creator);
         group.setGame(game);
@@ -155,6 +155,13 @@ public class GroupService {
     }
 
     public Group joinGroup(User user, Group group, Boolean fromInvitation) throws IllegalArgumentException {
+
+        if (user == null || group == null) {
+            throw new IllegalArgumentException("Usuario o grupo no pueden ser nulos");
+        }
+
+        Group prueba = groupRepository.findById(group.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Grupo no encontrado"));
 
         if (isMemberOfGroup(user, group)) {
             throw new IllegalArgumentException("Ya eres parte de este grupo");
