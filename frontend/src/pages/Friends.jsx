@@ -95,7 +95,7 @@ function Friends() {
             setShowModal(false);
             setAddUsername('');
         } catch (err) {
-            showAlert("Error al enviar la invitación");
+            showAlert("No se ha encontrado al usuario");
             console.error(err);
         }
     };

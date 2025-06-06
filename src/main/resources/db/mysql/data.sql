@@ -81,13 +81,19 @@ INSERT IGNORE INTO users_groups (user_id, group_id) VALUES
 INSERT IGNORE INTO invitation (id, is_group_invitation, sender_id, receiver_id, group_id, date) VALUES 
 (1, false, 1, 3, NULL, '2025-05-08 18:30:00'),
 (2, true, 2, 1, 2, '2025-05-08 18:45:00'),
-(3, false, 3, 1, NULL, '2025-05-15 12:00:00');
+(3, false, 3, 1, NULL, '2025-05-15 12:00:00'),
+(4, false, 16, 6, NULL, '2025-05-15 12:00:00'),
+(5, true, 16, 6, 14, '2025-05-15 12:00:00'),
+(6, false, 17, 16, NULL, '2025-05-15 12:00:00');
+
 
 
 --AMIGOS
 INSERT IGNORE INTO user_friends (user_id, friend_id) VALUES 
 (1, 2), (2, 1),  -- Alice y Bob
-(2, 3), (3, 2);  -- Bob y Charlie
+(2, 3), (3, 2),  -- Bob y Charlie
+(6, 9), (9, 6);  -- Adri y Afri
+
 
 --CHATS
 INSERT IGNORE INTO chat (id, game_id) VALUES 
@@ -95,7 +101,8 @@ INSERT IGNORE INTO chat (id, game_id) VALUES
 (2, 2),
 (3, 3),
 (4, 4), 
-(5, 5);
+(5, 5),
+(6, 6);
 
 --MENSAJES
 INSERT IGNORE INTO message (id, chat_id, sender_id, content, date) VALUES 
@@ -117,4 +124,11 @@ INSERT IGNORE INTO message (id, chat_id, sender_id, content, date) VALUES
 
 -- Chat del Overwatch
 (9, 5, 5, '¿Quién se anima a unas partidas rápidas?', '2025-05-16 14:00:00'),
-(10, 5, 4, 'Voy contigo, juego Sojourn.', '2025-05-16 14:01:00');
+(10, 5, 4, 'Voy contigo, juego Sojourn.', '2025-05-16 14:01:00'),
+
+-- Chat del Fortnite
+(11, 6, 7, '¿Alguien quiere jugar unas partidas?', '2025-05-16 15:00:00'),
+(12, 6, 8, 'Yo me apunto, tengo el pase de batalla.', '2025-05-16 15:01:00');
+
+
+

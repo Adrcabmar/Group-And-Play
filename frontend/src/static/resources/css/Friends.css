@@ -133,12 +133,14 @@
 }
 
 .modal-content {
-  background-color: #111;
+  background-color: rgba(31, 26, 51);
   padding: 2rem;
   border-radius: 0.75rem;
   border: 2px solid #00f2ff;
   box-shadow: 0 0 1.25rem #00f2ff80;
   width: 100%;
+  color:#00f2ff;
+  
 }
 
 .modal-buttons {

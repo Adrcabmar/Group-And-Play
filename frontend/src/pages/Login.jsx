@@ -40,12 +40,12 @@ function Login({ setUser }) {
         minHeight: "80vh",
       }}>
       <div className="login-box">
-        <h2>Login</h2>
+        <h2>Inicio de sesión</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <form onSubmit={handleSubmit}>
-          <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
-          <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-          <button type="submit">Login</button>
+          <input type="text" name="username" placeholder="Nombre de usuario" onChange={handleChange} required />
+          <input type="password" name="password" placeholder="Contraseña" onChange={handleChange} required />
+          <button type="submit">Iniciar sesión</button>
         </form>
         <p>¿No tienes una cuenta? <a href="/register">Regístrate</a></p>
       </div>
