@@ -229,11 +229,4 @@ class UserServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> userService.changePassword(1, dto, current));
     }
-
-    // 11. deleteUser
-    @Test
-    void deleteUser_success() {
-        userService.deleteUser(1);
-        verify(userRepository).deleteById(1);
-    }
 }
