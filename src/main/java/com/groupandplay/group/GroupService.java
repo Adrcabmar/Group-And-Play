@@ -109,8 +109,8 @@ public class GroupService {
     @Transactional
     public Group createGroup(GroupDTO groupDTO, User creator) throws IllegalArgumentException {
 
-        if (groupRepository.findManyGroupsOpenOrClosed(creator.getId()) >= 5) {
-            throw new IllegalArgumentException("Ya formas parte de 5 grupos, abandona alguno para crear otro");
+        if (groupRepository.findManyGroupsOpenOrClosed(creator.getId()) >= 6) {
+            throw new IllegalArgumentException("Ya formas parte de 6 grupos, abandona alguno para crear otro");
         }
 
         Platform selectedPlatform = Platform.valueOf(groupDTO.getPlatform());

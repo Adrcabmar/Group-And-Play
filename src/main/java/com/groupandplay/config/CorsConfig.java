@@ -22,7 +22,7 @@ public class CorsConfig {
                         .allowCredentials(true);
             }
 
-@Override
+            @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
                 String dockerEnv = System.getenv("DOCKER_ENV");
                 String path = dockerEnv != null ? "file:/app/uploads/images/" : "file:uploads/images/";
