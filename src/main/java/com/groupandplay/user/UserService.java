@@ -177,11 +177,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Transactional
-    public void deleteUser(Integer id) {
-        userRepository.deleteById(id);
-    }
-
     // #region Amigos
 
     @Transactional
