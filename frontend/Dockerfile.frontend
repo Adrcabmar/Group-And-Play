@@ -4,9 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-# ⚠️ NO pongas NODE_ENV=production aquí todavía
-COPY .env.production .env
-
 # 1. Instala todas las dependencias incluyendo las dev (vite, eslint, etc.)
 RUN npm install
 
