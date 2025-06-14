@@ -21,6 +21,7 @@ public class UserDTO {
     private String favGame;
     private List<GroupDTO> groups;
     private String role;
+    private String discordName;
 
     
     public UserDTO(User user) {
@@ -38,6 +39,7 @@ public class UserDTO {
                     .map(GroupDTO::new)  
                     .collect(Collectors.toList());
         }
+        this.discordName= user.getDiscordName();
     }
 
     public static List<UserDTO> fromEntities(List<User> users) {

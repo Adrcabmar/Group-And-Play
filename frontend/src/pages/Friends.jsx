@@ -95,7 +95,7 @@ function Friends() {
             setShowModal(false);
             setAddUsername('');
         } catch (err) {
-            showAlert("Error al enviar la invitación");
+            showAlert("No se ha encontrado al usuario");
             console.error(err);
         }
     };
@@ -132,13 +132,13 @@ function Friends() {
                             className="custom-input"
                             placeholder="Buscar por username..."
                             value={usernameSearch}
+                            style={{maxWidth: "60%"}}
                             onChange={(e) => setUsernameSearch(e.target.value)}
                         />
-                        <button className="neon-button" onClick={() => setShowModal(true)}>
-                            Agregar usuario
+                        <button className="neon-button" style={{maxWidth: "30%"}} onClick={() => setShowModal(true)}>
+                            Agregar
                         </button>
                     </div>
-
 
                     <div className="friends-list">
                         {friends.length === 0 ? (
@@ -231,7 +231,7 @@ function Friends() {
                                     Aceptar
                                 </button>
                                 <button
-                                    className="neon-button-secondary"
+                                    className="neon-button-danger"
                                     onClick={() => handleReject(req.id)}
                                 >
                                     Rechazar

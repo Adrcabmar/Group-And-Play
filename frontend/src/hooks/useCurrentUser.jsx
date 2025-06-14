@@ -18,7 +18,7 @@ export const useCurrentUser = () => {
           setUser(data.user);
           localStorage.setItem("user", JSON.stringify(data.user));
         } catch (error) {
-          console.error("❌ Error fetching current user:", error);
+          console.error("Error fetching current user:", error);
           setUser(null);
           localStorage.removeItem("user");
         } finally {

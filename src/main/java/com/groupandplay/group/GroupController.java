@@ -1,11 +1,9 @@
 package com.groupandplay.group;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -25,25 +23,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.groupandplay.dto.GroupDTO;
-import com.groupandplay.dto.UserDTO;
-import com.groupandplay.game.Game;
-import com.groupandplay.game.GameRepository;
+
 import com.groupandplay.user.User;
 import com.groupandplay.user.UserRepository;
 
 import jakarta.validation.Valid;
 
-
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/groups")
 public class GroupController {
-    
-    @Autowired
-    private GroupService groupService;
 
     @Autowired
-    private GameRepository gameRepository;
+    private GroupService groupService;
 
     @Autowired
     private UserRepository userRepository;
@@ -58,7 +50,7 @@ public class GroupController {
     private User getCurrentUserLogged() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername(); 
+        String username = userDetails.getUsername();
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
     }
@@ -70,24 +62,23 @@ public class GroupController {
             @RequestParam(required = false) Integer id,
             @RequestParam(required = false) String status) {
 
-        if(!hasRole("ADMIN")) {
+        if (!hasRole("ADMIN")) {
             throw new IllegalArgumentException("No tienes permiso para ver todos los grupos");
         }
-        
+
         Pageable pageable = PageRequest.of(page, size);
         Page<Group> groups = groupService.getAllGroups(pageable, id, game, status);
         Page<GroupDTO> groupsDTO = groups.map(GroupDTO::new);
         return ResponseEntity.ok(groupsDTO);
     }
 
-
     @GetMapping("/open")
     public ResponseEntity<Page<GroupDTO>> getOpenGroups(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "3") int size,
-        @RequestParam(required = false) String game,
-        @RequestParam(required = false) String communication,
-        @RequestParam(required = false) String platform
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size,
+            @RequestParam(required = false) String game,
+            @RequestParam(required = false) String communication,
+            @RequestParam(required = false) String platform
 
     ) {
         String username = getCurrentUserLogged().getUsername();
@@ -124,11 +115,11 @@ public class GroupController {
     }
 
     @PutMapping("/edit/{groupId}")
-    public ResponseEntity<?> editGroup(@PathVariable Integer groupId, @Valid @RequestBody GroupDTO groupDTO) throws IllegalArgumentException {
+    public ResponseEntity<?> editGroup(@PathVariable Integer groupId, @Valid @RequestBody GroupDTO groupDTO)
+            throws IllegalArgumentException {
         User user = getCurrentUserLogged();
         Group group = groupService.findById(groupId);
-
-        if(!hasRole("ADMIN") && user.getId() != group.getCreator().getId()) {
+        if (!hasRole("ADMIN") && !user.getId().equals(group.getCreator().getId())) {
             throw new IllegalArgumentException("No tienes permisos para editar este grupo");
         }
 
@@ -145,8 +136,8 @@ public class GroupController {
 
     @PutMapping("/leave-group/{groupId}")
     public ResponseEntity<?> leaveGroup(@PathVariable Integer groupId) throws IllegalArgumentException {
-        User user = getCurrentUserLogged(); 
-        groupService.leaveGroup(user.getId(), groupId); 
+        User user = getCurrentUserLogged();
+        groupService.leaveGroup(user.getId(), groupId);
         return ResponseEntity.ok("Has abandonado el grupo correctamente");
     }
 }

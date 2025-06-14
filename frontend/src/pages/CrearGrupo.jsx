@@ -106,7 +106,7 @@ function CrearGrupo() {
 
   return (
     <div className="login-container">
-      <div className="login-box" style={{ width: "380px", padding: "20px" }}>
+      <div className="login-box" style={{ width: "30%", padding: "1.5rem", marginTop: "3rem" }}>
         <h2>Crear grupo</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <form onSubmit={handleSubmit}>
@@ -133,6 +133,7 @@ function CrearGrupo() {
             className="custom-select"
             style={{
               marginTop: "10px",
+              minWidth: "100%",
               color: !selectedGame ? "#888" : "inherit",
               cursor: !selectedGame ? "not-allowed" : "pointer",
               backgroundColor: "#111",
@@ -175,16 +176,21 @@ function CrearGrupo() {
             onChange={handleChange}
             required
             className="custom-select"
+            style={{ minWidth: "100%" }}
           >
             <option value="VOICE_CHAT">Chat de voz del juego</option>
             <option value="NO_COMMUNICATION">Sin comunicación</option>
-            <option value="DISCORD">Discord</option>
+            <>
+            {currentUser.discordName? 
+            <option value="DISCORD">Discord</option>: null}</>
           </select>
 
           <select
             className="custom-select"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
+            style={{ minWidth: "100%" }}
+
           >
             <option value="OPEN">Grupo Abierto </option>
             <option value="CLOSED">Grupo Cerrado </option>

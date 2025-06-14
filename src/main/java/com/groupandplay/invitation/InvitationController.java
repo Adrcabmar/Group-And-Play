@@ -1,5 +1,8 @@
 package com.groupandplay.invitation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -74,13 +77,17 @@ public class InvitationController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createInvitation(@Valid @RequestBody InvitationDTO invitationDTO)
-            throws IllegalArgumentException {
-
-        User creator = getCurrentUserLogged();
-
-        Invitation newInvitation = invitationService.createInvitation(invitationDTO, creator);
-        return ResponseEntity.ok(new InvitationDTO(newInvitation));
+    public ResponseEntity<?> createInvitation(@Valid @RequestBody InvitationDTO invitationDTO) {
+        try {
+            User creator = getCurrentUserLogged();
+            Invitation newInvitation = invitationService.createInvitation(invitationDTO, creator);
+            return ResponseEntity.ok(new InvitationDTO(newInvitation));
+        } catch (IllegalArgumentException ex) {
+            Map<String, Object> errorBody = new HashMap<>();
+            errorBody.put("statusCode", 400);
+            errorBody.put("error", ex.getMessage());
+            return ResponseEntity.badRequest().body(errorBody);
+        }
     }
 
     @PostMapping("/accept/{invitationId}")

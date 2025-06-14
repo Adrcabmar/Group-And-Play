@@ -159,9 +159,6 @@ function Home({ user }) {
 
   return (
     <div className="home-container">
-      <aside className="home-left">
-      </aside>
-
       <main className="home-main">
         <h2 className="section-title">Grupos Disponibles</h2>
 
@@ -264,9 +261,6 @@ function Home({ user }) {
           )}
         </div>
       </main>
-
-      <aside className="home-right">
-      </aside>
     </div>
   );
 }

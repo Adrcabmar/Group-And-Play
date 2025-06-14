@@ -11,7 +11,7 @@ const Register = () => {
     email: "",
     password: "",
   });
-
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -21,10 +21,9 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Formulario enviado:", form); 
 
     try {
-      const response = await axios.post("http://localhost:8080/api/users/auth/register", {
+      const response = await axios.post(`${apiUrl}/api/users/auth/register`, {
         firstName: form.firstName,
         lastName: form.lastName,
         username: form.username,
@@ -38,7 +37,6 @@ const Register = () => {
         return;
       }
 
-      console.log("Usuario registrado:", response.data);
       navigate("/login"); 
     } catch (error) {
       console.error("Error en el registro:", error.response?.data || error.message);
@@ -46,16 +44,15 @@ const Register = () => {
     }
   };
 
-  // TODO: Añadir al formulario el campo para el tipo de usuario: cliente o proveedor
   return (
-    <div className="login-container">
+    <div className="login-container" style={{ marginTop: "2rem" }}>
       <div className="login-box">
         <h2>Registro</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <form onSubmit={handleSubmit}>
           <input type="text" name="firstName" placeholder="Nombre" value={form.firstName} onChange={handleChange} required />
           <input type="text" name="lastName" placeholder="Apellido" value={form.lastName} onChange={handleChange} required />
-          <input type="text" name="username" placeholder="Usuario" value={form.username} onChange={handleChange} required />
+          <input type="text" name="username" placeholder="Nombre de usuario" value={form.username} onChange={handleChange} required />
           <input type="email" name="email" placeholder="Correo electrónico" value={form.email} onChange={handleChange} required />
           <input type="password" name="password" placeholder="Contraseña" value={form.password} onChange={handleChange} required />
           <button type="submit">Registrarse</button>

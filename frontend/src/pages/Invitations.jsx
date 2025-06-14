@@ -45,7 +45,7 @@ function Invitations() {
     const handleReject = async (id) => {
         try {
             await fetch(`${apiUrl}/api/invitations/reject/${id}`, {
-                method: "DELETE",
+                method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
             });
             fetchInvitations();
@@ -80,7 +80,7 @@ function Invitations() {
                                 </p>
                                 <div className="invitation-actions">
                                     <button onClick={() => handleAccept(inv.id)}>Aceptar</button>
-                                    <button onClick={() => handleReject(inv.id)}>Rechazar</button>
+                                    <button className="neon-button-danger" onClick={() => handleReject(inv.id)}>Rechazar</button>
                                 </div>
                             </div>
                         ))}

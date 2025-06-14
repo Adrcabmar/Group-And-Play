@@ -70,6 +70,13 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+    @GetMapping("/search/{gameId}")
+    public ResponseEntity<Game> getGameById(@PathVariable Integer gameId) {
+
+        Game game = gameService.findById(gameId);
+        return ResponseEntity.ok(game);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Game> createGame(@RequestBody GameDTO gameDTO) {
         if (!hasRole("ADMIN")) {

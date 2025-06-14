@@ -3,14 +3,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../static/resources/css/Login.css"; 
+import "../static/resources/css/Login.css";
 import { getCurrentUser } from "../utils/api";
-
 
 function Login({ setUser }) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,9 +19,9 @@ function Login({ setUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/users/auth/login", form);
+      const response = await axios.post(`${apiUrl}/api/users/auth/login` , form);
       const token = response.data.token;
-      const data = await getCurrentUser({token});
+      const data = await getCurrentUser({ token });
       window.localStorage.setItem("user", JSON.stringify(data.user));
       window.localStorage.setItem("jwt", response.data.token);
       setUser(data.user);
@@ -32,14 +32,20 @@ function Login({ setUser }) {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "80vh",
+      }}>
       <div className="login-box">
-        <h2>Login</h2>
+        <h2>Inicio de sesión</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <form onSubmit={handleSubmit}>
-          <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
-          <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-          <button type="submit">Login</button>
+          <input type="text" name="username" placeholder="Nombre de usuario" onChange={handleChange} required />
+          <input type="password" name="password" placeholder="Contraseña" onChange={handleChange} required />
+          <button type="submit">Iniciar sesión</button>
         </form>
         <p>¿No tienes una cuenta? <a href="/register">Regístrate</a></p>
       </div>

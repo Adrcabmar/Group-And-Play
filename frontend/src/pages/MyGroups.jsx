@@ -33,7 +33,6 @@ const MyGroups = () => {
       if (!res.ok) throw new Error("Error al obtener los grupos");
       const data = await res.json();
       setGroups(data);
-      console.log("Grupos obtenidos:", data);
     } catch (err) {
       console.error(err);
     }
@@ -195,12 +194,11 @@ const MyGroups = () => {
 
       {selectedGroup && (
         <div className="modal-overlay" onClick={() => setSelectedGroup(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" style={{backgroundColor: "rgba(31, 26, 51, 1)"}} onClick={(e) => e.stopPropagation()}>
             <h2>{selectedGroup.gameName}</h2>
 
             {editMode ? (
               <>
-                {/* campos de edición como antes */}
                 <label>Descripción:</label>
                 <textarea
                   value={selectedGroup.description}
@@ -264,7 +262,10 @@ const MyGroups = () => {
                     })
                   }
                 >
-                  <option value="DISCORD">Discord</option>
+                  <>
+                    {currentUser.discordName ?
+                      <option value="DISCORD">Discord</option> : null}
+                  </>
                   <option value="VOICE_CHAT">Chat de voz del juego</option>
                   <option value="NO_COMMUNICATION">Sin comunicación</option>
                 </select>
@@ -294,13 +295,21 @@ const MyGroups = () => {
                     <span style={{ color: "#00f2ff" }}> (Tú)</span>
                   )}
                 </p>
-                <p>Comunicación: <span className="info-highlight">{TipoComunicacion(selectedGroup.communication)}</span></p>
+                <p>
+                  Comunicación: <span className="info-highlight">{TipoComunicacion(selectedGroup.communication)}</span>
+                  {selectedGroup.communication === "DISCORD" && selectedGroup.discordName && (
+                    <>
+                      {" "}
+                      - <span className="info-highlight">{selectedGroup.discordName}</span>
+                    </>
+                  )}
+                </p>
                 <p>Plataforma: <strong>{selectedGroup.platform}</strong></p>
                 <p>Usuario en la plataforma: <strong>{selectedGroup.usergame}</strong></p>
 
                 {selectedGroup.creatorUsername === currentUser.username && (
                   <>
-                    <button className="modal-edit-btn" onClick={() => setEditMode(true)}>
+                    <button className="modal-edit-btn" onClick={() => setEditMode(true)} style={{ marginBottom: "0.5rem" }}>
                       Editar grupo
                     </button>
 
@@ -332,9 +341,10 @@ const MyGroups = () => {
                         <button
                           className="modal-invite-btn"
                           disabled={!selectedFriend}
+                          style={{marginLeft: "0.5rem"}}
                           onClick={() => handleInvite(selectedFriend, selectedGroup.id)}
                         >
-                          Enviar invitación
+                          Invitar
                         </button>
                       </div>
                     )}
@@ -344,7 +354,7 @@ const MyGroups = () => {
                 <div className="modal-buttons">
                   <button className="modal-close-btn" onClick={() => setSelectedGroup(null)}>Cerrar</button>
                   <button
-                    className="modal-action-btn"
+                    className="neon-button-danger"
                     onClick={() =>
                       handleLeaveOrDelete(
                         selectedGroup.id,

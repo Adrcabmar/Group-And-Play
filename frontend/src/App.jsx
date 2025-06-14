@@ -12,6 +12,7 @@ import MyProfile from "./pages/MyProfile";
 import Friends from "./pages/Friends";
 import Invitations from "./pages/Invitations";
 import PublicProfile from "./pages/PublicProfile";
+import ChatGame from "./pages/ChatGame";
 
 // Admin
 import AdminHome from "./pages/admin/AdminHome";
@@ -58,6 +59,7 @@ function AppContent() {
             <Route path="/friends" element={<Friends />} />
             <Route path="/invitations" element={<Invitations />} />
             <Route path="/user/:id" element={<PublicProfile />} />
+            <Route path="/chat/:chatId" element={<ChatGame />} />
 
 
             {/* Admin */}
