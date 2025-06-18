@@ -23,38 +23,92 @@ git --version
 - MySQL
 - Maven
 ```
-### **2. Clonar el Proyecto**
-Abre una terminal y ejecuta:
-git clone https://github.com/Adrcabmar/Group-And-Play.git
 
-### **3. Configurar la Base de Datos**
-Si usas MySQL, crea una base de datos con:
+A continuación se explican las dos formas principales de instalar y ejecutar el proyecto. Se recomienda usar Docker por su simplicidad.
 
-```sh
-Copiar
-Editar
-```
-Asegúrate de que application-mysql.properties tenga la configuración correcta:
-```sh
-spring.datasource.url=jdbc:mysql://localhost/groupandplay
-spring.datasource.username=root
-spring.datasource.password=tu_contraseña
-```
-### **4. Compilar y Ejecutar la Aplicación**
-Ejecuta los siguientes comandos en la raíz del proyecto:
-```sh
-./mvnw clean package   # Compilar la aplicación
-./mvnw spring-boot:run # Ejecutar la aplicación
-```
-### **5. Acceder a la Aplicación**
-Una vez que la aplicación esté en ejecución, accede desde tu navegador a:
+---
 
-🔗 http://localhost:8080
+### 🔧 Opción 1: Arranque con Docker (recomendado)
 
-## Tecnologías Utilizadas
+1. **Inicia Docker Desktop**. Abre la aplicación y verifica que en la esquina inferior izquierda aparezca el mensaje `Engine running`.
+2. **Clona el repositorio** desde tu editor de código favorito (por ejemplo, Visual Studio Code):
 
-Spring Boot 3
-Maven
-MySQL / H2
-Thymeleaf (para el frontend)
-Hibernate / JPA (para ORM)
+   ```bash
+   git clone https://github.com/Adrcabmar/Group-And-Play.git
+   ```
+
+3. Dentro de la carpeta `frontend`, renombra el archivo `.env example.txt` a `.env`.
+4. Desde la carpeta raíz del proyecto, ejecuta el siguiente comando para construir las imágenes:
+
+   ```bash
+   docker compose up --build
+   ```
+
+5. Docker construirá el backend, el frontend y levantará la base de datos. Este proceso puede tardar varios minutos. Una vez finalizado, verás los siguientes contenedores en Docker Desktop:
+   - `frontend`
+   - `backend`
+   - `mariadb`
+6. Accede a la web desde tu navegador en:  
+   [http://localhost:3000/](http://localhost:3000/)
+7. Para detener los servicios, ejecuta desde la carpeta raíz:
+
+   ```bash
+   docker compose down
+   ```
+
+> ⚠️ **Nota**: Asegúrate de que los puertos **3000**, **3036** y **8080** estén libres antes de ejecutar el proyecto.
+
+---
+
+### 🛠️ Opción 2: Arranque manual sin Docker
+
+#### 1. Levantar la base de datos MariaDB
+
+- Crea una base de datos llamada `groupandplay`.
+- Crea un usuario `groupplay` con contraseña `group123` y dale permisos sobre la base de datos creada.
+
+#### 2. Ejecutar el backend (Spring Boot)
+
+1. Clona el repositorio:
+
+   ```bash
+   git clone https://github.com/Adrcabmar/Group-And-Play.git
+   ```
+
+2. Dentro de la carpeta `frontend`, renombra el archivo `.env example.txt` a `.env`.
+3. Desde la raíz del proyecto, instala las dependencias del backend sin ejecutar los tests:
+
+   ```bash
+   mvn clean install -DskipTests
+   ```
+
+4. Inicia el backend sin tests:
+
+   ```bash
+   mvn spring-boot:run -DskipTests
+   ```
+
+5. El backend estará disponible en [http://localhost:8080/](http://localhost:8080/).
+
+#### 3. Ejecutar el frontend (React + Vite)
+
+1. Accede a la carpeta del frontend:
+
+   ```bash
+   cd frontend
+   ```
+
+2. Instala las dependencias:
+
+   ```bash
+   npm install
+   ```
+
+3. Inicia el servidor de desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+4. El frontend estará disponible en:  
+   [http://localhost:5173/](http://localhost:5173/)
