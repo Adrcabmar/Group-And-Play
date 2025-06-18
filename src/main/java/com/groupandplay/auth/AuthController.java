@@ -69,8 +69,13 @@ public class AuthController {
 
     @GetMapping("/discord/callback")
     public ResponseEntity<?> linkDiscordAccount(
-            @RequestParam("code") String code,
-            @RequestParam("state") String userIdString) {
+            @RequestParam(value = "code", required = false) String code,
+            @RequestParam(value = "state", required = false) String userIdString,
+            @RequestParam(value = "error", required = false) String error) {
+
+        if (error != null || code == null || userIdString == null) {  
+            return redirect(frontendRedirectError);  
+        }
 
         try {
             Integer userId = Integer.parseInt(userIdString);
