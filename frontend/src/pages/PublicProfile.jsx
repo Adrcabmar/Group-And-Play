@@ -147,7 +147,7 @@ function PublicProfile() {
                                 <span className="profile-btn" style={{ cursor: "default", marginBottom: "0.5rem" }}>
                                     Sois amigos
                                 </span>
-                                <button className="profile-btn" onClick={() => setShowGroupInvite(!showGroupInvite)}>
+                                <button className={showGroupInvite ? "profile-btn cancel-btn" : "profile-btn"  } onClick={() => setShowGroupInvite(!showGroupInvite)}>
                                     {showGroupInvite ? "Cancelar" : "Invitar a grupo"}
                                 </button>
 
